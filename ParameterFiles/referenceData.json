@@ -1,0 +1,39 @@
+{
+	"startEvent":
+	{
+		"Comment Added":"COMMENT_ADDED",
+		"Comment Changed":"COMMENT_CHANGED",
+		"Comment Removed":"COMMENT_REMOVED",
+		"Relation was added on an asset as head":"RELATION_ADDED_ON_HEAD",
+		"Relation was added on an asset as tail":"RELATION_ADDED_ON_TAIL",
+		"Relation was removed from an asset as head":"RELATION_REMOVED_FROM_HEAD",
+		"Relation was removed from an asset as tail":"RELATION_REMOVED_FROM_TAIL",
+		"Role Granted":"ROLE_GRANTED",
+		"Role Revoked":"ROLE_REVOKED",
+		"Asset Added":"TERM_ADDED",
+		"Asset Attribute Added":"TERM_ADDED_ATTRIBUTE",
+		"Asset Attribute Changed":"TERM_CHANGED_ATTRIBUTE",
+		"Asset Type Changed":"TERM_CHANGED_CONCEPT_TYPE",
+		"Asset Name Changed":"TERM_CHANGED_SIGNIFIER",
+		"Asset Status Changed":"TERM_CHANGED_STATUS",
+		"Asset Domain Changed":"TERM_CHANGED_VOCABULARY",
+		"Asset Removed":"TERM_REMOVED",
+		"Asset Attribute Removed":"TERM_REMOVED_ATTRIBUTE",
+		"User Added":"USER_ADDED",
+		"User Disabled":"USER_DISABLED",
+		"User Removed":"USER_REMOVED",
+		"Domain Added":"VOCABULARY_ADDED",
+		"Domain Removed":"VOCABULARY_REMOVED",
+		"Workflow Canceled":"WORKFLOW_CANCELED",
+		"Workflow Started":"WORKFLOW_STARTED",
+		"Workflow task completed":"WORKFLOW_TASK_COMPLETED",
+		"Workflow Escalation":"WORKLFLOW_ESCALATION"
+	},
+	"itemResourceType":
+	{
+		"Asset":"TE",
+		"Community":"CO",
+		"Domain":"VC",
+		"Global":""
+	}
+}

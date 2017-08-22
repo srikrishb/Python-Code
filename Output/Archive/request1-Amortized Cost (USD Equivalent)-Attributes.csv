@@ -1,0 +1,2 @@
+signifier,Description,Calculation Rule
+Amortized Cost (USD Equivalent),Test Description.," If ""purchase price of a debt security"" &gt; = ""face value""   accretion of discount else       adjusted purchase price of a debt security"

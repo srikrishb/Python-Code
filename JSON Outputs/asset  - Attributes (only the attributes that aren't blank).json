@@ -1,0 +1,154 @@
+{
+    "attributeReference": [
+        {
+            "resourceId": "a55b1b4d-6db8-411f-b30a-d957be2fa3e2",
+            "value": "Testr",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "SA",
+            "labelReference": {
+                "resourceId": "00000000-0000-0000-0000-000000003114",
+                "signifier": "Description",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "TY",
+                "lastModified": 1490962955753,
+                "createdOn": 1490962953099,
+                "isSystem": true
+            },
+            "shortStringValue": "Testr",
+            "kind": "StringAttribute",
+            "lastModified": 1503092436899,
+            "createdOn": 1503092436573,
+            "isSystem": false
+        },
+        {
+            "resourceId": "50923cd1-9720-454d-a1a2-4509a78b6988",
+            "value": "Test Description.",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "SA",
+            "labelReference": {
+                "resourceId": "00000000-0000-0000-0000-000000003114",
+                "signifier": "Description",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "TY",
+                "lastModified": 1490962955753,
+                "createdOn": 1490962953099,
+                "isSystem": true
+            },
+            "shortStringValue": "Test Description.",
+            "kind": "StringAttribute",
+            "lastModified": 1503092420623,
+            "createdOn": 1503092420161,
+            "isSystem": false
+        },
+        {
+            "resourceId": "359b0516-6155-4d4b-b94f-a19a50c9e2c3",
+            "value": "<span class=\"characteristic-group-wrapper\"> If \"<a class=\"hyperlink\">purchase price</a> of a debt security\" &gt; = \"<a class=\"hyperlink\">face value</a>\"<br/><br/>   <a class=\"hyperlink\">accretion of discount</a> <br/><br/>else <br/>   <br/>   <a class=\"hyperlink\">adjusted purchase price</a> of a debt security<br/></span>",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "SA",
+            "labelReference": {
+                "resourceId": "00000000-0000-0000-0000-000000003117",
+                "signifier": "Calculation Rule",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "TY",
+                "lastModified": 1490962956179,
+                "createdOn": 1490962956169,
+                "isSystem": true
+            },
+            "shortStringValue": "<span class=\"characteristic-group-wrapper\"> If \"<a class=\"hyperlink\">purchase price</a> of a debt security\" &gt; = \"<a class=\"hyperlink\">face value</a>\"<br/><br/>   <a class=\"hyperlink\">accretion of discount</a> <br/><br/>else <br/>   <br/>   <a class=\"hyperlink\">adjusted purchase price</a> of a debt security<br/></span>",
+            "kind": "StringAttribute",
+            "lastModified": 1493222300058,
+            "createdOn": 1493222042641,
+            "isSystem": false
+        }
+    ]
+}

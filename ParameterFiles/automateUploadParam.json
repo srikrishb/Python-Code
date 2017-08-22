@@ -1,0 +1,26 @@
+{	
+	"ProcessName":"Code Value Approval Process",
+	"JenkinsTargetFolder":"C:/Program Files (x86)/Jenkins/workspace/Job-Code-Approval-Process",
+	"DeltaListPath":"C:/Program Files (x86)/Jenkins/workspace/Job-Code-Approval-Process",
+	"DeltaListFile":"Deltalist.txt",
+	"AppliesTo":"Global",
+	"StatusCodeInDGC":"00000000-0000-0000-0000-000000005051",
+	"ConfigurationVariables":
+	{
+		"stewardUserExpression":"role(Subject Matter Expert)",
+		"voteWarningTimeDuration":"B50D",
+		"voteTimeoutDuration":"B70D",
+		"voteCompletionPercentage":200,
+		"reviewWarningTimeDuration":"B50D",
+		"reviewTimeoutDuration":"B70D",
+		"reviewCompletionPercentage":200,
+		"commentTimeoutDuration":"B50D",
+		"sendVotingActionEmails":"false",
+		"correct_definitionDueDate":"B10M",
+		"correct_definitionTaskNotificationEnabled":"false",
+		"correct_definitionEscalationDuration":"B10M",
+		"correct_definitionEscalationType":"parcel"
+	},
+	"startEvent":["Comment Added","Asset Removed"],
+	"Other":"isExclusive=false&isGuestUserAccessible=false&isCandidateUserCheckEnabled=true&startLabel=Code+Value+Approval+Process&startRoles=00000000-0000-0000-0000-000000005028&startRoles=00000000-0000-0000-0000-000000005043&stopRoles=00000000-0000-0000-0000-000000005029&reassignRoles=00000000-0000-0000-0000-000000005029"
+}

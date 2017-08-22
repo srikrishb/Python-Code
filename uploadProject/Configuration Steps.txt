@@ -1,0 +1,14 @@
+1. Install the below softwares using PIP:
+	(a). selenium
+	(b). pyperclip
+	
+2. Download "geckodriver" and update path on Unix or Windows OS.
+
+https://stackoverflow.com/questions/40208051/selenium-using-python-geckodriver-executable-needs-to-be-in-path
+
+3. Copy modified version of pyrobot.py.
+
+4. Create Jenkins job and update the following variables in 'uploadProject' script. 
+
+	(a). 'SRC_DIR' variable - directory where the files would be pulled from github repository.
+	(b). 'TGT_DIR' variable - 'Desktop' location of the computer

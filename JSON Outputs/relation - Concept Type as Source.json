@@ -1,0 +1,754 @@
+{
+    "relation": [
+        {
+            "resourceId": "162e5166-436f-4683-bdec-7d4ad0d7714f",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "RE",
+            "typeReference": {
+                "resourceId": "00000000-0000-0000-0000-000000007005",
+                "headTerm": {
+                    "resourceId": "00000000-0000-0000-0000-000000031002",
+                    "vocabularyReference": {
+                        "resourceId": "00000000-0000-0000-0000-000000006001",
+                        "name": "Concept Types",
+                        "uri": "http://localhost:4400/98c71d54-5ed0-4030-bca9-a283740cf3fd/Concept+Types",
+                        "meta": true,
+                        "typeReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000003007",
+                            "signifier": "Vocabulary",
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "VT",
+                            "lastModified": 1490962952870,
+                            "createdOn": 1490962952855,
+                            "isSystem": true
+                        },
+                        "communityReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000006021",
+                            "name": "Admin Community",
+                            "uri": "http://www.collibra.com/admin_community",
+                            "language": "English",
+                            "sbvr": false,
+                            "meta": true,
+                            "parentReference": {
+                                "resourceId": "00000000-0000-0000-0000-000000006020",
+                                "name": "Metamodel Community",
+                                "uri": "http://www.collibra.com/METAMODEL_COMMUNITY",
+                                "language": "English",
+                                "sbvr": false,
+                                "meta": true,
+                                "locked": false,
+                                "createdBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "lastModifiedBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "resourceType": "CO",
+                                "lastModified": 1490962952764,
+                                "createdOn": 1490962952746,
+                                "isSystem": true
+                            },
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "CO",
+                            "lastModified": 1490962952769,
+                            "createdOn": 1490962952746,
+                            "isSystem": true
+                        },
+                        "locked": false,
+                        "createdBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900001",
+                            "resourceType": "UR",
+                            "userName": "System",
+                            "firstName": "System",
+                            "lastName": "User"
+                        },
+                        "lastModifiedBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900002",
+                            "resourceType": "UR",
+                            "userName": "Admin",
+                            "firstName": "Admin",
+                            "lastName": "Istrator",
+                            "emailAddress": "srikrishna.bingi@exusia.com"
+                        },
+                        "resourceType": "VC",
+                        "lastModified": 1493137689099,
+                        "createdOn": 1490962953310,
+                        "isSystem": true
+                    },
+                    "locked": false,
+                    "createdBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "lastModifiedBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "resourceType": "CT",
+                    "signifier": "Data Asset",
+                    "lastModified": 1490962957854,
+                    "createdOn": 1490962953377,
+                    "isSystem": true
+                },
+                "role": "implemented in",
+                "coRole": "implements",
+                "tailTerm": {
+                    "resourceId": "00000000-0000-0000-0000-000000031301",
+                    "vocabularyReference": {
+                        "resourceId": "00000000-0000-0000-0000-000000006001",
+                        "name": "Concept Types",
+                        "uri": "http://localhost:4400/98c71d54-5ed0-4030-bca9-a283740cf3fd/Concept+Types",
+                        "meta": true,
+                        "typeReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000003007",
+                            "signifier": "Vocabulary",
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "VT",
+                            "lastModified": 1490962952870,
+                            "createdOn": 1490962952855,
+                            "isSystem": true
+                        },
+                        "communityReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000006021",
+                            "name": "Admin Community",
+                            "uri": "http://www.collibra.com/admin_community",
+                            "language": "English",
+                            "sbvr": false,
+                            "meta": true,
+                            "parentReference": {
+                                "resourceId": "00000000-0000-0000-0000-000000006020",
+                                "name": "Metamodel Community",
+                                "uri": "http://www.collibra.com/METAMODEL_COMMUNITY",
+                                "language": "English",
+                                "sbvr": false,
+                                "meta": true,
+                                "locked": false,
+                                "createdBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "lastModifiedBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "resourceType": "CO",
+                                "lastModified": 1490962952764,
+                                "createdOn": 1490962952746,
+                                "isSystem": true
+                            },
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "CO",
+                            "lastModified": 1490962952769,
+                            "createdOn": 1490962952746,
+                            "isSystem": true
+                        },
+                        "locked": false,
+                        "createdBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900001",
+                            "resourceType": "UR",
+                            "userName": "System",
+                            "firstName": "System",
+                            "lastName": "User"
+                        },
+                        "lastModifiedBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900002",
+                            "resourceType": "UR",
+                            "userName": "Admin",
+                            "firstName": "Admin",
+                            "lastName": "Istrator",
+                            "emailAddress": "srikrishna.bingi@exusia.com"
+                        },
+                        "resourceType": "VC",
+                        "lastModified": 1493137689099,
+                        "createdOn": 1490962953310,
+                        "isSystem": true
+                    },
+                    "locked": false,
+                    "createdBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "lastModifiedBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900002",
+                        "resourceType": "UR",
+                        "userName": "Admin",
+                        "firstName": "Admin",
+                        "lastName": "Istrator",
+                        "emailAddress": "srikrishna.bingi@exusia.com"
+                    },
+                    "resourceType": "CT",
+                    "signifier": "Technology Asset",
+                    "lastModified": 1492120503334,
+                    "createdOn": 1490962953890,
+                    "isSystem": true
+                },
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "BF",
+                "lastModified": 1490962956293,
+                "createdOn": 1490962956288,
+                "isSystem": true
+            },
+            "sourceReference": {
+                "resourceId": "d9cff063-a637-4523-9056-bd7b62700373",
+                "signifier": "Discounts",
+                "articulation": 5,
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "resourceType": "TE",
+                "lastModified": 1493051969957,
+                "createdOn": 1493051969953,
+                "isSystem": false
+            },
+            "targetReference": {
+                "resourceId": "aab85682-1c62-4d88-9a86-ce9e075dfd74",
+                "signifier": "TOTAL_DISCOUNTS_FILE",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "resourceType": "TE",
+                "lastModified": 1493052794671,
+                "createdOn": 1493052794666,
+                "isSystem": false
+            },
+            "statusReference": {
+                "resourceId": "00000000-0000-0000-0000-000000005008",
+                "signifier": "Candidate",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "ST",
+                "lastModified": 1490962957265,
+                "createdOn": 1490962957265,
+                "isSystem": false
+            },
+            "lastModified": 1493052845991,
+            "createdOn": 1493052845947,
+            "isSystem": false
+        },
+        {
+            "resourceId": "3a87d682-e544-4bfa-b12f-72fa460fbbf5",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "RE",
+            "typeReference": {
+                "resourceId": "00000000-0000-0000-0000-000000007005",
+                "headTerm": {
+                    "resourceId": "00000000-0000-0000-0000-000000031002",
+                    "vocabularyReference": {
+                        "resourceId": "00000000-0000-0000-0000-000000006001",
+                        "name": "Concept Types",
+                        "uri": "http://localhost:4400/98c71d54-5ed0-4030-bca9-a283740cf3fd/Concept+Types",
+                        "meta": true,
+                        "typeReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000003007",
+                            "signifier": "Vocabulary",
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "VT",
+                            "lastModified": 1490962952870,
+                            "createdOn": 1490962952855,
+                            "isSystem": true
+                        },
+                        "communityReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000006021",
+                            "name": "Admin Community",
+                            "uri": "http://www.collibra.com/admin_community",
+                            "language": "English",
+                            "sbvr": false,
+                            "meta": true,
+                            "parentReference": {
+                                "resourceId": "00000000-0000-0000-0000-000000006020",
+                                "name": "Metamodel Community",
+                                "uri": "http://www.collibra.com/METAMODEL_COMMUNITY",
+                                "language": "English",
+                                "sbvr": false,
+                                "meta": true,
+                                "locked": false,
+                                "createdBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "lastModifiedBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "resourceType": "CO",
+                                "lastModified": 1490962952764,
+                                "createdOn": 1490962952746,
+                                "isSystem": true
+                            },
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "CO",
+                            "lastModified": 1490962952769,
+                            "createdOn": 1490962952746,
+                            "isSystem": true
+                        },
+                        "locked": false,
+                        "createdBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900001",
+                            "resourceType": "UR",
+                            "userName": "System",
+                            "firstName": "System",
+                            "lastName": "User"
+                        },
+                        "lastModifiedBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900002",
+                            "resourceType": "UR",
+                            "userName": "Admin",
+                            "firstName": "Admin",
+                            "lastName": "Istrator",
+                            "emailAddress": "srikrishna.bingi@exusia.com"
+                        },
+                        "resourceType": "VC",
+                        "lastModified": 1493137689099,
+                        "createdOn": 1490962953310,
+                        "isSystem": true
+                    },
+                    "locked": false,
+                    "createdBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "lastModifiedBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "resourceType": "CT",
+                    "signifier": "Data Asset",
+                    "lastModified": 1490962957854,
+                    "createdOn": 1490962953377,
+                    "isSystem": true
+                },
+                "role": "implemented in",
+                "coRole": "implements",
+                "tailTerm": {
+                    "resourceId": "00000000-0000-0000-0000-000000031301",
+                    "vocabularyReference": {
+                        "resourceId": "00000000-0000-0000-0000-000000006001",
+                        "name": "Concept Types",
+                        "uri": "http://localhost:4400/98c71d54-5ed0-4030-bca9-a283740cf3fd/Concept+Types",
+                        "meta": true,
+                        "typeReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000003007",
+                            "signifier": "Vocabulary",
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "VT",
+                            "lastModified": 1490962952870,
+                            "createdOn": 1490962952855,
+                            "isSystem": true
+                        },
+                        "communityReference": {
+                            "resourceId": "00000000-0000-0000-0000-000000006021",
+                            "name": "Admin Community",
+                            "uri": "http://www.collibra.com/admin_community",
+                            "language": "English",
+                            "sbvr": false,
+                            "meta": true,
+                            "parentReference": {
+                                "resourceId": "00000000-0000-0000-0000-000000006020",
+                                "name": "Metamodel Community",
+                                "uri": "http://www.collibra.com/METAMODEL_COMMUNITY",
+                                "language": "English",
+                                "sbvr": false,
+                                "meta": true,
+                                "locked": false,
+                                "createdBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "lastModifiedBy": {
+                                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                                    "resourceType": "UR",
+                                    "userName": "System",
+                                    "firstName": "System",
+                                    "lastName": "User"
+                                },
+                                "resourceType": "CO",
+                                "lastModified": 1490962952764,
+                                "createdOn": 1490962952746,
+                                "isSystem": true
+                            },
+                            "locked": false,
+                            "createdBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "lastModifiedBy": {
+                                "resourceId": "00000000-0000-0000-0000-000000900001",
+                                "resourceType": "UR",
+                                "userName": "System",
+                                "firstName": "System",
+                                "lastName": "User"
+                            },
+                            "resourceType": "CO",
+                            "lastModified": 1490962952769,
+                            "createdOn": 1490962952746,
+                            "isSystem": true
+                        },
+                        "locked": false,
+                        "createdBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900001",
+                            "resourceType": "UR",
+                            "userName": "System",
+                            "firstName": "System",
+                            "lastName": "User"
+                        },
+                        "lastModifiedBy": {
+                            "resourceId": "00000000-0000-0000-0000-000000900002",
+                            "resourceType": "UR",
+                            "userName": "Admin",
+                            "firstName": "Admin",
+                            "lastName": "Istrator",
+                            "emailAddress": "srikrishna.bingi@exusia.com"
+                        },
+                        "resourceType": "VC",
+                        "lastModified": 1493137689099,
+                        "createdOn": 1490962953310,
+                        "isSystem": true
+                    },
+                    "locked": false,
+                    "createdBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900001",
+                        "resourceType": "UR",
+                        "userName": "System",
+                        "firstName": "System",
+                        "lastName": "User"
+                    },
+                    "lastModifiedBy": {
+                        "resourceId": "00000000-0000-0000-0000-000000900002",
+                        "resourceType": "UR",
+                        "userName": "Admin",
+                        "firstName": "Admin",
+                        "lastName": "Istrator",
+                        "emailAddress": "srikrishna.bingi@exusia.com"
+                    },
+                    "resourceType": "CT",
+                    "signifier": "Technology Asset",
+                    "lastModified": 1492120503334,
+                    "createdOn": 1490962953890,
+                    "isSystem": true
+                },
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "BF",
+                "lastModified": 1490962956293,
+                "createdOn": 1490962956288,
+                "isSystem": true
+            },
+            "sourceReference": {
+                "resourceId": "d9cff063-a637-4523-9056-bd7b62700373",
+                "signifier": "Discounts",
+                "articulation": 5,
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "resourceType": "TE",
+                "lastModified": 1493051969957,
+                "createdOn": 1493051969953,
+                "isSystem": false
+            },
+            "targetReference": {
+                "resourceId": "9b67d61a-9c4c-461c-8f53-9475ff9ed8b3",
+                "signifier": "ALL_DISCOUNTS_FILE",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900002",
+                    "resourceType": "UR",
+                    "userName": "Admin",
+                    "firstName": "Admin",
+                    "lastName": "Istrator",
+                    "emailAddress": "srikrishna.bingi@exusia.com"
+                },
+                "resourceType": "TE",
+                "lastModified": 1493052794646,
+                "createdOn": 1493052794592,
+                "isSystem": false
+            },
+            "statusReference": {
+                "resourceId": "00000000-0000-0000-0000-000000005008",
+                "signifier": "Candidate",
+                "locked": false,
+                "createdBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "lastModifiedBy": {
+                    "resourceId": "00000000-0000-0000-0000-000000900001",
+                    "resourceType": "UR",
+                    "userName": "System",
+                    "firstName": "System",
+                    "lastName": "User"
+                },
+                "resourceType": "ST",
+                "lastModified": 1490962957265,
+                "createdOn": 1490962957265,
+                "isSystem": false
+            },
+            "lastModified": 1493052828592,
+            "createdOn": 1493052828563,
+            "isSystem": false
+        }
+    ]
+}

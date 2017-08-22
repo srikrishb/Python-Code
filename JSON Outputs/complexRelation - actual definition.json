@@ -1,0 +1,29 @@
+{
+    "termReference": [
+        {
+            "resourceId": "3783ce2e-cf9a-460b-a626-666e63958df9",
+            "signifier": "3783ce2e-cf9a-460b-a626-666e63958df9",
+            "locked": false,
+            "createdBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "lastModifiedBy": {
+                "resourceId": "00000000-0000-0000-0000-000000900002",
+                "resourceType": "UR",
+                "userName": "Admin",
+                "firstName": "Admin",
+                "lastName": "Istrator",
+                "emailAddress": "srikrishna.bingi@exusia.com"
+            },
+            "resourceType": "CR",
+            "lastModified": 1493164898891,
+            "createdOn": 1493138009081,
+            "isSystem": false
+        }
+    ]
+}
