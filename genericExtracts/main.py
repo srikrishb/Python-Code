@@ -278,28 +278,39 @@ def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
         #{'Name': {'signifier': 'Amortized Cost (USD Equivalent)'}}
 
         # Write the headers of the asset into the file
-        targetFileRow = []
-        for mainHeaderKey in targetMap.keys():
-            subHeaderMap = targetMap[mainHeaderKey]
-            for subHeaderKey in subHeaderMap:
-                targetFileRow.append(mainHeaderKey)
-        csvWriter.writerow(targetFileRow)
+        # targetFileRow = []
+        # for mainHeaderKey in targetMap.keys():
+        #     subHeaderMap = targetMap[mainHeaderKey]
+        #     for subHeaderKey in subHeaderMap:
+        #         targetFileRow.append(mainHeaderKey)
+        # csvWriter.writerow(targetFileRow)
 
         # Write the sub-headers of the asset into the file
         targetFileRow = []
         for mainHeaderKey in targetMap.keys():
             subHeaderMap = targetMap[mainHeaderKey]
             for subHeaderKey in subHeaderMap.keys():
-                targetFileRow.append(subHeaderKey)
-        csvWriter.writerow(targetFileRow)
+                if '->' in subHeaderKey:
+                    targetFileRow.append(subHeaderKey[subHeaderKey.index('->')+3:])
+                else:
+                    targetFileRow.append(subHeaderKey)
+
+                if isinstance(subHeaderMap[subHeaderKey], list):
+                    for listItem in subHeaderMap[subHeaderKey]:
+                        targetFileRow.append(listItem)
+                else:
+                    targetFileRow.append(subHeaderMap[subHeaderKey])
+
+                csvWriter.writerow(targetFileRow)
+                targetFileRow = []
 
         # Write the actual values of the asset into the file
-        targetFileRow = []
-        for mainHeaderKey in targetMap.keys():
-            subHeaderMap = targetMap[mainHeaderKey]
-            for subHeaderKey in subHeaderMap.keys():
-                targetFileRow.append(subHeaderMap[subHeaderKey])
-        csvWriter.writerow(targetFileRow)
+        # targetFileRow = []
+        # for mainHeaderKey in targetMap.keys():
+        #     subHeaderMap = targetMap[mainHeaderKey]
+        #     for subHeaderKey in subHeaderMap.keys():
+        #         targetFileRow.append(subHeaderMap[subHeaderKey])
+        # csvWriter.writerow(targetFileRow)
 
         csvWriter.writerow('')
 
@@ -427,14 +438,23 @@ if __name__ == '__main__':
                             attributeResponseMap = attributesResponseList[listIndex]
                             listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier']) #Find all the attributes of the asset that are not null
                         listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
+
+                        # Add all the attribute types that have a value
+                        for listIndex in range(0, len(attributesResponseList)):
+                            attributeResponseMap = attributesResponseList[listIndex]
+                            existingKeyValue = []
+                            # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
+                            key = attributeResponseMap['labelReference']['signifier']
+                            cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
+                            if key in targetDataAttributesMap.keys():
+                                existingKeyValue = targetDataAttributesMap[key]
+                            existingKeyValue.append(cleanedKeyValue)
+                            targetDataAttributesMap[key] = existingKeyValue
+
+                        # Add all the attribute types that don't have a value
                         for possibleAttribute in possibleAttributesList:
-                            for listIndex in range(0, len(attributesResponseList)):
-                                attributeResponseMap = attributesResponseList[listIndex]
-                                if possibleAttribute in listOfAttributesFromResponse:
-                                    key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
-                                    targetDataAttributesMap[key] = cleanhtml(attributeResponseMap['value'])
-                                else:
-                                    targetDataAttributesMap[possibleAttribute] = ''
+                            if possibleAttribute not in targetDataAttributesMap.keys():
+                                targetDataAttributesMap[possibleAttribute] = ''
 
                         # Find the Complex Relations and Attributes
                         complexRelationsMap = fetchComplexRelations(targetData[i]['resourceId'])
@@ -454,12 +474,11 @@ if __name__ == '__main__':
                             attributeValue = []
                             for j in range(0, len(
                                     complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
-                                attributesReferenceList = \
-                                complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
+                                attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
                                 attributeKey = attributesReferenceList['labelReference']['signifier']
                                 if attributeKey in targetDataComplexRelationsMap.keys():
                                     attributeValue = targetDataComplexRelationsMap[attributeKey]
-                                attributeValue.append(attributesReferenceList['value'])
+                                attributeValue.append(cleanhtml(attributesReferenceList['value']))
                                 targetDataComplexRelationsMap[attributeKey] = attributeValue
                                 attributeValue = []
 
@@ -477,8 +496,10 @@ if __name__ == '__main__':
                         if bool(targetDataComplexRelationsMap):
                             finalMap['Complex Relations'] = targetDataComplexRelationsMap
 
-                        #Create the output file
-                        fileNameList.append(createTargetDataFile(finalMap, eachKey, '.csv'))
+                        # Create the output file
+                        fileName = createTargetDataFile(finalMap, eachKey, '.csv')
+                        if fileName not in fileNameList:
+                            fileNameList.append(fileName)
 
                 elif itemkey == 'email':  #Emails the output file to the audience
 
@@ -507,9 +528,9 @@ if __name__ == '__main__':
                     msg.add_header("Content-Disposition", "attachment", filename=outputFileName+'.zip')
                     composedMessage.attach(msg)
 
-                    mailObject = smtplib.SMTP('smtp.gmail.com', 587)
-                    mailObject.starttls()
-                    mailObject.login('srikrishna.bingi@gmail.com','******')
+                    # mailObject = smtplib.SMTP('smtp.gmail.com', 587)
+                    # mailObject.starttls()
+                    # mailObject.login('srikrishna.bingi@gmail.com','******')
                     #mailObject.sendmail("srikrishna.bingi@gmail.com","srikrishna.bingi@exusia.com",composedMessage.as_string())
                     print('Done sending Mail')
-                    mailObject.close()
+                    # mailObject.close()
