@@ -310,6 +310,7 @@ def fetchComplexRelationsAttributes(resourceId):
                 return 'No Data Found'
 
 def mergeCellsInFile(targetRowNum, targetFileRow, targetFileName):
+
     newWorkbook = load_workbook(targetFileName)
     newWorkSheet = newWorkbook.get_sheet_by_name(targetFileRow[0])
     mergeLen = 0
@@ -388,12 +389,10 @@ def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
 def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
 
-    # if 'signifier' in targetMap.keys():
-    #     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '-' + targetMap['signifier'] + fileNameSuffix
-    # else:
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
     targetFileHeader = []
     targetFileRow = []
+    targetFinalRowList = []
     i = 0
 
     if os.path.isfile(targetFileName):
@@ -415,7 +414,8 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
                 #Need to add hyperlinks
                 assetSheetName = subHeaderMap['Asset Name']
                 worksheet = workbook.create_sheet(assetSheetName)
-            if mainHeaderKey == 'Asset Details' or mainHeaderKey == 'Relations' or mainHeaderKey == 'Complex Relations':
+            if mainHeaderKey == 'Asset Details' or mainHeaderKey == 'Attributes' or mainHeaderKey == 'Relations' or mainHeaderKey == 'Complex Relations':
+
                 for subHeaderKey in subHeaderMap.keys():
 
                     if '->' in subHeaderKey:
@@ -423,13 +423,17 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
                     else:
                         targetFileHeader.append(subHeaderKey)
 
-                targetFileRow.append(subHeaderMap[subHeaderKey])
-
+                    targetFileRow.append(subHeaderMap[subHeaderKey])
         worksheet = workbook.get_sheet_by_name(assetSheetName)
         worksheet.append(targetFileHeader)
+        workbook.save(targetFileName)
+        targetFinalRowList.append(targetFileRow)
         #mergeCellsInFile(2,targetFileRow,targetFileName)
+        targetFileRow = []
 
-    workbook.save(targetFileName)
+    for targetRow in targetFinalRowList:
+        mergeCellsInFile(2, targetRow, targetFileName)
+
     return targetFileName
 # Main function
 if __name__ == '__main__':
