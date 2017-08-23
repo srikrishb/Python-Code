@@ -21,7 +21,6 @@ from email.utils import COMMASPACE, formatdate
 import re
 from zipfile import ZipFile
 from openpyxl import Workbook
-from openpyxl import load_workbook
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -309,36 +308,6 @@ def fetchComplexRelationsAttributes(resourceId):
             else:
                 return 'No Data Found'
 
-def mergeCellsInFile(targetRowNum, targetFileRow, targetFileName):
-    newWorkbook = load_workbook(targetFileName)
-    newWorkSheet = newWorkbook.get_sheet_by_name(targetFileRow[0])
-    mergeLen = 0
-    totalLen = len(targetFileRow)
-    i = 0
-    for col in range(1, totalLen + 1):
-        if isinstance(targetFileRow[i], str):
-            newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
-            i += 1
-        elif isinstance(targetFileRow[i], list):
-            tempList = []
-            tempList = targetFileRow[i]
-            rowLen = len(tempList)
-            if mergeLen < rowLen:
-                mergeLen = rowLen
-            j = 0
-            for rowIndex in range(targetRowNum, rowLen + 1):
-                newWorkSheet.cell(row=rowIndex, column=col).value = tempList[j]
-                j += 1
-            i += 1
-
-    i = 0
-    for col in range(1, totalLen + 1):
-        if (isinstance(targetFileRow[i], list) and len(targetFileRow[i]) == 1) or isinstance(targetFileRow[i], str):
-            newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row=mergeLen, end_column=col)
-        i += 1
-
-    newWorkbook.save(targetFileName)
-
 def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + fileNameSuffix
@@ -391,45 +360,36 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
     # if 'signifier' in targetMap.keys():
     #     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '-' + targetMap['signifier'] + fileNameSuffix
     # else:
-    targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
-    targetFileHeader = []
+    targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + fileNameSuffix
+    #with open(targetFileName, 'a', newline='') as targetFile:
+    #    csvWriter = csv.writer(targetFile, delimiter=',')
+
+    #Write the sub-headers of the asset into the file
     targetFileRow = []
     i = 0
-
-    if os.path.isfile(targetFileName):
-        workbook = load_workbook(targetFileName)
-    else:
-        workbook = Workbook(targetFileRow)
-        defaultSheet = workbook.active
-        defaultSheet.title = 'Asset Index'
+    for targetMap in targetMapList:
+        if i == 0:
+            i += 1
+            for mainHeaderKey in targetMap.keys():
+                subHeaderMap = targetMap[mainHeaderKey]
+                for subHeaderKey in subHeaderMap.keys():
+                    if '->' in subHeaderKey:
+                        targetFileRow.append(subHeaderKey[subHeaderKey.index('->') + 3:])
+                    else:
+                        targetFileRow.append(subHeaderKey)
+            csvWriter.writerow(targetFileRow)
+            targetFileRow = []
 
     for targetMap in targetMapList:
         for mainHeaderKey in targetMap.keys():
             subHeaderMap = targetMap[mainHeaderKey]
-
-            if mainHeaderKey == 'Name':
-                worksheet = workbook.get_sheet_by_name('Asset Index')
-                tempList = []
-                tempList.append(subHeaderMap['Asset Name'])
-                worksheet.append(tempList)
-                #Need to add hyperlinks
-                assetSheetName = subHeaderMap['Asset Name']
-                worksheet = workbook.create_sheet(assetSheetName)
-            if mainHeaderKey == 'Asset Details' or mainHeaderKey == 'Relations' or mainHeaderKey == 'Complex Relations':
-                for subHeaderKey in subHeaderMap.keys():
-
-                    if '->' in subHeaderKey:
-                        targetFileHeader.append(subHeaderKey[subHeaderKey.index('->') + 3:])
-                    else:
-                        targetFileHeader.append(subHeaderKey)
-
+            for subHeaderKey in subHeaderMap.keys():
                 targetFileRow.append(subHeaderMap[subHeaderKey])
+        csvWriter.writerow(targetFileRow)
+        targetFileRow = []
 
-        worksheet = workbook.get_sheet_by_name(assetSheetName)
-        worksheet.append(targetFileHeader)
-        #mergeCellsInFile(2,targetFileRow,targetFileName)
+    csvWriter.writerow('')
 
-    workbook.save(targetFileName)
     return targetFileName
 # Main function
 if __name__ == '__main__':
@@ -585,7 +545,6 @@ if __name__ == '__main__':
                         if bool(targetDataComplexRelationsMap):
                             finalMap['Complex Relations'] = targetDataComplexRelationsMap
 
-
                         finalResultList.append(finalMap)
 
                         finalMap = {}
@@ -593,6 +552,7 @@ if __name__ == '__main__':
 
                 elif itemkey == 'outputFileName':
                     # Create the output file
+
                     fileName = createTargetDataFileII(finalResultList, eachKey, '.csv')
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)
