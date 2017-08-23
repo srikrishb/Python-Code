@@ -158,10 +158,6 @@ def createMap(innerMap):
 
 def fetchAssetAssetDetails(detailType, targetData):
 
-
-    if detailType == 'Asset Name':
-        return targetData['signifier']
-
     if detailType == 'Community':
         if 'vocabularyReference' in targetData:
             if 'communityReference' in targetData['vocabularyReference']:
@@ -204,6 +200,8 @@ def fetchAssetAssetDetails(detailType, targetData):
 
     if detailType == 'Articulation Score':
         return targetData.get('articulation', 'Not Applicable')
+    else:
+        return 'Not Applicable'
 
     if detailType == 'Created On':
         return convertEpochTime(targetData.get('createdOn'))
@@ -363,29 +361,47 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
     with open(targetFileName, 'a', newline='') as targetFile:
         csvWriter = csv.writer(targetFile, delimiter=',')
 
-        #Write the sub-headers of the asset into the file
-        targetFileRow = []
-        i = 0
-        for targetMap in targetMapList:
-            if i == 0:
-                i += 1
-                for mainHeaderKey in targetMap.keys():
-                    subHeaderMap = targetMap[mainHeaderKey]
-                    for subHeaderKey in subHeaderMap.keys():
-                        if '->' in subHeaderKey:
-                            targetFileRow.append(subHeaderKey[subHeaderKey.index('->') + 3:])
-                        else:
-                            targetFileRow.append(subHeaderKey)
-                csvWriter.writerow(targetFileRow)
-                targetFileRow = []
+        # Find unique sub-headers of assets
+        uniqueSubHeadersList = []
 
         for targetMap in targetMapList:
             for mainHeaderKey in targetMap.keys():
                 subHeaderMap = targetMap[mainHeaderKey]
                 for subHeaderKey in subHeaderMap.keys():
-                    targetFileRow.append(subHeaderMap[subHeaderKey])
-            csvWriter.writerow(targetFileRow)
-            targetFileRow = []
+                    if '->' in subHeaderKey:
+                        subHeader = subHeaderKey[subHeaderKey.index('->') + 3:]
+                        if subHeader not in uniqueSubHeadersList:
+                            uniqueSubHeadersList.append(subHeader)
+                    else:
+                        uniqueSubHeadersList.append(subHeaderKey)
+
+            uniqueSubHeadersList = list(set(uniqueSubHeadersList))
+
+        targetFileRow = []
+        for uniqueSubHeaderKey in uniqueSubHeadersList:
+            targetFileRow.append(uniqueSubHeaderKey)
+
+        csvWriter.writerow(targetFileRow)
+        # Write the sub-headers of the asset into the file
+        # targetFileRow = []
+        # for mainHeaderKey in targetMap.keys():
+        #     subHeaderMap = targetMap[mainHeaderKey]
+        #     for subHeaderKey in subHeaderMap.keys():
+        #         if '->' in subHeaderKey:
+        #             targetFileRow.append(subHeaderKey[subHeaderKey.index('->')+3:])
+        #         else:
+        #             targetFileRow.append(subHeaderKey)
+        #         csvWriter.writerow(targetFileRow)
+        #         targetFileRow = []
+
+        # Write the actual values of the asset into the file
+        # targetFileRow = []
+        # for mainHeaderKey in targetMap.keys():
+        #     subHeaderMap = targetMap[mainHeaderKey]
+        #     for subHeaderKey in subHeaderMap.keys():
+        #         targetFileRow.append(subHeaderMap[subHeaderKey])
+
+
 
         csvWriter.writerow('')
 
@@ -411,6 +427,9 @@ if __name__ == '__main__':
 
         for itemkey in eachMap.keys():
 
+            if itemkey == 'outputFileName':
+                outputFileName = eachMap[itemkey]
+
             if itemkey == 'conditions':
                 if isinstance(eachMap[itemkey], dict):
                     targetData = createMap(eachMap[itemkey])
@@ -425,24 +444,23 @@ if __name__ == '__main__':
 
                     outputResultParameters = eachMap[itemkey]
                     for i in range(0, len(targetData)):
-                        targetDataRelationsMap = {}
-                        targetDataAttributesMap = {}
-                        targetDataComplexRelationsMap = {}
-                        targetDataMap = {}
+
                         for outputParameter in outputResultParameters.keys():
                             outputParameterList = outputResultParameters[outputParameter]
                             # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
                             if outputParameter == 'Asset Details':
-
                                 for detailType in outputParameterList:
                                     targetDataMap[detailType] = fetchAssetAssetDetails(detailType, targetData[i])
 
                             # If needed, find the Relations, Attributes and Complex Relations of the asset
-
+                            targetDataRelationsMap = {}
+                            targetDataAttributesMap = {}
+                            targetDataComplexRelationsMap = {}
 
                             if outputParameter in ('Attributes', 'Relations'):
                                 # Find the possible Relations and Attributes of the asset
-                                possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
+                                possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(
+                                    targetData[i]['resourceId'])
                                 possibleAttributesList = []
                                 possibleRelationsList = []
 
@@ -451,7 +469,8 @@ if __name__ == '__main__':
                                         'representationReference']
                                     for k in range(0, len(possibleRelationsAndAttributesList)):
                                         if 'descriptionReference' in possibleRelationsAndAttributesList[k].keys():
-                                            possibleAttributesList.append(possibleRelationsAndAttributesList[k]['signifier'])
+                                            possibleAttributesList.append(
+                                                possibleRelationsAndAttributesList[k]['signifier'])
                                         tempMap = {}
                                         if 'role' in possibleRelationsAndAttributesList[k].keys():
                                             tempMap['role'] = possibleRelationsAndAttributesList[k]['role']
@@ -459,8 +478,7 @@ if __name__ == '__main__':
                                             if tempMap not in possibleRelationsList:
                                                 possibleRelationsList.append(tempMap)
 
-
-                                if outputParameter == 'Relations':
+                                if outputParameterList == 'All':
                                     # Find the Relations
                                     targetDataRelationsMap = {}
                                     relationsResponse = fetchRelations(targetData[i]['resourceId'])
@@ -477,7 +495,7 @@ if __name__ == '__main__':
                                                         targetDataRelationsMap[roleMap['role']] = ''
                                                         targetDataRelationsMap[roleMap['coRole']] = ''
 
-                                if outputParameter == 'Attributes':
+                                if outputParameterList == 'All':
                                     # Find the Attributes
                                     targetDataAttributesMap = {}
                                     attributesResponse = fetchAttributes(targetData[i]['resourceId'])
@@ -540,19 +558,18 @@ if __name__ == '__main__':
                         finalMap['Asset Details'] = targetDataMap
                         if bool(targetDataAttributesMap):
                             finalMap['Attributes'] = targetDataAttributesMap
+
                         if bool(targetDataRelationsMap):
                             finalMap['Relations'] = targetDataRelationsMap
+
                         if bool(targetDataComplexRelationsMap):
                             finalMap['Complex Relations'] = targetDataComplexRelationsMap
 
                         finalResultList.append(finalMap)
-
                         finalMap = {}
-
 
                 elif itemkey == 'outputFileName':
                     # Create the output file
-
                     fileName = createTargetDataFileII(finalResultList, eachKey, '.csv')
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)

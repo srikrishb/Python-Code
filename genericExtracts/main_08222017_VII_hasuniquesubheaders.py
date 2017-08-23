@@ -363,30 +363,49 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
     with open(targetFileName, 'a', newline='') as targetFile:
         csvWriter = csv.writer(targetFile, delimiter=',')
 
-        #Write the sub-headers of the asset into the file
-        targetFileRow = []
-        i = 0
-        for targetMap in targetMapList:
-            if i == 0:
-                i += 1
-                for mainHeaderKey in targetMap.keys():
-                    subHeaderMap = targetMap[mainHeaderKey]
-                    for subHeaderKey in subHeaderMap.keys():
-                        if '->' in subHeaderKey:
-                            targetFileRow.append(subHeaderKey[subHeaderKey.index('->') + 3:])
-                        else:
-                            targetFileRow.append(subHeaderKey)
-                csvWriter.writerow(targetFileRow)
-                targetFileRow = []
-
+        # Find unique sub-headers of assets
+        print(targetMapList)
+        uniqueSubHeadersList = []
         for targetMap in targetMapList:
             for mainHeaderKey in targetMap.keys():
                 subHeaderMap = targetMap[mainHeaderKey]
                 for subHeaderKey in subHeaderMap.keys():
-                    targetFileRow.append(subHeaderMap[subHeaderKey])
-            csvWriter.writerow(targetFileRow)
-            targetFileRow = []
+                    if '->' in subHeaderKey:
+                        subHeader = subHeaderKey[subHeaderKey.index('->') + 3:]
+                        if subHeader not in uniqueSubHeadersList:
+                            uniqueSubHeadersList.append(subHeader)
+                    else:
+                        uniqueSubHeadersList.append(subHeaderKey)
 
+            uniqueSubHeadersList = list(set(uniqueSubHeadersList))
+
+        targetFileRow = []
+        for uniqueSubHeaderKey in uniqueSubHeadersList:
+            targetFileRow.append(uniqueSubHeaderKey)
+
+        #csvWriter.writerow(targetFileRow)
+        #Write the sub-headers of the asset into the file
+
+        targetFileRow = []
+        for targetMap in targetMapList:
+        for mainHeaderKey in targetMap.keys():
+            subHeaderMap = targetMap[mainHeaderKey]
+            for subHeaderKey in subHeaderMap.keys():
+                if '->' in subHeaderKey:
+                    targetFileRow.append(subHeaderKey[subHeaderKey.index('->')+3:])
+                else:
+                    targetFileRow.append(subHeaderKey)
+        csvWriter.writerow(targetFileRow)
+        targetFileRow = []
+
+        #Write the actual values of the asset into the file
+        targetFileRow = []
+        for mainHeaderKey in targetMap.keys():
+            subHeaderMap = targetMap[mainHeaderKey]
+            for subHeaderKey in subHeaderMap.keys():
+                targetFileRow.append(subHeaderMap[subHeaderKey])
+
+        csvWriter.writerow(targetFileRow)
         csvWriter.writerow('')
 
     return targetFileName

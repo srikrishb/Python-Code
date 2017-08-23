@@ -1,5 +1,19 @@
 request1:
-    assetNameLike: "Amortized Cost (USD Equivalent)"
+    conditions:
+        And:
+            assetNameIn: 
+                - "Amortized Cost (USD Equivalent)" 
+                - "Accretion of discount"
+            lastModifiedBefore: "2017-12-31"          
+    outputResult:
+        Asset Details: 
+            - Asset Name
+            - Community
+            - Domain
+            - Asset Type
+        Attributes: All
+        Relations: All
+        Complex Relations: All  
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:
