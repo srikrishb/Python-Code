@@ -521,7 +521,6 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
 
 def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
 
-    subMap = {}
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
     targetFileHeader = []
     targetFileRow = []
@@ -529,6 +528,7 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
     columnCount = 0
     subMap = {}
     tempList = []
+    mergeRow = {}
     i = 0
     if os.path.isfile(targetFileName):
         workbook = load_workbook(targetFileName)
@@ -564,8 +564,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             columnCount += 4
 
         worksheet.append(targetFileHeader)
-
-
 
     rowNum = 2
     col = 1
@@ -624,7 +622,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                                 highestLen = rowLen
                             j = 0
                             for rowIndex in range(rowNum, rowNum + rowLen):
-                                print(rowIndex, col, tempList[j])
                                 worksheet.cell(row=rowIndex, column=col).value = tempList[j]
                                 j += 1
                             rowNum = rowNum + rowLen
@@ -635,18 +632,19 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                     rowNum = currentRowNum
                     col += 2
         targetFinalRowList.append(targetFileRow)
+        mergeRow[rowNum] = highestLen
         rowNum = rowNum + highestLen + 1
         targetFileRow = []
         col = 1
+
+    col = 1
+    for rowNum in mergeRow:
+         print(rowNum, mergeRow[rowNum])
+         for col in range(1,5):
+            worksheet.merge_cells(start_row=rowNum, start_column=col, end_row=rowNum + mergeRow[rowNum]-1,end_column=col)
+            col +=1
+
     workbook.save(targetFileName)
-
-    # for targetRow in targetFinalRowList:
-    #      print('rowNum ', rowNum)
-    #      print(targetRow)
-    #      #rowLatestPos = mergeCellsInFile(rowNum, targetRow, targetFileName)
-    #      break
-    #      rowNum = rowLatestPos + 1
-
     return targetFileName
 
 if __name__ == '__main__':
