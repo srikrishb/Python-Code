@@ -149,83 +149,33 @@ def createDataSet(innerMap):
                 tempMap = {}
     return targetData
 
-def checkNestedMaps(checkMap):
-    keyList = []
-    for innerMap in checkMap:
-        keyList.append(innerMap)
-    if 'Or' in keyList or 'And' in keyList:
-        return 1
-    else:
-        return 0
-
 def createMap(innerMap):
     tempMap = {}
     targetData = {}
-    testMap = {}
-    parameterMap = {}
     for key in innerMap.keys():
         # if isinstance(innerMap[key], dict) == 'false':
         if key == 'Or' or key == 'And':
             criteriaMap = innerMap[key]
-            testMap[key] = innerMap[key]
-            if checkNestedMaps(criteriaMap) == 1:
-                preTargetData = createMap(criteriaMap)
+            i = 0
+            for criteriaKey in criteriaMap.keys():
+                tempMap[criteriaKey] = criteriaMap[criteriaKey]
 
-            else:
-                i = 0
-                for testKey in testMap.keys():
-                    for criteriaKey in testMap[testKey]:
-                        parameterMap = testMap[testKey]
-                        tempMap[criteriaKey] = parameterMap[criteriaKey]
-                        if i == 0:
-                            i += 1
-                            tempTargetData = fetchDataSet(criteriaKey, parameterMap[criteriaKey])
-                            preTargetData = filterTargetData(tempMap, tempTargetData)
-                        else:
-                            if testKey == 'And':
-                                targetData = filterTargetData(tempMap, preTargetData)
-                                preTargetData = targetData
-                            if testKey == 'Or':
-                                tempTargetData = fetchDataSet(criteriaKey, parameterMap[criteriaKey])
-                                newTargetData = filterTargetData(tempMap, tempTargetData)
-                                targetData = listUnion(newTargetData, preTargetData)
-                        tempMap = {}
-
-
-
-    return targetData
-
-def generateFile(inputMap):
-    i = 0
-    tempMap = {}
-    for masterKey in inputMap:
-        toBeProcessedMap = inputMap[masterKey]
-        for innerMapKey in toBeProcessedMap:
-            tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
-            if i == 0:
-                i += 1
-                tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
-                preTargetData = filterTargetData(tempMap, tempTargetData)
-            else:
-                if masterKey == 'And':
-                    targetData = filterTargetData(tempMap, preTargetData)
-                    preTargetData = targetData
-                if masterKey == 'Or':
-                    tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
-                    newTargetData = filterTargetData(tempMap, tempTargetData)
-                    targetData = listUnion(newTargetData, preTargetData)
-            tempMap = {}
-
-    return targetData
-
-def createMapII(inputMap):
-    tempMap = {}
-    for key in inputMap:
-        if checkNestedMaps(inputMap[key]) == 0:
-            tempMap[key] = inputMap[key]
-            targetData = generateFile(tempMap)
-            tempMap = {}
-
+                if i == 0:
+                    i += 1
+                    if 'Or' in tempMap.keys() or 'And' in tempMap.keys():
+                        preTargetData = createDataSet(tempMap)
+                    else:
+                        tempTargetData = fetchDataSet(criteriaKey, criteriaMap[criteriaKey])
+                        preTargetData = filterTargetData(tempMap, tempTargetData)
+                else:
+                    if key == 'And':
+                        targetData = filterTargetData(tempMap, preTargetData)
+                        preTargetData = targetData
+                    if key == 'Or':
+                        tempTargetData = fetchDataSet(criteriaKey, criteriaMap[criteriaKey])
+                        newTargetData = filterTargetData(tempMap, tempTargetData)
+                        targetData = listUnion(newTargetData, preTargetData)
+                tempMap = {}
     return targetData
 
 def fetchAssetAssetDetails(detailType, targetData):
@@ -379,17 +329,16 @@ def fetchComplexRelationsAttributes(resourceId):
             else:
                 return 'No Data Found'
 
-def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
+def mergeCellsInFile(targetRowNum, targetFileRow, targetFileName):
 
     newWorkbook = load_workbook(targetFileName)
-    newWorkSheet = newWorkbook.get_sheet_by_name('Asset List')
+    newWorkSheet = newWorkbook.get_sheet_by_name(targetFileRow[0])
     mergeLen = 0
     totalLen = len(targetFileRow)
     i = 0
-    targetRowNum = startRowNum
     for col in range(1, totalLen + 1):
         if isinstance(targetFileRow[i], str):
-            #newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
+            newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
             i += 1
         elif isinstance(targetFileRow[i], list):
             tempList = []
@@ -398,7 +347,7 @@ def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
             if mergeLen < rowLen:
                 mergeLen = rowLen
             j = 0
-            for rowIndex in range(targetRowNum, targetRowNum + rowLen):
+            for rowIndex in range(targetRowNum, rowLen + 1):
                 newWorkSheet.cell(row=rowIndex, column=col).value = tempList[j]
                 j += 1
             i += 1
@@ -407,14 +356,10 @@ def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
         i = 0
         for col in range(1, totalLen + 1):
             if (isinstance(targetFileRow[i], list) and len(targetFileRow[i]) == 1) or isinstance(targetFileRow[i], str):
-                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row= targetRowNum + mergeLen, end_column=col)
+                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row=mergeLen, end_column=col)
             i += 1
-        mergeLen = targetRowNum + mergeLen
-    else:
-        mergeLen = targetRowNum
 
     newWorkbook.save(targetFileName)
-    return mergeLen
 
 def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
@@ -465,19 +410,18 @@ def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
 def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
 
-    targetFileName = 'K:/Git Code/Python/Output/'+ fileNamePrefix+'.xlsx'
+    targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
     targetFileHeader = []
     targetFileRow = []
     targetFinalRowList = []
-    assetSheetName = ''
     i = 0
 
     if os.path.isfile(targetFileName):
         workbook = load_workbook(targetFileName)
     else:
-        workbook = Workbook(targetFileName)
-        #defaultSheet = workbook.active
-        #defaultSheet.title = 'Asset Index'
+        workbook = Workbook(targetFileRow)
+        defaultSheet = workbook.active
+        defaultSheet.title = 'Asset Index'
     rowValue = 1
     for targetMap in targetMapList:
         for mainHeaderKey in targetMap.keys():
@@ -499,11 +443,10 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
                     if '->' in subHeaderKey:
                         targetFileHeader.append(subHeaderKey[subHeaderKey.index('->') + 3:])
                     else:
-                        targetFileHeader.append(subHeaderKey)
-                    print(subHeaderMap[subHeaderKey])
+                                         targetFileHeader.append(subHeaderKey)
+
                     targetFileRow.append(subHeaderMap[subHeaderKey])
 
-        print(assetSheetName)
         worksheet = workbook.get_sheet_by_name(assetSheetName)
         worksheet.append(targetFileHeader)
         workbook.save(targetFileName)
@@ -511,121 +454,11 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
         #mergeCellsInFile(2,targetFileRow,targetFileName)
         targetFileRow = []
 
-    # for targetRow in targetFinalRowList:
-    #     mergeCellsInFile(2, targetRow, targetFileName)
+    for targetRow in targetFinalRowList:
+        mergeCellsInFile(2, targetRow, targetFileName)
 
     return targetFileName
-
-def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
-
-    subMap = {}
-    targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
-    targetFileHeader = []
-    targetFileRow = []
-    targetFinalRowList = []
-    tempList = []
-    i = 0
-    if os.path.isfile(targetFileName):
-        workbook = load_workbook(targetFileName)
-    else:
-        workbook = Workbook(targetFileRow)
-        worksheet = workbook.active
-        worksheet.title = 'Asset List'
-
-        #Write the File Header
-        for innerMap in targetMapList:
-            for key in innerMap:
-                map = innerMap[key]
-                if key == 'Asset Details':
-                    for innerKey in map:
-                        if innerKey not in targetFileHeader:
-                            targetFileHeader.append(innerKey)
-                elif key == 'Attributes':
-                        if 'Attribute Type' not in targetFileHeader:
-                            targetFileHeader.append('Attribute Type')
-                            targetFileHeader.append('Attribute')
-                elif key == 'Relations':
-                        if 'Relation Type' not in targetFileHeader:
-                            targetFileHeader.append('Relation Type')
-                            targetFileHeader.append('Relation')
-                elif key == 'Complex Relations':
-                        if 'Complex Relations - Relation Type' not in targetFileHeader:
-                            targetFileHeader.append('Complex Relations - Relation Type')
-                            targetFileHeader.append('Complex Relations - Relation')
-                            targetFileHeader.append('Complex Relations - Attribute Type')
-                            targetFileHeader.append('Complex Relations - Attribute')
-
-        worksheet.append(targetFileHeader)
-
-
-    rowNum = 2
-    col = 1
-    #Write actual data
-    for innerMap in targetMapList:
-        highestLen = 0
-        for key in innerMap.keys():
-            map = innerMap[key]
-            if key == 'Asset Details':
-                for innerKey in map:
-                    targetFileRow.append(map[innerKey])
-                    worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                    col += 1
-            elif key == 'Attributes' or key == 'Relations':
-                currentRowNum = rowNum
-                for innerKey in map:
-                    if highestLen < len(map):
-                        highestLen = len(map)
-                    targetFileRow.append(innerKey)
-                    targetFileRow.append(map[innerKey])
-                    if key == 'Relations':
-                        print(rowNum, col, innerKey)
-                    worksheet.cell(row=rowNum, column=col).value = innerKey
-                    col += 1
-                    if isinstance(map[innerKey], list):
-                        tempList = []
-                        tempList = map[innerKey]
-                        rowLen = len(tempList)
-                        if highestLen < rowLen:
-                            highestLen = rowLen
-                        j = 0
-                        for rowIndex in range(rowNum, rowNum + rowLen):
-                            worksheet.cell(row=rowIndex, column=col).value = tempList[j]
-                            j += 1
-                        rowNum = rowNum+rowLen
-                    else:
-                        print(rowNum, col, map[innerKey])
-                        worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                        rowNum = rowNum + 1
-                    col -= 1
-                rowNum = currentRowNum
-                col +=2
-            elif key == 'Complex Relations':
-                if 'Complex Relations - Relation Type' not in targetFileHeader:
-                    for innerKey in map:
-                        subMap = map[innerKey]
-                        if innerKey == 'Relations' or innerKey == 'Attributes':
-                            for subKey in subMap:
-                                targetFileRow.append(subKey)
-                                targetFileRow.append(subMap[subKey])
-
-
-
-        targetFinalRowList.append(targetFileRow)
-        rowNum = rowNum + highestLen + 1
-        targetFileRow = []
-
-        col = 1
-    workbook.save(targetFileName)
-
-    # for targetRow in targetFinalRowList:
-    #      print('rowNum ', rowNum)
-    #      print(targetRow)
-    #      #rowLatestPos = mergeCellsInFile(rowNum, targetRow, targetFileName)
-    #      break
-    #      rowNum = rowLatestPos + 1
-
-    return targetFileName
-
+# Main function
 if __name__ == '__main__':
 
     # Find the Parameter File Name
@@ -648,7 +481,8 @@ if __name__ == '__main__':
 
             if itemkey == 'conditions':
                 if isinstance(eachMap[itemkey], dict):
-                    targetData = createMapII(eachMap[itemkey])
+                    targetData = createMap(eachMap[itemkey])
+
             else:
                 if itemkey != 'outputFileName' and itemkey != 'email' and itemkey != 'outputResult':
                     tempTargetData = fetchDataSet(itemkey, eachMap[itemkey])
@@ -661,8 +495,6 @@ if __name__ == '__main__':
                         targetDataRelationsMap = {}
                         targetDataAttributesMap = {}
                         targetDataComplexRelationsMap = {}
-                        targetDataComplexRelationsRelationsMap = {}
-                        targetDataComplexRelationsAttributesMap = {}
                         targetDataMap = {}
                         for outputParameter in outputResultParameters.keys():
                             outputParameterList = outputResultParameters[outputParameter]
@@ -795,26 +627,25 @@ if __name__ == '__main__':
                                         if relationKey in targetDataComplexRelationsMap.keys():
                                             relationValue = targetDataComplexRelationsMap[relationKey]
                                         relationValue.append(relationReferenceList['targetReference']['signifier'])
-                                        targetDataComplexRelationsRelationsMap[relationKey] = relationValue
+                                        targetDataComplexRelationsMap[relationKey] = relationValue
                                         relationValue = []
-
-                                        targetDataComplexRelationsMap['Relations'] = targetDataComplexRelationsRelationsMap
-
                                 complexRelationsAttributesMap = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
                                 if complexRelationsAttributesMap != 'No Attributes Found':
                                     attributeValue = []
-                                    for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
-                                        attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
+                                    for j in range(0, len(
+                                            complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
+                                        attributesReferenceList = \
+                                        complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
                                         attributeKey = attributesReferenceList['labelReference']['signifier']
                                         if attributeKey in targetDataComplexRelationsMap.keys():
                                             attributeValue = targetDataComplexRelationsMap[attributeKey]
                                         attributeValue.append(cleanhtml(attributesReferenceList['value']))
-                                        targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
+                                        targetDataComplexRelationsMap[attributeKey] = attributeValue
                                         attributeValue = []
 
-                                    targetDataComplexRelationsMap['Attributes'] = targetDataComplexRelationsAttributesMap
-
                         tempMap = {}
+                        tempMap['Asset Name'] = targetData[i]['signifier']
+                        finalMap['Name'] = tempMap
                         finalMap['Asset Details'] = targetDataMap
                         if bool(targetDataAttributesMap):
                             finalMap['Attributes'] = targetDataAttributesMap
@@ -830,7 +661,7 @@ if __name__ == '__main__':
 
                 elif itemkey == 'outputFileName':
                     # Create the output file
-                    fileName = createTargetDataFileIII(finalResultList, eachKey, '.csv')
+                    fileName = createTargetDataFileII(finalResultList, eachKey, '.csv')
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)
                 elif itemkey == 'email':  #Emails the output file to the audience

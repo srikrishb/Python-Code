@@ -381,15 +381,23 @@ def fetchComplexRelationsAttributes(resourceId):
 
 def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
 
-    newWorkbook = load_workbook(targetFileName)
-    newWorkSheet = newWorkbook.get_sheet_by_name('Asset List')
+    if os.path.isfile(targetFileName):
+        newWorkbook = load_workbook(targetFileName)
+        newWorkSheet = newWorkbook.get_sheet_by_name('Data Sheet')
+    else:
+        newWorkbook = Workbook()
+        newWorkSheet = newWorkbook.create_sheet('Data Sheet')
+        print(type(newWorkSheet))
+
+        #defaultSheet.title = 'Asset Index'
+
     mergeLen = 0
     totalLen = len(targetFileRow)
     i = 0
     targetRowNum = startRowNum
     for col in range(1, totalLen + 1):
         if isinstance(targetFileRow[i], str):
-            #newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
+            newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
             i += 1
         elif isinstance(targetFileRow[i], list):
             tempList = []
@@ -407,7 +415,7 @@ def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
         i = 0
         for col in range(1, totalLen + 1):
             if (isinstance(targetFileRow[i], list) and len(targetFileRow[i]) == 1) or isinstance(targetFileRow[i], str):
-                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row= targetRowNum + mergeLen, end_column=col)
+                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row=mergeLen, end_column=col)
             i += 1
         mergeLen = targetRowNum + mergeLen
     else:
@@ -523,7 +531,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
     targetFileHeader = []
     targetFileRow = []
     targetFinalRowList = []
-    tempList = []
     i = 0
     if os.path.isfile(targetFileName):
         workbook = load_workbook(targetFileName)
@@ -554,51 +561,19 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             targetFileHeader.append('Complex Relations - Relation')
                             targetFileHeader.append('Complex Relations - Attribute Type')
                             targetFileHeader.append('Complex Relations - Attribute')
-
         worksheet.append(targetFileHeader)
-
-
     rowNum = 2
-    col = 1
     #Write actual data
     for innerMap in targetMapList:
-        highestLen = 0
         for key in innerMap.keys():
             map = innerMap[key]
             if key == 'Asset Details':
                 for innerKey in map:
                     targetFileRow.append(map[innerKey])
-                    worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                    col += 1
             elif key == 'Attributes' or key == 'Relations':
-                currentRowNum = rowNum
                 for innerKey in map:
-                    if highestLen < len(map):
-                        highestLen = len(map)
                     targetFileRow.append(innerKey)
                     targetFileRow.append(map[innerKey])
-                    if key == 'Relations':
-                        print(rowNum, col, innerKey)
-                    worksheet.cell(row=rowNum, column=col).value = innerKey
-                    col += 1
-                    if isinstance(map[innerKey], list):
-                        tempList = []
-                        tempList = map[innerKey]
-                        rowLen = len(tempList)
-                        if highestLen < rowLen:
-                            highestLen = rowLen
-                        j = 0
-                        for rowIndex in range(rowNum, rowNum + rowLen):
-                            worksheet.cell(row=rowIndex, column=col).value = tempList[j]
-                            j += 1
-                        rowNum = rowNum+rowLen
-                    else:
-                        print(rowNum, col, map[innerKey])
-                        worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                        rowNum = rowNum + 1
-                    col -= 1
-                rowNum = currentRowNum
-                col +=2
             elif key == 'Complex Relations':
                 if 'Complex Relations - Relation Type' not in targetFileHeader:
                     for innerKey in map:
@@ -608,21 +583,12 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                                 targetFileRow.append(subKey)
                                 targetFileRow.append(subMap[subKey])
 
-
-
         targetFinalRowList.append(targetFileRow)
-        rowNum = rowNum + highestLen + 1
         targetFileRow = []
 
-        col = 1
-    workbook.save(targetFileName)
-
-    # for targetRow in targetFinalRowList:
-    #      print('rowNum ', rowNum)
-    #      print(targetRow)
-    #      #rowLatestPos = mergeCellsInFile(rowNum, targetRow, targetFileName)
-    #      break
-    #      rowNum = rowLatestPos + 1
+    for targetRow in targetFinalRowList:
+         rowLatestPos = mergeCellsInFile(rowNum, targetRow, targetFileName)
+         rowNum = rowLatestPos + 1
 
     return targetFileName
 

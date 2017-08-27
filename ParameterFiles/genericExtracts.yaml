@@ -1,10 +1,8 @@
 request1:
     conditions:
-        And:
-            assetNameIn: 
-                - "Amortized Cost (USD Equivalent)" 
-                - "Accretion of discount"
-            lastModifiedBefore: "2017-12-31"          
+      Or:
+        assetNameEquals: "Discounts" 
+        assetNameLike: "Amortized"             
     outputResult:
         Asset Details: 
             - Asset Name
@@ -14,8 +12,29 @@ request1:
         Attributes: All
         Relations: All
         Complex Relations: All  
-    outputFileName: 'request1'
+    outputFileName: 'request11'
     email: "srikrishna.bingi@exusia.com"
+# request1:
+    # conditions:
+        # And:
+            # Or:
+                # Or:
+                    # assetNameIn: 
+                    # - "Amortized Cost (USD Equivalent)" 
+                    # assetNameEquals: "Discounts" 
+                # assetNameEquals: "Account"             
+            # lastModifiedBefore: "2017-12-31" 
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: All  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
 # request2:
     # assetNameEquals: "01. Agency MBS"
     # outputFileName: 'request2.csv'
@@ -61,4 +80,4 @@ request1:
                 # - "Account"
             # lastModifiedBefore: "2017-08-09"
         # assetNameIn: "Agency"        
-    # outputFileName: 'request13.csv' 
+# outputFileName: 'request13.csv' 
