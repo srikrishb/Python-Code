@@ -22,6 +22,9 @@ import re
 from zipfile import ZipFile
 from openpyxl import Workbook
 from openpyxl import load_workbook
+from openpyxl.styles import colors
+from openpyxl.styles import Font, Color
+
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -523,6 +526,8 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
     targetFileHeader = []
     targetFileRow = []
     targetFinalRowList = []
+    columnCount = 0
+    subMap = {}
     tempList = []
     i = 0
     if os.path.isfile(targetFileName):
@@ -544,18 +549,22 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                         if 'Attribute Type' not in targetFileHeader:
                             targetFileHeader.append('Attribute Type')
                             targetFileHeader.append('Attribute')
+                            columnCount += 2
                 elif key == 'Relations':
                         if 'Relation Type' not in targetFileHeader:
                             targetFileHeader.append('Relation Type')
                             targetFileHeader.append('Relation')
+                            columnCount += 2
                 elif key == 'Complex Relations':
                         if 'Complex Relations - Relation Type' not in targetFileHeader:
                             targetFileHeader.append('Complex Relations - Relation Type')
                             targetFileHeader.append('Complex Relations - Relation')
                             targetFileHeader.append('Complex Relations - Attribute Type')
                             targetFileHeader.append('Complex Relations - Attribute')
+                            columnCount += 4
 
         worksheet.append(targetFileHeader)
+
 
 
     rowNum = 2
@@ -577,8 +586,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                         highestLen = len(map)
                     targetFileRow.append(innerKey)
                     targetFileRow.append(map[innerKey])
-                    if key == 'Relations':
-                        print(rowNum, col, innerKey)
                     worksheet.cell(row=rowNum, column=col).value = innerKey
                     col += 1
                     if isinstance(map[innerKey], list):
@@ -593,27 +600,43 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             j += 1
                         rowNum = rowNum+rowLen
                     else:
-                        print(rowNum, col, map[innerKey])
                         worksheet.cell(row=rowNum, column=col).value = map[innerKey]
                         rowNum = rowNum + 1
                     col -= 1
                 rowNum = currentRowNum
                 col +=2
             elif key == 'Complex Relations':
-                if 'Complex Relations - Relation Type' not in targetFileHeader:
-                    for innerKey in map:
-                        subMap = map[innerKey]
-                        if innerKey == 'Relations' or innerKey == 'Attributes':
-                            for subKey in subMap:
-                                targetFileRow.append(subKey)
-                                targetFileRow.append(subMap[subKey])
-
-
-
+                currentRowNum = rowNum
+                for subKey in map:
+                    subMap = map[subKey]
+                    for innerKey in subMap:
+                        if highestLen < len(subMap):
+                            highestLen = len(subMap)
+                        targetFileRow.append(innerKey)
+                        targetFileRow.append(subMap[innerKey])
+                        worksheet.cell(row=rowNum, column=col).value = innerKey
+                        col += 1
+                        if isinstance(subMap[innerKey], list):
+                            tempList = []
+                            tempList = subMap[innerKey]
+                            rowLen = len(tempList)
+                            if highestLen < rowLen:
+                                highestLen = rowLen
+                            j = 0
+                            for rowIndex in range(rowNum, rowNum + rowLen):
+                                print(rowIndex, col, tempList[j])
+                                worksheet.cell(row=rowIndex, column=col).value = tempList[j]
+                                j += 1
+                            rowNum = rowNum + rowLen
+                        else:
+                            worksheet.cell(row=rowNum, column=col).value = subMap[innerKey]
+                            rowNum = rowNum + 1
+                        col -= 1
+                    rowNum = currentRowNum
+                    col += 2
         targetFinalRowList.append(targetFileRow)
         rowNum = rowNum + highestLen + 1
         targetFileRow = []
-
         col = 1
     workbook.save(targetFileName)
 
@@ -787,13 +810,12 @@ if __name__ == '__main__':
                                 # Find the Complex Relations and Attributes
                                 complexRelationsMap = fetchComplexRelations(targetData[i]['resourceId'])
                                 if complexRelationsMap not in ('No Relations Found', 'No Data Found'):
-                                    targetDataComplexRelationsMap['signifier'] = targetData[i]['signifier']
                                     relationValue = []
                                     for j in range(0, len(complexRelationsMap['relationReference'])):
                                         relationReferenceList = complexRelationsMap['relationReference'][j]
                                         relationKey = relationReferenceList['typeReference']['role']
-                                        if relationKey in targetDataComplexRelationsMap.keys():
-                                            relationValue = targetDataComplexRelationsMap[relationKey]
+                                        if relationKey in targetDataComplexRelationsRelationsMap.keys():
+                                            relationValue = targetDataComplexRelationsRelationsMap[relationKey]
                                         relationValue.append(relationReferenceList['targetReference']['signifier'])
                                         targetDataComplexRelationsRelationsMap[relationKey] = relationValue
                                         relationValue = []
@@ -806,8 +828,8 @@ if __name__ == '__main__':
                                     for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
                                         attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
                                         attributeKey = attributesReferenceList['labelReference']['signifier']
-                                        if attributeKey in targetDataComplexRelationsMap.keys():
-                                            attributeValue = targetDataComplexRelationsMap[attributeKey]
+                                        if attributeKey in targetDataComplexRelationsAttributesMap.keys():
+                                            attributeValue = targetDataComplexRelationsAttributesMap[attributeKey]
                                         attributeValue.append(cleanhtml(attributesReferenceList['value']))
                                         targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
                                         attributeValue = []
@@ -822,6 +844,7 @@ if __name__ == '__main__':
                             finalMap['Relations'] = targetDataRelationsMap
                         if bool(targetDataComplexRelationsMap):
                             finalMap['Complex Relations'] = targetDataComplexRelationsMap
+                            print(targetDataComplexRelationsMap)
 
 
                         finalResultList.append(finalMap)
