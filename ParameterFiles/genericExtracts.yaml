@@ -1,8 +1,7 @@
 request1:
     conditions:
         assetNameIn:
-            - "FRY 14 Q"
-            - "B.01 — Securities 1 (“Main Schedule”)"
+            #- "FRY 14 Q"
             - "01. Amortized Cost (USD Equivalent)"
             - "Amortized Cost (USD Equivalent)"
     outputResult:
@@ -13,7 +12,7 @@ request1:
             - Asset Type
         Attributes: All
         Relations: All
-        Complex Relations: All  
+        Complex Relations: None  
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request1:

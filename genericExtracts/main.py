@@ -310,7 +310,7 @@ def generateFile(inputMap):
             targetData = fetchAttributeFilterDataSet(tempMap)
             tempMap = {}
 
-        elif isinstance(toBeProcessedMap, str):
+        elif isinstance(toBeProcessedMap, str) or isinstance(toBeProcessedMap, list):
             tempTargetData = fetchDataSet(masterKey, inputMap[masterKey])
             targetData = filterTargetData(inputMap, tempTargetData)
 
@@ -476,43 +476,6 @@ def fetchComplexRelationsAttributes(resourceId):
             else:
                 return 'No Data Found'
 
-def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
-
-    newWorkbook = load_workbook(targetFileName)
-    newWorkSheet = newWorkbook.get_sheet_by_name('Asset List')
-    mergeLen = 0
-    totalLen = len(targetFileRow)
-    i = 0
-    targetRowNum = startRowNum
-    for col in range(1, totalLen + 1):
-        if isinstance(targetFileRow[i], str):
-            #newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
-            i += 1
-        elif isinstance(targetFileRow[i], list):
-            tempList = []
-            tempList = targetFileRow[i]
-            rowLen = len(tempList)
-            if mergeLen < rowLen:
-                mergeLen = rowLen
-            j = 0
-            for rowIndex in range(targetRowNum, targetRowNum + rowLen):
-                newWorkSheet.cell(row=rowIndex, column=col).value = tempList[j]
-                j += 1
-            i += 1
-
-    if mergeLen > 0:
-        i = 0
-        for col in range(1, totalLen + 1):
-            if (isinstance(targetFileRow[i], list) and len(targetFileRow[i]) == 1) or isinstance(targetFileRow[i], str):
-                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row= targetRowNum + mergeLen, end_column=col)
-            i += 1
-        mergeLen = targetRowNum + mergeLen
-    else:
-        mergeLen = targetRowNum
-
-    newWorkbook.save(targetFileName)
-    return mergeLen
-
 def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + fileNameSuffix
@@ -661,7 +624,8 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
     col = 1
     #Write actual data
     for innerMap in targetMapList:
-        highestLen = 0
+
+        prevHighestLen = 0
         for key in innerMap.keys():
             map = innerMap[key]
             if key == 'Asset Details':
@@ -670,10 +634,13 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                     worksheet.cell(row=rowNum, column=col).value = map[innerKey]
                     col += 1
             elif key == 'Attributes' or key == 'Relations':
+                highestLen = 0
                 currentRowNum = rowNum
                 for innerKey in map:
-                    if highestLen < len(map):
-                        highestLen = len(map)
+                    if isinstance(map[innerKey], list):
+                        highestLen += len(map[innerKey])
+                    else:
+                        highestLen += 1
                     targetFileRow.append(innerKey)
                     targetFileRow.append(map[innerKey])
                     worksheet.cell(row=rowNum, column=col).value = innerKey
@@ -682,8 +649,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                         tempList = []
                         tempList = map[innerKey]
                         rowLen = len(tempList)
-                        if highestLen < rowLen:
-                            highestLen = rowLen
                         j = 0
                         for rowIndex in range(rowNum, rowNum + rowLen):
                             worksheet.cell(row=rowIndex, column=col).value = tempList[j]
@@ -695,13 +660,19 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                     col -= 1
                 rowNum = currentRowNum
                 col +=2
+                if prevHighestLen > highestLen:
+                    highestLen = prevHighestLen
+                prevHighestLen = highestLen
             elif key == 'Complex Relations':
                 currentRowNum = rowNum
                 for subKey in map:
+                    highestLen = 0
                     subMap = map[subKey]
                     for innerKey in subMap:
-                        if highestLen < len(subMap):
-                            highestLen = len(subMap)
+                        if isinstance(subMap[innerKey], list):
+                            highestLen += len(subMap[innerKey])
+                        else:
+                            highestLen += 1
                         targetFileRow.append(innerKey)
                         targetFileRow.append(subMap[innerKey])
                         worksheet.cell(row=rowNum, column=col).value = innerKey
@@ -710,8 +681,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             tempList = []
                             tempList = subMap[innerKey]
                             rowLen = len(tempList)
-                            if highestLen < rowLen:
-                                highestLen = rowLen
                             j = 0
                             for rowIndex in range(rowNum, rowNum + rowLen):
                                 worksheet.cell(row=rowIndex, column=col).value = tempList[j]
@@ -721,8 +690,12 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             worksheet.cell(row=rowNum, column=col).value = subMap[innerKey]
                             rowNum = rowNum + 1
                         col -= 1
+                    if prevHighestLen > highestLen:
+                        highestLen = prevHighestLen
+                    prevHighestLen = highestLen
                     rowNum = currentRowNum
                     col += 2
+
         targetFinalRowList.append(targetFileRow)
         mergeRow[rowNum] = highestLen
         rowNum = rowNum + highestLen + 1
@@ -808,10 +781,16 @@ if __name__ == '__main__':
                                             for innerRelationsMap in relationResponseMap['relation']:
                                                 for roleMap in possibleRelationsList:
                                                     if innerRelationsMap['typeReference']['role'] == roleMap['role']:
-                                                        targetDataRelationsMap[roleMap['role']] = \
-                                                        innerRelationsMap['sourceReference']['signifier']
-                                                        targetDataRelationsMap[roleMap['coRole']] = \
-                                                        innerRelationsMap['targetReference']['signifier']
+                                                        targetDataRelationsMapkey = roleMap['role']
+                                                        existingRoleKeyValue = []
+                                                        if targetDataRelationsMapkey in targetDataRelationsMap.keys():
+                                                            if isinstance(targetDataRelationsMap[roleMap['role']],str):
+                                                                existingRoleKeyValue.append(targetDataRelationsMap[roleMap['role']])
+                                                            else:
+                                                                existingRoleKeyValue = targetDataRelationsMap[roleMap['role']]
+                                                        existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
+                                                        targetDataRelationsMap[roleMap['role']] = existingRoleKeyValue
+                                                        targetDataRelationsMap[roleMap['coRole']] = innerRelationsMap['sourceReference']['signifier']
                                                     else:
                                                         targetDataRelationsMap[roleMap['role']] = ''
                                                         targetDataRelationsMap[roleMap['coRole']] = ''
@@ -836,12 +815,13 @@ if __name__ == '__main__':
                                 if outputParameterList == 'All':
                                     targetDataAttributesMap = {}
                                     attributesResponse = fetchAttributes(targetData[i]['resourceId'])
-                                    listOfAttributesFromResponse = []
                                     attributesResponseList = attributesResponse['attributeReference']
-                                    for listIndex in range(0, len(attributesResponseList)):
-                                        attributeResponseMap = attributesResponseList[listIndex]
-                                        listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
-                                    listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
+                                    # Below block isn't required anymore.
+                                    # listOfAttributesFromResponse = []
+                                    # for listIndex in range(0, len(attributesResponseList)):
+                                    #     attributeResponseMap = attributesResponseList[listIndex]
+                                    #     listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
+                                    # listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
 
                                     # Add all the attribute types that have a value
                                     for listIndex in range(0, len(attributesResponseList)):
