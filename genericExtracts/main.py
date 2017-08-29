@@ -926,7 +926,6 @@ if __name__ == '__main__':
                     if bool(targetDataComplexRelationsMap):
                         finalMap['Complex Relations'] = targetDataComplexRelationsMap
 
-
                     finalResultList.append(finalMap)
 
                     finalMap = {}
