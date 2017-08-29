@@ -1,8 +1,41 @@
+request2:
+    conditions:
+        Or:
+            assetNameLike: "Discounts"
+            attributeFilter:
+                - attributeTypeEquals: "Prioritized Attribute"
+                - attributeValueEquals: "Yes"
+            assetNameEquals: "Account"
+    outputResult:
+        Asset Details: 
+            - Asset Name
+            - Community
+            - Domain
+            - Asset Type
+        Attributes: All
+        Relations: All
+        Complex Relations: All  
+    outputFileName: 'request1'
+    email: "srikrishna.bingi@exusia.com"
 request1:
     conditions:
-      Or:
-        assetNameEquals: "Discounts" 
-        assetNameLike: "Amortized"             
+        attributeFilter:
+            - attributeTypeEquals: "Prioritized Attribute"
+            - attributeValueEquals: "Yes"
+    outputResult:
+        Asset Details: 
+            - Asset Name
+            - Community
+            - Domain
+            - Asset Type
+        Attributes: All
+        Relations: All
+        Complex Relations: All  
+    outputFileName: 'request2'
+    email: "srikrishna.bingi@exusia.com"
+request3:
+    conditions:
+        assetNameLike: "Amortized" 
     outputResult:
         Asset Details: 
             - Asset Name
@@ -14,70 +47,3 @@ request1:
         Complex Relations: All  
     outputFileName: 'request11'
     email: "srikrishna.bingi@exusia.com"
-# request1:
-    # conditions:
-        # And:
-            # Or:
-                # Or:
-                    # assetNameIn: 
-                    # - "Amortized Cost (USD Equivalent)" 
-                    # assetNameEquals: "Discounts" 
-                # assetNameEquals: "Account"             
-            # lastModifiedBefore: "2017-12-31" 
-    # outputResult:
-        # Asset Details: 
-            # - Asset Name
-            # - Community
-            # - Domain
-            # - Asset Type
-        # Attributes: All
-        # Relations: All
-        # Complex Relations: All  
-    # outputFileName: 'request1'
-    # email: "srikrishna.bingi@exusia.com"
-# request2:
-    # assetNameEquals: "01. Agency MBS"
-    # outputFileName: 'request2.csv'
-# request3:
-    # lastModifiedOn: "2017-05-01"
-    # outputFileName: 'request3.csv'
-# request4:
-    # lastModifiedAfter: "2017-04-01"
-    # outputFileName: 'request4.csv'
-# request5:
-    # lastModifiedBefore: "2017-08-01"
-    # outputFileName: 'request5.csv'
-# request6:
-    # lastModifiedBetween: ["2017-07-01", "2017-08-01"]
-    # outputFileName: 'request6.csv'
-# request7:
-    # CreatedOn: "2017-08-01"
-    # outputFileName: 'request7.csv'
-# request8:
-    # CreatedAfter: "2017-08-01"
-    # outputFileName: 'request8.csv'
-# request9:
-    # CreatedBefore: "2017-08-01"
-    # outputFileName: 'request9.csv'
-# request10:
-    # CreatedBetween: ["2017-07-01", "2017-08-01"]
-    # outputFileName: 'request10.csv'
-# request11:
-    # And:
-        # assetNameLike: "Account"
-        # lastModifiedAfter: "2017-04-15"
-    # outputFileName: 'request11.csv'
-# request12:
-    # Or:
-        # assetNameLike: "Account"
-        # lastModifiedAfter: "2017-06-01"
-    # outputFileName: 'request12.csv'
-# request13:
-    # And:
-        # Or:
-            # assetNameIn: 
-                # - "CUSIP" 
-                # - "Account"
-            # lastModifiedBefore: "2017-08-09"
-        # assetNameIn: "Agency"        
-# outputFileName: 'request13.csv' 

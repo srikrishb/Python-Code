@@ -25,7 +25,6 @@ from openpyxl import load_workbook
 from openpyxl.styles import colors
 from openpyxl.styles import Font, Color
 
-
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
   cleantext = re.sub(cleanr, '', raw_html)
@@ -41,13 +40,13 @@ def getDataCall(endpoint, payload):
 def fetchDataSet(innerMapKey, innerMapValue):
 
     result = dict()
-    if str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1:
+    if str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1:
         searchSignfier = ''
     elif str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' :
         searchSignfier = innerMapValue
 
 
-    if str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
+    if str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
         assetNameLikeEndpoint = 'term/find/full'
         assetNameLikePayload = {'excludeMeta': 'false', 'searchSignifier': searchSignfier}
         assetNameLikeResponse = getDataCall(assetNameLikeEndpoint, assetNameLikePayload)
@@ -61,6 +60,38 @@ def convertEpochTime(inputTime):
 
     mathTargetTime = math.ceil(int(inputTime) / 1000)
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mathTargetTime))
+
+def filterAssetData(filterAttributeType, innerMap, dataTobeFiltered):
+    filteredData = []
+    for key in innerMap.keys():
+        filterValue = innerMap[key]
+        if str.upper(key).find("ATTRIBUTEVALUEEQUALS") != -1:
+            for data in dataTobeFiltered:
+                # Find the resourceId
+                attributesResponse = fetchAttributes(data['resourceId'])
+                attributesResponseList = attributesResponse['attributeReference']
+
+                existingValue = []
+                # Loop through the attributesResponseList to check whether specified filterValue has been set
+                for listIndex in range(0, len(attributesResponseList)):
+                    attributeResponseMap = attributesResponseList[listIndex]
+                    # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
+                    attributeType = attributeResponseMap['labelReference']['signifier']
+                    if attributeType == filterAttributeType:
+                        cleanedValue = cleanhtml(attributeResponseMap['value'])
+                        if cleanedValue == filterValue:
+                            filteredData.append(data)
+
+    return filteredData
+
+def fetchPossibleAttributes(resourceId):
+    possibleRandAEndpoint = 'concept_type/' + resourceId + '/possible_attribute_types'
+    possibleRandAPayload = ''
+    possibleRandAResponse = getDataCall(possibleRandAEndpoint, possibleRandAPayload)
+    if possibleRandAResponse['statusCode'] == '1':
+        return possibleRandAResponse['data']
+    else:
+        return 'No Data Found'
 
 def filterTargetData(innerMap, dataToBeFiltered):
     filteredData = []
@@ -110,6 +141,24 @@ def filterTargetData(innerMap, dataToBeFiltered):
                         filteredData.append(data)
                     i += 1
 
+        elif str.upper(key).find("ATTRIBUTETYPE") != -1:
+            i = 0
+            for data in dataToBeFiltered:
+                #Find out whether there are any attributes tied to the asset:
+                possibleAttributesList = fetchPossibleAttributes(data['resourceId'])
+                if len(possibleAttributesList['attributeType']) > 0:
+                    #Fetch attributes for the resourceId
+                    attributesResponse = fetchAttributes(data['resourceId'])
+                    attributesResponseList = attributesResponse['attributeReference']
+
+                    #Loop through the attributesResponseList to check whether specified filterValue has been set
+                    for listIndex in range(0, len(attributesResponseList)):
+                        attributeResponseMap = attributesResponseList[listIndex]
+                        attributeType = attributeResponseMap['labelReference']['signifier']
+                        if attributeType == filterValue:
+                            filteredData.append(data)
+                    i += 1
+
     return filteredData
 
 def listUnion(refList , dataList):
@@ -124,8 +173,11 @@ def listUnion(refList , dataList):
         if items2['resourceId'] not in newList:
             newMap.append(items2)
 
-
     return newMap
+
+def listIntersect(refList , dataList):
+
+    return set(refList).intersection(dataList)
 
 def createDataSet(innerMap):
     tempMap = {}
@@ -198,26 +250,69 @@ def createMap(innerMap):
 
     return targetData
 
+def fetchAttributeFilterDataSet(inputMap):
+    i = 0
+    tempMap = {}
+    for inputKey in inputMap:
+        innerList = inputMap[inputKey]
+        for innerMap in innerList:
+            for innerKey in innerMap:
+                tempMap[innerKey] = innerMap[innerKey]
+                if i == 0:
+                    i += 1
+                    tempTargetData = fetchDataSet(innerKey, '')
+                    attributeKey = innerMap[innerKey]
+                    preTargetData = filterTargetData(tempMap, tempTargetData)
+                else:
+                    targetData = filterAssetData(attributeKey, tempMap, preTargetData)
+                tempMap = {}
+
+    return targetData
+
 def generateFile(inputMap):
     i = 0
     tempMap = {}
+
     for masterKey in inputMap:
         toBeProcessedMap = inputMap[masterKey]
-        for innerMapKey in toBeProcessedMap:
-            tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
-            if i == 0:
-                i += 1
-                tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
-                preTargetData = filterTargetData(tempMap, tempTargetData)
-            else:
-                if masterKey == 'And':
-                    targetData = filterTargetData(tempMap, preTargetData)
-                    preTargetData = targetData
-                if masterKey == 'Or':
-                    tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
-                    newTargetData = filterTargetData(tempMap, tempTargetData)
-                    targetData = listUnion(newTargetData, preTargetData)
+        print(toBeProcessedMap, type(toBeProcessedMap))
+        if isinstance(toBeProcessedMap, dict):
+            for innerMapKey in toBeProcessedMap:
+                    if masterKey == 'Or' or masterKey == 'And':
+                        tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
+                        if innerMapKey == 'attributeFilter':
+                            tempTargetData = fetchAttributeFilterDataSet(tempMap)
+                        else:
+                            tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+
+                        if i == 0:
+                            i += 1
+                            preTargetData = filterTargetData(tempMap, tempTargetData)
+                        else:
+
+                            if innerMapKey == 'attributeFilter':
+                                newTargetData = tempTargetData
+                            else:
+                                newTargetData = filterTargetData(tempMap, tempTargetData)
+
+                            if masterKey == 'And':
+                                targetData = listIntersect(newTargetData, preTargetData)
+
+                            if masterKey == 'Or':
+                                targetData = listUnion(newTargetData, preTargetData)
+
+                            preTargetData = targetData
+
+                        tempMap = {}
+
+        elif masterKey == 'attributeFilter':
+            tempMap[masterKey] = inputMap[masterKey]
+            targetData = fetchAttributeFilterDataSet(tempMap)
             tempMap = {}
+
+        elif isinstance(toBeProcessedMap, str):
+            tempTargetData = fetchDataSet(masterKey, inputMap[masterKey])
+            targetData = filterTargetData(inputMap, tempTargetData)
 
     return targetData
 
@@ -232,7 +327,6 @@ def createMapII(inputMap):
     return targetData
 
 def fetchAssetAssetDetails(detailType, targetData):
-
 
     if detailType == 'Asset Name':
         return targetData['signifier']
@@ -503,10 +597,8 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
                         targetFileHeader.append(subHeaderKey[subHeaderKey.index('->') + 3:])
                     else:
                         targetFileHeader.append(subHeaderKey)
-                    print(subHeaderMap[subHeaderKey])
                     targetFileRow.append(subHeaderMap[subHeaderKey])
 
-        print(assetSheetName)
         worksheet = workbook.get_sheet_by_name(assetSheetName)
         worksheet.append(targetFileHeader)
         workbook.save(targetFileName)
@@ -639,7 +731,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
 
     col = 1
     for rowNum in mergeRow:
-         print(rowNum, mergeRow[rowNum])
          for col in range(1,5):
             worksheet.merge_cells(start_row=rowNum, start_column=col, end_row=rowNum + mergeRow[rowNum]-1,end_column=col)
             col +=1
@@ -657,234 +748,223 @@ if __name__ == '__main__':
     with open(paramFileName, 'r') as yamlFile:
         paramFileData = yaml.load(yamlFile)
 
-    fileNameList = []
-    finalMap = {}
-    finalResultList = []
+
     outputFileName = ''
     for eachKey in paramFileData.keys():
+        fileNameList = []
+        finalMap = {}
+        finalResultList = []
         eachMap = paramFileData[eachKey]
-
-
         for itemkey in eachMap.keys():
-
             if itemkey == 'conditions':
                 if isinstance(eachMap[itemkey], dict):
                     targetData = createMapII(eachMap[itemkey])
-            else:
-                if itemkey != 'outputFileName' and itemkey != 'email' and itemkey != 'outputResult':
-                    tempTargetData = fetchDataSet(itemkey, eachMap[itemkey])
-                    targetData = filterTargetData(eachMap, tempTargetData)
-
-                elif itemkey == 'outputResult':
+            elif itemkey == 'outputResult':
+                targetDataMap = {}
+                outputResultParameters = eachMap[itemkey]
+                for i in range(0, len(targetData)):
+                    targetDataRelationsMap = {}
+                    targetDataAttributesMap = {}
+                    targetDataComplexRelationsMap = {}
+                    targetDataComplexRelationsRelationsMap = {}
+                    targetDataComplexRelationsAttributesMap = {}
                     targetDataMap = {}
-                    outputResultParameters = eachMap[itemkey]
-                    for i in range(0, len(targetData)):
-                        targetDataRelationsMap = {}
-                        targetDataAttributesMap = {}
-                        targetDataComplexRelationsMap = {}
-                        targetDataComplexRelationsRelationsMap = {}
-                        targetDataComplexRelationsAttributesMap = {}
-                        targetDataMap = {}
-                        for outputParameter in outputResultParameters.keys():
-                            outputParameterList = outputResultParameters[outputParameter]
-                            # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
-                            if outputParameter == 'Asset Details':
+                    for outputParameter in outputResultParameters.keys():
+                        outputParameterList = outputResultParameters[outputParameter]
+                        # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
+                        if outputParameter == 'Asset Details':
 
-                                for detailType in outputParameterList:
-                                    targetDataMap[detailType] = fetchAssetAssetDetails(detailType, targetData[i])
+                            for detailType in outputParameterList:
+                                targetDataMap[detailType] = fetchAssetAssetDetails(detailType, targetData[i])
 
-                            # If needed, find the Relations, Attributes and Complex Relations of the asset
+                        # If needed, find the Relations, Attributes and Complex Relations of the asset
 
-                            if outputParameter in ('Attributes', 'Relations'):
-                                # Find the possible Relations and Attributes of the asset
-                                possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
-                                possibleAttributesList = []
-                                possibleRelationsList = []
+                        if outputParameter in ('Attributes', 'Relations'):
+                            # Find the possible Relations and Attributes of the asset
+                            possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
+                            possibleAttributesList = []
+                            possibleRelationsList = []
 
-                                if possibleRelationsAndAttributesResponse != 'No Data Found':
-                                    possibleRelationsAndAttributesList = possibleRelationsAndAttributesResponse[
-                                        'representationReference']
-                                    for k in range(0, len(possibleRelationsAndAttributesList)):
-                                        if 'descriptionReference' in possibleRelationsAndAttributesList[k].keys():
-                                            possibleAttributesList.append(possibleRelationsAndAttributesList[k]['signifier'])
-                                        tempMap = {}
-                                        if 'role' in possibleRelationsAndAttributesList[k].keys():
-                                            tempMap['role'] = possibleRelationsAndAttributesList[k]['role']
-                                            tempMap['coRole'] = possibleRelationsAndAttributesList[k]['coRole']
-                                            if tempMap not in possibleRelationsList:
-                                                possibleRelationsList.append(tempMap)
+                            if possibleRelationsAndAttributesResponse != 'No Data Found':
+                                possibleRelationsAndAttributesList = possibleRelationsAndAttributesResponse[
+                                    'representationReference']
+                                for k in range(0, len(possibleRelationsAndAttributesList)):
+                                    if 'descriptionReference' in possibleRelationsAndAttributesList[k].keys():
+                                        possibleAttributesList.append(possibleRelationsAndAttributesList[k]['signifier'])
+                                    tempMap = {}
+                                    if 'role' in possibleRelationsAndAttributesList[k].keys():
+                                        tempMap['role'] = possibleRelationsAndAttributesList[k]['role']
+                                        tempMap['coRole'] = possibleRelationsAndAttributesList[k]['coRole']
+                                        if tempMap not in possibleRelationsList:
+                                            possibleRelationsList.append(tempMap)
 
-                                # Find the Relations
-                                if outputParameter == 'Relations':
-                                    if outputParameterList == 'All':
-                                        targetDataRelationsMap = {}
-                                        relationsResponse = fetchRelations(targetData[i]['resourceId'])
-                                        if relationsResponse != 'No Data Found':
-                                            for relationResponseMap in relationsResponse:
-                                                for innerRelationsMap in relationResponseMap['relation']:
-                                                    for roleMap in possibleRelationsList:
-                                                        if innerRelationsMap['typeReference']['role'] == roleMap['role']:
-                                                            targetDataRelationsMap[roleMap['role']] = \
-                                                            innerRelationsMap['sourceReference']['signifier']
-                                                            targetDataRelationsMap[roleMap['coRole']] = \
-                                                            innerRelationsMap['targetReference']['signifier']
-                                                        else:
-                                                            targetDataRelationsMap[roleMap['role']] = ''
-                                                            targetDataRelationsMap[roleMap['coRole']] = ''
-                                    else:
-                                        targetDataRelationsMap = {}
-                                        relationsResponse = fetchRelations(targetData[i]['resourceId'])
-                                        if relationsResponse != 'No Data Found':
-                                            for relationResponseMap in relationsResponse:
-                                                for innerRelationsMap in relationResponseMap['relation']:
-                                                    for roleMap in outputParameterList:
-                                                        if innerRelationsMap['typeReference']['role'] == roleMap['role']:
-                                                            targetDataRelationsMap[roleMap['role']] = \
-                                                            innerRelationsMap['sourceReference']['signifier']
-                                                            targetDataRelationsMap[roleMap['coRole']] = \
-                                                            innerRelationsMap['targetReference']['signifier']
-                                                        else:
-                                                            targetDataRelationsMap[roleMap['role']] = ''
-                                                            targetDataRelationsMap[roleMap['coRole']] = ''
+                            # Find the Relations
+                            if outputParameter == 'Relations':
+                                if outputParameterList == 'All':
+                                    targetDataRelationsMap = {}
+                                    relationsResponse = fetchRelations(targetData[i]['resourceId'])
+                                    if relationsResponse != 'No Data Found':
+                                        for relationResponseMap in relationsResponse:
+                                            for innerRelationsMap in relationResponseMap['relation']:
+                                                for roleMap in possibleRelationsList:
+                                                    if innerRelationsMap['typeReference']['role'] == roleMap['role']:
+                                                        targetDataRelationsMap[roleMap['role']] = \
+                                                        innerRelationsMap['sourceReference']['signifier']
+                                                        targetDataRelationsMap[roleMap['coRole']] = \
+                                                        innerRelationsMap['targetReference']['signifier']
+                                                    else:
+                                                        targetDataRelationsMap[roleMap['role']] = ''
+                                                        targetDataRelationsMap[roleMap['coRole']] = ''
+                                else:
+                                    targetDataRelationsMap = {}
+                                    relationsResponse = fetchRelations(targetData[i]['resourceId'])
+                                    if relationsResponse != 'No Data Found':
+                                        for relationResponseMap in relationsResponse:
+                                            for innerRelationsMap in relationResponseMap['relation']:
+                                                for roleMap in outputParameterList:
+                                                    if innerRelationsMap['typeReference']['role'] == roleMap['role']:
+                                                        targetDataRelationsMap[roleMap['role']] = \
+                                                        innerRelationsMap['sourceReference']['signifier']
+                                                        targetDataRelationsMap[roleMap['coRole']] = \
+                                                        innerRelationsMap['targetReference']['signifier']
+                                                    else:
+                                                        targetDataRelationsMap[roleMap['role']] = ''
+                                                        targetDataRelationsMap[roleMap['coRole']] = ''
 
-                                # Find the Attributes
-                                if outputParameter == 'Attributes':
-                                    if outputParameterList == 'All':
-                                        targetDataAttributesMap = {}
-                                        attributesResponse = fetchAttributes(targetData[i]['resourceId'])
-                                        listOfAttributesFromResponse = []
-                                        attributesResponseList = attributesResponse['attributeReference']
-                                        for listIndex in range(0, len(attributesResponseList)):
-                                            attributeResponseMap = attributesResponseList[listIndex]
-                                            listOfAttributesFromResponse.append(attributeResponseMap['labelReference'][
-                                                                                    'signifier'])  # Find all the attributes of the asset that are not null
-                                        listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
+                            # Find the Attributes
+                            if outputParameter == 'Attributes':
+                                if outputParameterList == 'All':
+                                    targetDataAttributesMap = {}
+                                    attributesResponse = fetchAttributes(targetData[i]['resourceId'])
+                                    listOfAttributesFromResponse = []
+                                    attributesResponseList = attributesResponse['attributeReference']
+                                    for listIndex in range(0, len(attributesResponseList)):
+                                        attributeResponseMap = attributesResponseList[listIndex]
+                                        listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
+                                    listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
 
-                                        # Add all the attribute types that have a value
-                                        for listIndex in range(0, len(attributesResponseList)):
-                                            attributeResponseMap = attributesResponseList[listIndex]
-                                            existingKeyValue = []
-                                            # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
-                                            key = attributeResponseMap['labelReference']['signifier']
-                                            cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
-                                            if key in targetDataAttributesMap.keys():
-                                                existingKeyValue = targetDataAttributesMap[key]
-                                            existingKeyValue.append(cleanedKeyValue)
-                                            targetDataAttributesMap[key] = existingKeyValue
+                                    # Add all the attribute types that have a value
+                                    for listIndex in range(0, len(attributesResponseList)):
+                                        attributeResponseMap = attributesResponseList[listIndex]
+                                        existingKeyValue = []
+                                        # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
+                                        key = attributeResponseMap['labelReference']['signifier']
+                                        cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
+                                        if key in targetDataAttributesMap.keys():
+                                            existingKeyValue = targetDataAttributesMap[key]
+                                        existingKeyValue.append(cleanedKeyValue)
+                                        targetDataAttributesMap[key] = existingKeyValue
 
-                                        # Add all the attribute types that don't have a value
-                                        for possibleAttribute in possibleAttributesList:
-                                            if possibleAttribute not in targetDataAttributesMap.keys():
-                                                targetDataAttributesMap[possibleAttribute] = ''
-                                    else:
-                                        targetDataAttributesMap = {}
-                                        attributesResponse = fetchAttributes(targetData[i]['resourceId'])
-                                        listOfAttributesFromResponse = []
-                                        attributesResponseList = attributesResponse['attributeReference']
-                                        for listIndex in range(0, len(attributesResponseList)):
-                                            attributeResponseMap = attributesResponseList[listIndex]
-                                            listOfAttributesFromResponse.append(attributeResponseMap['labelReference'][
-                                                                                    'signifier'])  # Find all the attributes of the asset that are not null
-                                        listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
+                                    # Add all the attribute types that don't have a value
+                                    for possibleAttribute in possibleAttributesList:
+                                        if possibleAttribute not in targetDataAttributesMap.keys():
+                                            targetDataAttributesMap[possibleAttribute] = ''
+                                else:
+                                    targetDataAttributesMap = {}
+                                    attributesResponse = fetchAttributes(targetData[i]['resourceId'])
+                                    listOfAttributesFromResponse = []
+                                    attributesResponseList = attributesResponse['attributeReference']
+                                    for listIndex in range(0, len(attributesResponseList)):
+                                        attributeResponseMap = attributesResponseList[listIndex]
+                                        listOfAttributesFromResponse.append(attributeResponseMap['labelReference'][
+                                                                                'signifier'])  # Find all the attributes of the asset that are not null
+                                    listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
 
-                                        # Add all the attribute types that have a value
-                                        for listIndex in range(0, len(attributesResponseList)):
-                                            attributeResponseMap = attributesResponseList[listIndex]
-                                            existingKeyValue = []
-                                            # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
-                                            key = attributeResponseMap['labelReference']['signifier']
-                                            cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
-                                            if key in targetDataAttributesMap.keys():
-                                                existingKeyValue = targetDataAttributesMap[key]
-                                            existingKeyValue.append(cleanedKeyValue)
-                                            targetDataAttributesMap[key] = existingKeyValue
+                                    # Add all the attribute types that have a value
+                                    for listIndex in range(0, len(attributesResponseList)):
+                                        attributeResponseMap = attributesResponseList[listIndex]
+                                        existingKeyValue = []
+                                        # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
+                                        key = attributeResponseMap['labelReference']['signifier']
+                                        cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
+                                        if key in targetDataAttributesMap.keys():
+                                            existingKeyValue = targetDataAttributesMap[key]
+                                        existingKeyValue.append(cleanedKeyValue)
+                                        targetDataAttributesMap[key] = existingKeyValue
 
-                                        # Add all the attribute types that don't have a value
-                                        for possibleAttribute in possibleAttributesList:
-                                            if possibleAttribute not in targetDataAttributesMap.keys():
-                                                targetDataAttributesMap[possibleAttribute] = ''
+                                    # Add all the attribute types that don't have a value
+                                    for possibleAttribute in possibleAttributesList:
+                                        if possibleAttribute not in targetDataAttributesMap.keys():
+                                            targetDataAttributesMap[possibleAttribute] = ''
 
-                            if outputParameter == 'Complex Relations':
-                                # Find the Complex Relations and Attributes
-                                complexRelationsMap = fetchComplexRelations(targetData[i]['resourceId'])
-                                if complexRelationsMap not in ('No Relations Found', 'No Data Found'):
+                        if outputParameter == 'Complex Relations':
+                            # Find the Complex Relations and Attributes
+                            complexRelationsMap = fetchComplexRelations(targetData[i]['resourceId'])
+                            if complexRelationsMap not in ('No Relations Found', 'No Data Found'):
+                                relationValue = []
+                                for j in range(0, len(complexRelationsMap['relationReference'])):
+                                    relationReferenceList = complexRelationsMap['relationReference'][j]
+                                    relationKey = relationReferenceList['typeReference']['role']
+                                    if relationKey in targetDataComplexRelationsRelationsMap.keys():
+                                        relationValue = targetDataComplexRelationsRelationsMap[relationKey]
+                                    relationValue.append(relationReferenceList['targetReference']['signifier'])
+                                    targetDataComplexRelationsRelationsMap[relationKey] = relationValue
                                     relationValue = []
-                                    for j in range(0, len(complexRelationsMap['relationReference'])):
-                                        relationReferenceList = complexRelationsMap['relationReference'][j]
-                                        relationKey = relationReferenceList['typeReference']['role']
-                                        if relationKey in targetDataComplexRelationsRelationsMap.keys():
-                                            relationValue = targetDataComplexRelationsRelationsMap[relationKey]
-                                        relationValue.append(relationReferenceList['targetReference']['signifier'])
-                                        targetDataComplexRelationsRelationsMap[relationKey] = relationValue
-                                        relationValue = []
 
-                                        targetDataComplexRelationsMap['Relations'] = targetDataComplexRelationsRelationsMap
+                                    targetDataComplexRelationsMap['Relations'] = targetDataComplexRelationsRelationsMap
 
-                                complexRelationsAttributesMap = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
-                                if complexRelationsAttributesMap != 'No Attributes Found':
+                            complexRelationsAttributesMap = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
+                            if complexRelationsAttributesMap != 'No Attributes Found':
+                                attributeValue = []
+                                for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
+                                    attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
+                                    attributeKey = attributesReferenceList['labelReference']['signifier']
+                                    if attributeKey in targetDataComplexRelationsAttributesMap.keys():
+                                        attributeValue = targetDataComplexRelationsAttributesMap[attributeKey]
+                                    attributeValue.append(cleanhtml(attributesReferenceList['value']))
+                                    targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
                                     attributeValue = []
-                                    for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
-                                        attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
-                                        attributeKey = attributesReferenceList['labelReference']['signifier']
-                                        if attributeKey in targetDataComplexRelationsAttributesMap.keys():
-                                            attributeValue = targetDataComplexRelationsAttributesMap[attributeKey]
-                                        attributeValue.append(cleanhtml(attributesReferenceList['value']))
-                                        targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
-                                        attributeValue = []
 
-                                    targetDataComplexRelationsMap['Attributes'] = targetDataComplexRelationsAttributesMap
+                                targetDataComplexRelationsMap['Attributes'] = targetDataComplexRelationsAttributesMap
 
-                        tempMap = {}
-                        finalMap['Asset Details'] = targetDataMap
-                        if bool(targetDataAttributesMap):
-                            finalMap['Attributes'] = targetDataAttributesMap
-                        if bool(targetDataRelationsMap):
-                            finalMap['Relations'] = targetDataRelationsMap
-                        if bool(targetDataComplexRelationsMap):
-                            finalMap['Complex Relations'] = targetDataComplexRelationsMap
-                            print(targetDataComplexRelationsMap)
+                    tempMap = {}
+                    finalMap['Asset Details'] = targetDataMap
+                    if bool(targetDataAttributesMap):
+                        finalMap['Attributes'] = targetDataAttributesMap
+                    if bool(targetDataRelationsMap):
+                        finalMap['Relations'] = targetDataRelationsMap
+                    if bool(targetDataComplexRelationsMap):
+                        finalMap['Complex Relations'] = targetDataComplexRelationsMap
 
 
-                        finalResultList.append(finalMap)
+                    finalResultList.append(finalMap)
 
-                        finalMap = {}
+                    finalMap = {}
+            elif itemkey == 'outputFileName':
+                # Create the output file
+                fileName = createTargetDataFileIII(finalResultList, eachKey, '.csv')
+                if fileName not in fileNameList:
+                   fileNameList.append(fileName)
+            elif itemkey == 'email':  #Emails the output file to the audience
 
-                elif itemkey == 'outputFileName':
-                    # Create the output file
-                    fileName = createTargetDataFileIII(finalResultList, eachKey, '.csv')
-                    if fileName not in fileNameList:
-                       fileNameList.append(fileName)
-                elif itemkey == 'email':  #Emails the output file to the audience
+                print('Hello')
+                # zipFilePath = "K:/Git Code/Python/Output/" + outputFileName + ".zip"
+                # os.chdir("K:/Git Code/Python/Output/")
+                # for file in fileNameList:
+                #     with ZipFile(zipFilePath, 'a') as myzip:
+                #         myzip.write(os.path.basename(file))
+                #     myzip.close()
+                #
+                # composedMessage = MIMEMultipart()
+                # composedMessage['Subject'] = 'Requested Information'
+                # composedMessage['To'] = eachMap[itemkey]
+                # composedMessage['From'] = "srikrishna.bingi@gmail.com"
+                #
+                # ctype, encoding = mimetypes.guess_type(zipFilePath)
+                # if ctype is None or encoding is not None:
+                #     ctype = "application/octet-stream"
+                #
+                # zipFile = open(zipFilePath, 'rb')
+                # maintype, subtype = ctype.split("/", 1)
+                # msg = MIMEBase(maintype, _subtype=subtype)
+                # msg.set_payload(zipFile.read())
+                # encoders.encode_base64(msg)
+                #
+                # msg.add_header("Content-Disposition", "attachment", filename=outputFileName+'.zip')
+                # composedMessage.attach(msg)
 
-                    print('Hello')
-                    # zipFilePath = "K:/Git Code/Python/Output/" + outputFileName + ".zip"
-                    # os.chdir("K:/Git Code/Python/Output/")
-                    # for file in fileNameList:
-                    #     with ZipFile(zipFilePath, 'a') as myzip:
-                    #         myzip.write(os.path.basename(file))
-                    #     myzip.close()
-                    #
-                    # composedMessage = MIMEMultipart()
-                    # composedMessage['Subject'] = 'Requested Information'
-                    # composedMessage['To'] = eachMap[itemkey]
-                    # composedMessage['From'] = "srikrishna.bingi@gmail.com"
-                    #
-                    # ctype, encoding = mimetypes.guess_type(zipFilePath)
-                    # if ctype is None or encoding is not None:
-                    #     ctype = "application/octet-stream"
-                    #
-                    # zipFile = open(zipFilePath, 'rb')
-                    # maintype, subtype = ctype.split("/", 1)
-                    # msg = MIMEBase(maintype, _subtype=subtype)
-                    # msg.set_payload(zipFile.read())
-                    # encoders.encode_base64(msg)
-                    #
-                    # msg.add_header("Content-Disposition", "attachment", filename=outputFileName+'.zip')
-                    # composedMessage.attach(msg)
-
-                    # mailObject = smtplib.SMTP('smtp.gmail.com', 587)
-                    # mailObject.starttls()
-                    # mailObject.login('srikrishna.bingi@gmail.com','******')
-                    #mailObject.sendmail("srikrishna.bingi@gmail.com","srikrishna.bingi@exusia.com",composedMessage.as_string())
-                    print('Done sending Mail')
-# mailObject.close()
+                # mailObject = smtplib.SMTP('smtp.gmail.com', 587)
+                # mailObject.starttls()
+                # mailObject.login('srikrishna.bingi@gmail.com','******')
+                #mailObject.sendmail("srikrishna.bingi@gmail.com","srikrishna.bingi@exusia.com",composedMessage.as_string())
+                print('Done sending Mail')
