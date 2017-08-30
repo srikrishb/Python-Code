@@ -742,16 +742,15 @@ if __name__ == '__main__':
                     targetDataComplexRelationsRelationsMap = {}
                     targetDataComplexRelationsAttributesMap = {}
                     targetDataMap = {}
+                    assetName = targetData[i]['signifier']
                     for outputParameter in outputResultParameters.keys():
                         outputParameterList = outputResultParameters[outputParameter]
                         # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
                         if outputParameter == 'Asset Details':
-
                             for detailType in outputParameterList:
                                 targetDataMap[detailType] = fetchAssetAssetDetails(detailType, targetData[i])
 
                         # If needed, find the Relations, Attributes and Complex Relations of the asset
-
                         if outputParameter in ('Attributes', 'Relations'):
                             # Find the possible Relations and Attributes of the asset
                             possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
@@ -786,9 +785,21 @@ if __name__ == '__main__':
                                                 existingCoRoleKeyValue = []
                                                 if targetDataRelationsRolekey in targetDataRelationsMap.keys():
                                                     existingRoleKeyValue = targetDataRelationsMap[targetDataRelationsRolekey]
+
+                                                if targetDataRelationsCoRolekey in targetDataRelationsMap.keys():
                                                     existingCoRoleKeyValue = targetDataRelationsMap[targetDataRelationsCoRolekey]
-                                                existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
-                                                existingCoRoleKeyValue.append(innerRelationsMap['sourceReference']['signifier'])
+
+                                                if innerRelationsMap['targetReference']['signifier'] == assetName:
+                                                    existingRoleKeyValue = assetName
+                                                else:
+                                                    existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
+
+
+                                                if innerRelationsMap['sourceReference']['signifier'] == assetName:
+                                                    existingCoRoleKeyValue = assetName
+                                                else:
+                                                    existingCoRoleKeyValue.append(innerRelationsMap['sourceReference']['signifier'])
+
                                                 targetDataRelationsMap[innerRelationsMap['typeReference']['role']] = existingRoleKeyValue
                                                 targetDataRelationsMap[innerRelationsMap['typeReference']['coRole']] = existingCoRoleKeyValue
 

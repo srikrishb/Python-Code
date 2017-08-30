@@ -1,9 +1,9 @@
 request1:
     conditions:
         assetNameIn:
-            #- "FRY 14 Q"
+            - "FRY 14 Q"
             - "01. Amortized Cost (USD Equivalent)"
-            #- "Amortized Cost (USD Equivalent)"
+            - "Amortized Cost (USD Equivalent)"
     outputResult:
         Asset Details: 
             - Asset Name
