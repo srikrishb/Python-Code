@@ -3,7 +3,7 @@ request1:
         assetNameIn:
             #- "FRY 14 Q"
             - "01. Amortized Cost (USD Equivalent)"
-            - "Amortized Cost (USD Equivalent)"
+            #- "Amortized Cost (USD Equivalent)"
     outputResult:
         Asset Details: 
             - Asset Name

@@ -777,38 +777,27 @@ if __name__ == '__main__':
                                     targetDataRelationsMap = {}
                                     relationsResponse = fetchRelations(targetData[i]['resourceId'])
                                     if relationsResponse != 'No Data Found':
+                                        # Add all the relation types that have a value
                                         for relationResponseMap in relationsResponse:
                                             for innerRelationsMap in relationResponseMap['relation']:
-                                                for roleMap in possibleRelationsList:
-                                                    if innerRelationsMap['typeReference']['role'] == roleMap['role']:
-                                                        targetDataRelationsMapkey = roleMap['role']
-                                                        existingRoleKeyValue = []
-                                                        if targetDataRelationsMapkey in targetDataRelationsMap.keys():
-                                                            if isinstance(targetDataRelationsMap[roleMap['role']],str):
-                                                                existingRoleKeyValue.append(targetDataRelationsMap[roleMap['role']])
-                                                            else:
-                                                                existingRoleKeyValue = targetDataRelationsMap[roleMap['role']]
-                                                        existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
-                                                        targetDataRelationsMap[roleMap['role']] = existingRoleKeyValue
-                                                        targetDataRelationsMap[roleMap['coRole']] = innerRelationsMap['sourceReference']['signifier']
-                                                    else:
-                                                        targetDataRelationsMap[roleMap['role']] = ''
-                                                        targetDataRelationsMap[roleMap['coRole']] = ''
-                                else:
-                                    targetDataRelationsMap = {}
-                                    relationsResponse = fetchRelations(targetData[i]['resourceId'])
-                                    if relationsResponse != 'No Data Found':
-                                        for relationResponseMap in relationsResponse:
-                                            for innerRelationsMap in relationResponseMap['relation']:
-                                                for roleMap in outputParameterList:
-                                                    if innerRelationsMap['typeReference']['role'] == roleMap['role']:
-                                                        targetDataRelationsMap[roleMap['role']] = \
-                                                        innerRelationsMap['sourceReference']['signifier']
-                                                        targetDataRelationsMap[roleMap['coRole']] = \
-                                                        innerRelationsMap['targetReference']['signifier']
-                                                    else:
-                                                        targetDataRelationsMap[roleMap['role']] = ''
-                                                        targetDataRelationsMap[roleMap['coRole']] = ''
+                                                targetDataRelationsRolekey = innerRelationsMap['typeReference']['role']
+                                                targetDataRelationsCoRolekey = innerRelationsMap['typeReference']['coRole']
+                                                existingRoleKeyValue = []
+                                                existingCoRoleKeyValue = []
+                                                if targetDataRelationsRolekey in targetDataRelationsMap.keys():
+                                                    existingRoleKeyValue = targetDataRelationsMap[targetDataRelationsRolekey]
+                                                    existingCoRoleKeyValue = targetDataRelationsMap[targetDataRelationsCoRolekey]
+                                                existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
+                                                existingCoRoleKeyValue.append(innerRelationsMap['sourceReference']['signifier'])
+                                                targetDataRelationsMap[innerRelationsMap['typeReference']['role']] = existingRoleKeyValue
+                                                targetDataRelationsMap[innerRelationsMap['typeReference']['coRole']] = existingCoRoleKeyValue
+
+                                        # Add all the relation types that don't have a value
+                                        for possibleRelation in possibleRelationsList:
+                                            for roleMap in possibleRelation:
+                                                print(possibleRelation[roleMap])
+                                                if possibleRelation[roleMap] not in targetDataRelationsMap.keys():
+                                                    targetDataRelationsMap[possibleRelation[roleMap]] = ''
 
                             # Find the Attributes
                             if outputParameter == 'Attributes':
@@ -880,7 +869,6 @@ if __name__ == '__main__':
                                     relationValue.append(relationReferenceList['targetReference']['signifier'])
                                     targetDataComplexRelationsRelationsMap[relationKey] = relationValue
                                     relationValue = []
-
                                     targetDataComplexRelationsMap['Relations'] = targetDataComplexRelationsRelationsMap
 
                             complexRelationsAttributesMap = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
