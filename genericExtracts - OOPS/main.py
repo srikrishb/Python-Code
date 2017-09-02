@@ -24,8 +24,6 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import colors
 from openpyxl.styles import Font, Color
-from RelationFilter import RelationFilter
-from Asset import Asset
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -285,7 +283,7 @@ def fetchRelationFilterDataSet(inputMap):
 def generateFile(inputMap):
     i = 0
     tempMap = {}
-    print(inputMap)
+
     for masterKey in inputMap:
         toBeProcessedMap = inputMap[masterKey]
         print(toBeProcessedMap, type(toBeProcessedMap))
@@ -323,6 +321,10 @@ def generateFile(inputMap):
             targetData = fetchAttributeFilterDataSet(tempMap)
             tempMap = {}
 
+        elif masterKey == 'relationPath':
+            tempMap[masterKey] = inputMap[masterKey]
+            targetData = fetchRelationPathDataSet(tempMap)
+            tempMap = {}
         elif isinstance(toBeProcessedMap, str) or isinstance(toBeProcessedMap, list):
             tempTargetData = fetchDataSet(masterKey, inputMap[masterKey])
             targetData = filterTargetData(inputMap, tempTargetData)
@@ -604,7 +606,7 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
         workbook = Workbook(targetFileRow)
         worksheet = workbook.active
         worksheet.title = 'Asset List'
-        columnCount = 1
+
         #Write the File Header
         for innerMap in targetMapList:
             for key in innerMap:
@@ -613,7 +615,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                     for innerKey in map:
                         if innerKey not in targetFileHeader:
                             targetFileHeader.append(innerKey)
-                            columnCount += 1
                 elif key == 'Attributes':
                         if 'Attribute Type' not in targetFileHeader:
                             targetFileHeader.append('Attribute Type')
@@ -631,11 +632,8 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                             targetFileHeader.append('Complex Relations - Attribute Type')
                             targetFileHeader.append('Complex Relations - Attribute')
                             columnCount += 4
-        worksheet.append(targetFileHeader)
 
-        for columnIndex in range(1,columnCount):
-            cell = worksheet.cell(row=1, column=columnIndex)
-            cell.font = cell.font.copy(bold=True)
+        worksheet.append(targetFileHeader)
 
     rowNum = 2
     col = 1
@@ -660,7 +658,7 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                         highestLen += 1
                     targetFileRow.append(innerKey)
                     targetFileRow.append(map[innerKey])
-                    worksheet.cell(row=rowNum, column=col).value = innerKey[innerKey.find('>')+1:]
+                    worksheet.cell(row=rowNum, column=col).value = innerKey
                     col += 1
                     if isinstance(map[innerKey], list):
                         tempList = []
@@ -725,7 +723,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
             worksheet.merge_cells(start_row=rowNum, start_column=col, end_row=rowNum + mergeRow[rowNum]-1,end_column=col)
             col +=1
 
-    worksheet.freeze_panes = 'A2'
     workbook.save(targetFileName)
     return targetFileName
 
@@ -736,7 +733,7 @@ if __name__ == '__main__':
 
     # Open the parameter file of the business process
     os.chdir("K:\Git Code\Python\ParameterFiles")
-    with open(paramFileName, 'r', encoding='utf8') as yamlFile:
+    with open(paramFileName, 'r') as yamlFile:
         paramFileData = yaml.load(yamlFile)
 
     outputFilter = ''
@@ -748,25 +745,9 @@ if __name__ == '__main__':
         eachMap = paramFileData[eachKey]
         for itemkey in eachMap.keys():
             if itemkey == 'conditions':
-                outputFilter = eachMap[itemkey].keys()
-                if 'relationFilter' not in outputFilter:
-                    if isinstance(eachMap[itemkey], dict):
-                        targetData = createMapII(eachMap[itemkey])
-                elif 'relationFilter' in outputFilter:
-                    tempMap = {}
-                    for valuesMap in eachMap[itemkey].values():
-                        for innerKey in valuesMap:
-                            tempMap[innerKey] = valuesMap[innerKey]
-                            if innerKey == 'RelationTypeIn':
-                                assetObj = Asset()
-                                relationPath = RelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(endpoint='term/find/full', payload='')
-                                preTargetData = relationPath.filterRelationDataSet(tempTargetData)
-                                targetData = preTargetData
-                                tempMap = {}
-                            elif innerKey == 'AssetType':
-                                filterAssetTypes = RelationFilter(tempMap)
-                                targetData = filterAssetTypes.filterTargetDataSet(preTargetData)
+                if isinstance(eachMap[itemkey], dict):
+                    outputFilter = eachMap[itemkey].keys()
+                    targetData = createMapII(eachMap[itemkey])
             elif itemkey == 'outputResult':
                 if outputFilter != 'relationPath':
                     targetDataMap = {}
@@ -814,48 +795,40 @@ if __name__ == '__main__':
                                         if relationsResponse != 'No Data Found':
                                             # Add all the relation types that have a value
                                             for relationResponseMap in relationsResponse:
-                                                existingRoleKeyValue = []
-                                                existingCoRoleKeyValue = []
                                                 for innerRelationsMap in relationResponseMap['relation']:
                                                     targetDataRelationsRolekey = innerRelationsMap['typeReference']['role']
                                                     targetDataRelationsCoRolekey = innerRelationsMap['typeReference']['coRole']
-
+                                                    existingRoleKeyValue = []
+                                                    existingCoRoleKeyValue = []
                                                     if targetDataRelationsRolekey in targetDataRelationsMap.keys():
-                                                        #print('1', targetDataRelationsRolekey,targetDataRelationsMap[targetDataRelationsRolekey])
                                                         existingRoleKeyValue = targetDataRelationsMap[targetDataRelationsRolekey]
 
                                                     if targetDataRelationsCoRolekey in targetDataRelationsMap.keys():
-                                                        #print('2' , targetDataRelationsCoRolekey,targetDataRelationsMap[targetDataRelationsCoRolekey])
                                                         existingCoRoleKeyValue = targetDataRelationsMap[targetDataRelationsCoRolekey]
 
                                                     if innerRelationsMap['targetReference']['signifier'] == assetName:
                                                         existingRoleKeyValue = assetName
-                                                        #print('3', existingRoleKeyValue)
                                                     else:
                                                         existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
-                                                        #print('4', existingRoleKeyValue)
+
 
                                                     if innerRelationsMap['sourceReference']['signifier'] == assetName:
                                                         existingCoRoleKeyValue = assetName
-                                                        #print('5', existingCoRoleKeyValue, innerRelationsMap['sourceReference']['signifier'], assetName)
                                                     else:
-                                                        #print('6', existingCoRoleKeyValue, assetName, innerRelationsMap['sourceReference']['signifier'])
                                                         existingCoRoleKeyValue.append(innerRelationsMap['sourceReference']['signifier'])
 
-                                                    # Creating Temp Keys for map to avoid situations where coRole and Role get reused for both South and Target relations
-                                                    tempRolekey = innerRelationsMap['typeReference']['resourceId']+'>'+innerRelationsMap['typeReference']['role']
-                                                    targetDataRelationsMap[tempRolekey] = existingRoleKeyValue
-                                                    tempCoRoleKey = innerRelationsMap['typeReference']['resourceId']+'>'+innerRelationsMap['typeReference']['coRole']
-                                                    targetDataRelationsMap[tempCoRoleKey] = existingCoRoleKeyValue
+                                                    targetDataRelationsMap[innerRelationsMap['typeReference']['role']] = existingRoleKeyValue
+                                                    targetDataRelationsMap[innerRelationsMap['typeReference']['coRole']] = existingCoRoleKeyValue
 
                                             # Add all the relation types that don't have a value
                                             for possibleRelation in possibleRelationsList:
                                                 for roleMap in possibleRelation:
+                                                    print(possibleRelation[roleMap])
                                                     if possibleRelation[roleMap] not in targetDataRelationsMap.keys():
                                                         targetDataRelationsMap[possibleRelation[roleMap]] = ''
 
                                 # Find the Attributes
-                                if outputParameter == 'Attributes' and len(possibleAttributesList) > 0:
+                                if outputParameter == 'Attributes':
                                     if outputParameterList == 'All':
                                         targetDataAttributesMap = {}
                                         attributesResponse = fetchAttributes(targetData[i]['resourceId'])
@@ -866,7 +839,6 @@ if __name__ == '__main__':
                                         #     attributeResponseMap = attributesResponseList[listIndex]
                                         #     listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
                                         # listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
-
 
                                         # Add all the attribute types that have a value
                                         for listIndex in range(0, len(attributesResponseList)):
@@ -943,10 +915,15 @@ if __name__ == '__main__':
 
                         tempMap = {}
                         finalMap['Asset Details'] = targetDataMap
-                        finalMap['Attributes'] = targetDataAttributesMap
-                        finalMap['Relations'] = targetDataRelationsMap
-                        finalMap['Complex Relations'] = targetDataComplexRelationsMap
+                        if bool(targetDataAttributesMap):
+                            finalMap['Attributes'] = targetDataAttributesMap
+                        if bool(targetDataRelationsMap):
+                            finalMap['Relations'] = targetDataRelationsMap
+                        if bool(targetDataComplexRelationsMap):
+                            finalMap['Complex Relations'] = targetDataComplexRelationsMap
+
                         finalResultList.append(finalMap)
+
                         finalMap = {}
                 else:
                     print('relationPath')

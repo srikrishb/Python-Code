@@ -22,10 +22,6 @@ import re
 from zipfile import ZipFile
 from openpyxl import Workbook
 from openpyxl import load_workbook
-from openpyxl.styles import colors
-from openpyxl.styles import Font, Color
-from RelationFilter import RelationFilter
-from Asset import Asset
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -42,13 +38,13 @@ def getDataCall(endpoint, payload):
 def fetchDataSet(innerMapKey, innerMapValue):
 
     result = dict()
-    if str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1:
+    if str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1:
         searchSignfier = ''
     elif str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' :
         searchSignfier = innerMapValue
 
 
-    if str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
+    if str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
         assetNameLikeEndpoint = 'term/find/full'
         assetNameLikePayload = {'excludeMeta': 'false', 'searchSignifier': searchSignfier}
         assetNameLikeResponse = getDataCall(assetNameLikeEndpoint, assetNameLikePayload)
@@ -62,38 +58,6 @@ def convertEpochTime(inputTime):
 
     mathTargetTime = math.ceil(int(inputTime) / 1000)
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mathTargetTime))
-
-def filterAssetData(filterAttributeType, innerMap, dataTobeFiltered):
-    filteredData = []
-    for key in innerMap.keys():
-        filterValue = innerMap[key]
-        if str.upper(key).find("ATTRIBUTEVALUEEQUALS") != -1:
-            for data in dataTobeFiltered:
-                # Find the resourceId
-                attributesResponse = fetchAttributes(data['resourceId'])
-                attributesResponseList = attributesResponse['attributeReference']
-
-                existingValue = []
-                # Loop through the attributesResponseList to check whether specified filterValue has been set
-                for listIndex in range(0, len(attributesResponseList)):
-                    attributeResponseMap = attributesResponseList[listIndex]
-                    # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
-                    attributeType = attributeResponseMap['labelReference']['signifier']
-                    if attributeType == filterAttributeType:
-                        cleanedValue = cleanhtml(attributeResponseMap['value'])
-                        if cleanedValue == filterValue:
-                            filteredData.append(data)
-
-    return filteredData
-
-def fetchPossibleAttributes(resourceId):
-    possibleRandAEndpoint = 'concept_type/' + resourceId + '/possible_attribute_types'
-    possibleRandAPayload = ''
-    possibleRandAResponse = getDataCall(possibleRandAEndpoint, possibleRandAPayload)
-    if possibleRandAResponse['statusCode'] == '1':
-        return possibleRandAResponse['data']
-    else:
-        return 'No Data Found'
 
 def filterTargetData(innerMap, dataToBeFiltered):
     filteredData = []
@@ -143,24 +107,6 @@ def filterTargetData(innerMap, dataToBeFiltered):
                         filteredData.append(data)
                     i += 1
 
-        elif str.upper(key).find("ATTRIBUTETYPE") != -1:
-            i = 0
-            for data in dataToBeFiltered:
-                #Find out whether there are any attributes tied to the asset:
-                possibleAttributesList = fetchPossibleAttributes(data['resourceId'])
-                if len(possibleAttributesList['attributeType']) > 0:
-                    #Fetch attributes for the resourceId
-                    attributesResponse = fetchAttributes(data['resourceId'])
-                    attributesResponseList = attributesResponse['attributeReference']
-
-                    #Loop through the attributesResponseList to check whether specified filterValue has been set
-                    for listIndex in range(0, len(attributesResponseList)):
-                        attributeResponseMap = attributesResponseList[listIndex]
-                        attributeType = attributeResponseMap['labelReference']['signifier']
-                        if attributeType == filterValue:
-                            filteredData.append(data)
-                    i += 1
-
     return filteredData
 
 def listUnion(refList , dataList):
@@ -175,11 +121,8 @@ def listUnion(refList , dataList):
         if items2['resourceId'] not in newList:
             newMap.append(items2)
 
+
     return newMap
-
-def listIntersect(refList , dataList):
-
-    return set(refList).intersection(dataList)
 
 def createDataSet(innerMap):
     tempMap = {}
@@ -252,80 +195,26 @@ def createMap(innerMap):
 
     return targetData
 
-def fetchAttributeFilterDataSet(inputMap):
-    i = 0
-    tempMap = {}
-    for inputKey in inputMap:
-        innerList = inputMap[inputKey]
-        for innerMap in innerList:
-            for innerKey in innerMap:
-                tempMap[innerKey] = innerMap[innerKey]
-                if i == 0:
-                    i += 1
-                    tempTargetData = fetchDataSet(innerKey, '')
-                    attributeKey = innerMap[innerKey]
-                    preTargetData = filterTargetData(tempMap, tempTargetData)
-                else:
-                    targetData = filterAssetData(attributeKey, tempMap, preTargetData)
-                tempMap = {}
-
-    return targetData
-
-def fetchRelationFilterDataSet(inputMap):
-    i = 0
-    tempMap = {}
-    for inputKey in inputMap:
-        innerList = inputMap[inputKey]
-        if len(innerList) > 1:
-            primaryAssetType = innerList[0]
-
-        else:
-            print('Need more than 1 assettype in List')
-
 def generateFile(inputMap):
     i = 0
     tempMap = {}
-    print(inputMap)
     for masterKey in inputMap:
         toBeProcessedMap = inputMap[masterKey]
-        print(toBeProcessedMap, type(toBeProcessedMap))
-        if isinstance(toBeProcessedMap, dict):
-            for innerMapKey in toBeProcessedMap:
-                    if masterKey == 'Or' or masterKey == 'And':
-                        tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
-                        if innerMapKey == 'attributeFilter':
-                            tempTargetData = fetchAttributeFilterDataSet(tempMap)
-                        else:
-                            tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
-
-                        if i == 0:
-                            i += 1
-                            preTargetData = filterTargetData(tempMap, tempTargetData)
-                        else:
-
-                            if innerMapKey == 'attributeFilter':
-                                newTargetData = tempTargetData
-                            else:
-                                newTargetData = filterTargetData(tempMap, tempTargetData)
-
-                            if masterKey == 'And':
-                                targetData = listIntersect(newTargetData, preTargetData)
-
-                            if masterKey == 'Or':
-                                targetData = listUnion(newTargetData, preTargetData)
-
-                            preTargetData = targetData
-
-                        tempMap = {}
-
-        elif masterKey == 'attributeFilter':
-            tempMap[masterKey] = inputMap[masterKey]
-            targetData = fetchAttributeFilterDataSet(tempMap)
+        for innerMapKey in toBeProcessedMap:
+            tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
+            if i == 0:
+                i += 1
+                tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                preTargetData = filterTargetData(tempMap, tempTargetData)
+            else:
+                if masterKey == 'And':
+                    targetData = filterTargetData(tempMap, preTargetData)
+                    preTargetData = targetData
+                if masterKey == 'Or':
+                    tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                    newTargetData = filterTargetData(tempMap, tempTargetData)
+                    targetData = listUnion(newTargetData, preTargetData)
             tempMap = {}
-
-        elif isinstance(toBeProcessedMap, str) or isinstance(toBeProcessedMap, list):
-            tempTargetData = fetchDataSet(masterKey, inputMap[masterKey])
-            targetData = filterTargetData(inputMap, tempTargetData)
 
     return targetData
 
@@ -340,6 +229,7 @@ def createMapII(inputMap):
     return targetData
 
 def fetchAssetAssetDetails(detailType, targetData):
+
 
     if detailType == 'Asset Name':
         return targetData['signifier']
@@ -489,6 +379,43 @@ def fetchComplexRelationsAttributes(resourceId):
             else:
                 return 'No Data Found'
 
+def mergeCellsInFile(startRowNum, targetFileRow, targetFileName):
+
+    newWorkbook = load_workbook(targetFileName)
+    newWorkSheet = newWorkbook.get_sheet_by_name('Asset List')
+    mergeLen = 0
+    totalLen = len(targetFileRow)
+    i = 0
+    targetRowNum = startRowNum
+    for col in range(1, totalLen + 1):
+        if isinstance(targetFileRow[i], str):
+            newWorkSheet.cell(row=targetRowNum, column=col).value = targetFileRow[i]
+            i += 1
+        elif isinstance(targetFileRow[i], list):
+            tempList = []
+            tempList = targetFileRow[i]
+            rowLen = len(tempList)
+            if mergeLen < rowLen:
+                mergeLen = rowLen
+            j = 0
+            for rowIndex in range(targetRowNum, targetRowNum + rowLen):
+                newWorkSheet.cell(row=rowIndex, column=col).value = tempList[j]
+                j += 1
+            i += 1
+
+    if mergeLen > 0:
+        i = 0
+        for col in range(1, totalLen + 1):
+            if (isinstance(targetFileRow[i], list) and len(targetFileRow[i]) == 1) or isinstance(targetFileRow[i], str):
+                newWorkSheet.merge_cells(start_row=targetRowNum, start_column=col, end_row=mergeLen, end_column=col)
+            i += 1
+        mergeLen = targetRowNum + mergeLen
+    else:
+        mergeLen = targetRowNum
+
+    newWorkbook.save(targetFileName)
+    return mergeLen
+
 def createTargetDataFile(targetMap, fileNamePrefix, fileNameSuffix):
 
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + fileNameSuffix
@@ -573,8 +500,10 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
                         targetFileHeader.append(subHeaderKey[subHeaderKey.index('->') + 3:])
                     else:
                         targetFileHeader.append(subHeaderKey)
+                    print(subHeaderMap[subHeaderKey])
                     targetFileRow.append(subHeaderMap[subHeaderKey])
 
+        print(assetSheetName)
         worksheet = workbook.get_sheet_by_name(assetSheetName)
         worksheet.append(targetFileHeader)
         workbook.save(targetFileName)
@@ -589,14 +518,11 @@ def createTargetDataFileII(targetMapList, fileNamePrefix, fileNameSuffix):
 
 def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
 
+    subMap = {}
     targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + '.xlsx'
     targetFileHeader = []
     targetFileRow = []
     targetFinalRowList = []
-    columnCount = 0
-    subMap = {}
-    tempList = []
-    mergeRow = {}
     i = 0
     if os.path.isfile(targetFileName):
         workbook = load_workbook(targetFileName)
@@ -604,7 +530,7 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
         workbook = Workbook(targetFileRow)
         worksheet = workbook.active
         worksheet.title = 'Asset List'
-        columnCount = 1
+
         #Write the File Header
         for innerMap in targetMapList:
             for key in innerMap:
@@ -613,120 +539,53 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                     for innerKey in map:
                         if innerKey not in targetFileHeader:
                             targetFileHeader.append(innerKey)
-                            columnCount += 1
                 elif key == 'Attributes':
                         if 'Attribute Type' not in targetFileHeader:
                             targetFileHeader.append('Attribute Type')
                             targetFileHeader.append('Attribute')
-                            columnCount += 2
                 elif key == 'Relations':
                         if 'Relation Type' not in targetFileHeader:
                             targetFileHeader.append('Relation Type')
                             targetFileHeader.append('Relation')
-                            columnCount += 2
                 elif key == 'Complex Relations':
                         if 'Complex Relations - Relation Type' not in targetFileHeader:
                             targetFileHeader.append('Complex Relations - Relation Type')
                             targetFileHeader.append('Complex Relations - Relation')
                             targetFileHeader.append('Complex Relations - Attribute Type')
                             targetFileHeader.append('Complex Relations - Attribute')
-                            columnCount += 4
         worksheet.append(targetFileHeader)
-
-        for columnIndex in range(1,columnCount):
-            cell = worksheet.cell(row=1, column=columnIndex)
-            cell.font = cell.font.copy(bold=True)
+    workbook.save(targetFileName)
 
     rowNum = 2
-    col = 1
     #Write actual data
     for innerMap in targetMapList:
-
-        prevHighestLen = 0
         for key in innerMap.keys():
             map = innerMap[key]
             if key == 'Asset Details':
                 for innerKey in map:
                     targetFileRow.append(map[innerKey])
-                    worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                    col += 1
             elif key == 'Attributes' or key == 'Relations':
-                highestLen = 0
-                currentRowNum = rowNum
                 for innerKey in map:
-                    if isinstance(map[innerKey], list):
-                        highestLen += len(map[innerKey])
-                    else:
-                        highestLen += 1
                     targetFileRow.append(innerKey)
                     targetFileRow.append(map[innerKey])
-                    worksheet.cell(row=rowNum, column=col).value = innerKey[innerKey.find('>')+1:]
-                    col += 1
-                    if isinstance(map[innerKey], list):
-                        tempList = []
-                        tempList = map[innerKey]
-                        rowLen = len(tempList)
-                        j = 0
-                        for rowIndex in range(rowNum, rowNum + rowLen):
-                            worksheet.cell(row=rowIndex, column=col).value = tempList[j]
-                            j += 1
-                        rowNum = rowNum+rowLen
-                    else:
-                        worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                        rowNum = rowNum + 1
-                    col -= 1
-                rowNum = currentRowNum
-                col +=2
-                if prevHighestLen > highestLen:
-                    highestLen = prevHighestLen
-                prevHighestLen = highestLen
             elif key == 'Complex Relations':
-                currentRowNum = rowNum
-                for subKey in map:
-                    highestLen = 0
-                    subMap = map[subKey]
-                    for innerKey in subMap:
-                        if isinstance(subMap[innerKey], list):
-                            highestLen += len(subMap[innerKey])
-                        else:
-                            highestLen += 1
-                        targetFileRow.append(innerKey)
-                        targetFileRow.append(subMap[innerKey])
-                        worksheet.cell(row=rowNum, column=col).value = innerKey
-                        col += 1
-                        if isinstance(subMap[innerKey], list):
-                            tempList = []
-                            tempList = subMap[innerKey]
-                            rowLen = len(tempList)
-                            j = 0
-                            for rowIndex in range(rowNum, rowNum + rowLen):
-                                worksheet.cell(row=rowIndex, column=col).value = tempList[j]
-                                j += 1
-                            rowNum = rowNum + rowLen
-                        else:
-                            worksheet.cell(row=rowNum, column=col).value = subMap[innerKey]
-                            rowNum = rowNum + 1
-                        col -= 1
-                    if prevHighestLen > highestLen:
-                        highestLen = prevHighestLen
-                    prevHighestLen = highestLen
-                    rowNum = currentRowNum
-                    col += 2
+                if 'Complex Relations - Relation Type' not in targetFileHeader:
+                    for innerKey in map:
+                        subMap = map[innerKey]
+                        if innerKey == 'Relations' or innerKey == 'Attributes':
+                            for subKey in subMap:
+                                targetFileRow.append(subKey)
+                                targetFileRow.append(subMap[subKey])
 
         targetFinalRowList.append(targetFileRow)
-        mergeRow[rowNum] = highestLen
-        rowNum = rowNum + highestLen + 1
         targetFileRow = []
-        col = 1
 
-    col = 1
-    for rowNum in mergeRow:
-         for col in range(1,5):
-            worksheet.merge_cells(start_row=rowNum, start_column=col, end_row=rowNum + mergeRow[rowNum]-1,end_column=col)
-            col +=1
+    for targetRow in targetFinalRowList:
+         print('rowNum ', rowNum)
+         print(targetRow)
+         rowLatestPos = mergeCellsInFile(rowNum, targetRow, targetFileName)
+         rowNum = rowLatestPos + 1
 
-    worksheet.freeze_panes = 'A2'
-    workbook.save(targetFileName)
     return targetFileName
 
 if __name__ == '__main__':
@@ -736,39 +595,28 @@ if __name__ == '__main__':
 
     # Open the parameter file of the business process
     os.chdir("K:\Git Code\Python\ParameterFiles")
-    with open(paramFileName, 'r', encoding='utf8') as yamlFile:
+    with open(paramFileName, 'r') as yamlFile:
         paramFileData = yaml.load(yamlFile)
 
-    outputFilter = ''
+    fileNameList = []
+    finalMap = {}
+    finalResultList = []
     outputFileName = ''
     for eachKey in paramFileData.keys():
-        fileNameList = []
-        finalMap = {}
-        finalResultList = []
         eachMap = paramFileData[eachKey]
+
+
         for itemkey in eachMap.keys():
+
             if itemkey == 'conditions':
-                outputFilter = eachMap[itemkey].keys()
-                if 'relationFilter' not in outputFilter:
-                    if isinstance(eachMap[itemkey], dict):
-                        targetData = createMapII(eachMap[itemkey])
-                elif 'relationFilter' in outputFilter:
-                    tempMap = {}
-                    for valuesMap in eachMap[itemkey].values():
-                        for innerKey in valuesMap:
-                            tempMap[innerKey] = valuesMap[innerKey]
-                            if innerKey == 'RelationTypeIn':
-                                assetObj = Asset()
-                                relationPath = RelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(endpoint='term/find/full', payload='')
-                                preTargetData = relationPath.filterRelationDataSet(tempTargetData)
-                                targetData = preTargetData
-                                tempMap = {}
-                            elif innerKey == 'AssetType':
-                                filterAssetTypes = RelationFilter(tempMap)
-                                targetData = filterAssetTypes.filterTargetDataSet(preTargetData)
-            elif itemkey == 'outputResult':
-                if outputFilter != 'relationPath':
+                if isinstance(eachMap[itemkey], dict):
+                    targetData = createMapII(eachMap[itemkey])
+            else:
+                if itemkey != 'outputFileName' and itemkey != 'email' and itemkey != 'outputResult':
+                    tempTargetData = fetchDataSet(itemkey, eachMap[itemkey])
+                    targetData = filterTargetData(eachMap, tempTargetData)
+
+                elif itemkey == 'outputResult':
                     targetDataMap = {}
                     outputResultParameters = eachMap[itemkey]
                     for i in range(0, len(targetData)):
@@ -778,15 +626,16 @@ if __name__ == '__main__':
                         targetDataComplexRelationsRelationsMap = {}
                         targetDataComplexRelationsAttributesMap = {}
                         targetDataMap = {}
-                        assetName = targetData[i]['signifier']
                         for outputParameter in outputResultParameters.keys():
                             outputParameterList = outputResultParameters[outputParameter]
                             # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
                             if outputParameter == 'Asset Details':
+
                                 for detailType in outputParameterList:
                                     targetDataMap[detailType] = fetchAssetAssetDetails(detailType, targetData[i])
 
                             # If needed, find the Relations, Attributes and Complex Relations of the asset
+
                             if outputParameter in ('Attributes', 'Relations'):
                                 # Find the possible Relations and Attributes of the asset
                                 possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
@@ -812,61 +661,45 @@ if __name__ == '__main__':
                                         targetDataRelationsMap = {}
                                         relationsResponse = fetchRelations(targetData[i]['resourceId'])
                                         if relationsResponse != 'No Data Found':
-                                            # Add all the relation types that have a value
                                             for relationResponseMap in relationsResponse:
-                                                existingRoleKeyValue = []
-                                                existingCoRoleKeyValue = []
                                                 for innerRelationsMap in relationResponseMap['relation']:
-                                                    targetDataRelationsRolekey = innerRelationsMap['typeReference']['role']
-                                                    targetDataRelationsCoRolekey = innerRelationsMap['typeReference']['coRole']
-
-                                                    if targetDataRelationsRolekey in targetDataRelationsMap.keys():
-                                                        #print('1', targetDataRelationsRolekey,targetDataRelationsMap[targetDataRelationsRolekey])
-                                                        existingRoleKeyValue = targetDataRelationsMap[targetDataRelationsRolekey]
-
-                                                    if targetDataRelationsCoRolekey in targetDataRelationsMap.keys():
-                                                        #print('2' , targetDataRelationsCoRolekey,targetDataRelationsMap[targetDataRelationsCoRolekey])
-                                                        existingCoRoleKeyValue = targetDataRelationsMap[targetDataRelationsCoRolekey]
-
-                                                    if innerRelationsMap['targetReference']['signifier'] == assetName:
-                                                        existingRoleKeyValue = assetName
-                                                        #print('3', existingRoleKeyValue)
-                                                    else:
-                                                        existingRoleKeyValue.append(innerRelationsMap['targetReference']['signifier'])
-                                                        #print('4', existingRoleKeyValue)
-
-                                                    if innerRelationsMap['sourceReference']['signifier'] == assetName:
-                                                        existingCoRoleKeyValue = assetName
-                                                        #print('5', existingCoRoleKeyValue, innerRelationsMap['sourceReference']['signifier'], assetName)
-                                                    else:
-                                                        #print('6', existingCoRoleKeyValue, assetName, innerRelationsMap['sourceReference']['signifier'])
-                                                        existingCoRoleKeyValue.append(innerRelationsMap['sourceReference']['signifier'])
-
-                                                    # Creating Temp Keys for map to avoid situations where coRole and Role get reused for both South and Target relations
-                                                    tempRolekey = innerRelationsMap['typeReference']['resourceId']+'>'+innerRelationsMap['typeReference']['role']
-                                                    targetDataRelationsMap[tempRolekey] = existingRoleKeyValue
-                                                    tempCoRoleKey = innerRelationsMap['typeReference']['resourceId']+'>'+innerRelationsMap['typeReference']['coRole']
-                                                    targetDataRelationsMap[tempCoRoleKey] = existingCoRoleKeyValue
-
-                                            # Add all the relation types that don't have a value
-                                            for possibleRelation in possibleRelationsList:
-                                                for roleMap in possibleRelation:
-                                                    if possibleRelation[roleMap] not in targetDataRelationsMap.keys():
-                                                        targetDataRelationsMap[possibleRelation[roleMap]] = ''
+                                                    for roleMap in possibleRelationsList:
+                                                        if innerRelationsMap['typeReference']['role'] == roleMap['role']:
+                                                            targetDataRelationsMap[roleMap['role']] = \
+                                                            innerRelationsMap['sourceReference']['signifier']
+                                                            targetDataRelationsMap[roleMap['coRole']] = \
+                                                            innerRelationsMap['targetReference']['signifier']
+                                                        else:
+                                                            targetDataRelationsMap[roleMap['role']] = ''
+                                                            targetDataRelationsMap[roleMap['coRole']] = ''
+                                    else:
+                                        targetDataRelationsMap = {}
+                                        relationsResponse = fetchRelations(targetData[i]['resourceId'])
+                                        if relationsResponse != 'No Data Found':
+                                            for relationResponseMap in relationsResponse:
+                                                for innerRelationsMap in relationResponseMap['relation']:
+                                                    for roleMap in outputParameterList:
+                                                        if innerRelationsMap['typeReference']['role'] == roleMap['role']:
+                                                            targetDataRelationsMap[roleMap['role']] = \
+                                                            innerRelationsMap['sourceReference']['signifier']
+                                                            targetDataRelationsMap[roleMap['coRole']] = \
+                                                            innerRelationsMap['targetReference']['signifier']
+                                                        else:
+                                                            targetDataRelationsMap[roleMap['role']] = ''
+                                                            targetDataRelationsMap[roleMap['coRole']] = ''
 
                                 # Find the Attributes
-                                if outputParameter == 'Attributes' and len(possibleAttributesList) > 0:
+                                if outputParameter == 'Attributes':
                                     if outputParameterList == 'All':
                                         targetDataAttributesMap = {}
                                         attributesResponse = fetchAttributes(targetData[i]['resourceId'])
+                                        listOfAttributesFromResponse = []
                                         attributesResponseList = attributesResponse['attributeReference']
-                                        # Below block isn't required anymore.
-                                        # listOfAttributesFromResponse = []
-                                        # for listIndex in range(0, len(attributesResponseList)):
-                                        #     attributeResponseMap = attributesResponseList[listIndex]
-                                        #     listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
-                                        # listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
-
+                                        for listIndex in range(0, len(attributesResponseList)):
+                                            attributeResponseMap = attributesResponseList[listIndex]
+                                            listOfAttributesFromResponse.append(attributeResponseMap['labelReference'][
+                                                                                    'signifier'])  # Find all the attributes of the asset that are not null
+                                        listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
 
                                         # Add all the attribute types that have a value
                                         for listIndex in range(0, len(attributesResponseList)):
@@ -916,15 +749,17 @@ if __name__ == '__main__':
                                 # Find the Complex Relations and Attributes
                                 complexRelationsMap = fetchComplexRelations(targetData[i]['resourceId'])
                                 if complexRelationsMap not in ('No Relations Found', 'No Data Found'):
+                                    targetDataComplexRelationsMap['signifier'] = targetData[i]['signifier']
                                     relationValue = []
                                     for j in range(0, len(complexRelationsMap['relationReference'])):
                                         relationReferenceList = complexRelationsMap['relationReference'][j]
                                         relationKey = relationReferenceList['typeReference']['role']
-                                        if relationKey in targetDataComplexRelationsRelationsMap.keys():
-                                            relationValue = targetDataComplexRelationsRelationsMap[relationKey]
+                                        if relationKey in targetDataComplexRelationsMap.keys():
+                                            relationValue = targetDataComplexRelationsMap[relationKey]
                                         relationValue.append(relationReferenceList['targetReference']['signifier'])
                                         targetDataComplexRelationsRelationsMap[relationKey] = relationValue
                                         relationValue = []
+
                                         targetDataComplexRelationsMap['Relations'] = targetDataComplexRelationsRelationsMap
 
                                 complexRelationsAttributesMap = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
@@ -933,8 +768,8 @@ if __name__ == '__main__':
                                     for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
                                         attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
                                         attributeKey = attributesReferenceList['labelReference']['signifier']
-                                        if attributeKey in targetDataComplexRelationsAttributesMap.keys():
-                                            attributeValue = targetDataComplexRelationsAttributesMap[attributeKey]
+                                        if attributeKey in targetDataComplexRelationsMap.keys():
+                                            attributeValue = targetDataComplexRelationsMap[attributeKey]
                                         attributeValue.append(cleanhtml(attributesReferenceList['value']))
                                         targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
                                         attributeValue = []
@@ -943,49 +778,54 @@ if __name__ == '__main__':
 
                         tempMap = {}
                         finalMap['Asset Details'] = targetDataMap
-                        finalMap['Attributes'] = targetDataAttributesMap
-                        finalMap['Relations'] = targetDataRelationsMap
-                        finalMap['Complex Relations'] = targetDataComplexRelationsMap
+                        if bool(targetDataAttributesMap):
+                            finalMap['Attributes'] = targetDataAttributesMap
+                        if bool(targetDataRelationsMap):
+                            finalMap['Relations'] = targetDataRelationsMap
+                        if bool(targetDataComplexRelationsMap):
+                            finalMap['Complex Relations'] = targetDataComplexRelationsMap
+
+
                         finalResultList.append(finalMap)
+
                         finalMap = {}
-                else:
-                    print('relationPath')
-            elif itemkey == 'outputFileName':
-                if outputFilter != 'relationPath':
+
+                elif itemkey == 'outputFileName':
                     # Create the output file
                     fileName = createTargetDataFileIII(finalResultList, eachKey, '.csv')
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)
-            elif itemkey == 'email':  #Emails the output file to the audience
+                elif itemkey == 'email':  #Emails the output file to the audience
 
-                print('Hello')
-                # zipFilePath = "K:/Git Code/Python/Output/" + outputFileName + ".zip"
-                # os.chdir("K:/Git Code/Python/Output/")
-                # for file in fileNameList:
-                #     with ZipFile(zipFilePath, 'a') as myzip:
-                #         myzip.write(os.path.basename(file))
-                #     myzip.close()
-                #
-                # composedMessage = MIMEMultipart()
-                # composedMessage['Subject'] = 'Requested Information'
-                # composedMessage['To'] = eachMap[itemkey]
-                # composedMessage['From'] = "srikrishna.bingi@gmail.com"
-                #
-                # ctype, encoding = mimetypes.guess_type(zipFilePath)
-                # if ctype is None or encoding is not None:
-                #     ctype = "application/octet-stream"
-                #
-                # zipFile = open(zipFilePath, 'rb')
-                # maintype, subtype = ctype.split("/", 1)
-                # msg = MIMEBase(maintype, _subtype=subtype)
-                # msg.set_payload(zipFile.read())
-                # encoders.encode_base64(msg)
-                #
-                # msg.add_header("Content-Disposition", "attachment", filename=outputFileName+'.zip')
-                # composedMessage.attach(msg)
+                    print('Hello')
+                    # zipFilePath = "K:/Git Code/Python/Output/" + outputFileName + ".zip"
+                    # os.chdir("K:/Git Code/Python/Output/")
+                    # for file in fileNameList:
+                    #     with ZipFile(zipFilePath, 'a') as myzip:
+                    #         myzip.write(os.path.basename(file))
+                    #     myzip.close()
+                    #
+                    # composedMessage = MIMEMultipart()
+                    # composedMessage['Subject'] = 'Requested Information'
+                    # composedMessage['To'] = eachMap[itemkey]
+                    # composedMessage['From'] = "srikrishna.bingi@gmail.com"
+                    #
+                    # ctype, encoding = mimetypes.guess_type(zipFilePath)
+                    # if ctype is None or encoding is not None:
+                    #     ctype = "application/octet-stream"
+                    #
+                    # zipFile = open(zipFilePath, 'rb')
+                    # maintype, subtype = ctype.split("/", 1)
+                    # msg = MIMEBase(maintype, _subtype=subtype)
+                    # msg.set_payload(zipFile.read())
+                    # encoders.encode_base64(msg)
+                    #
+                    # msg.add_header("Content-Disposition", "attachment", filename=outputFileName+'.zip')
+                    # composedMessage.attach(msg)
 
-                # mailObject = smtplib.SMTP('smtp.gmail.com', 587)
-                # mailObject.starttls()
-                # mailObject.login('srikrishna.bingi@gmail.com','******')
-                #mailObject.sendmail("srikrishna.bingi@gmail.com","srikrishna.bingi@exusia.com",composedMessage.as_string())
-                print('Done sending Mail')
+                    # mailObject = smtplib.SMTP('smtp.gmail.com', 587)
+                    # mailObject.starttls()
+                    # mailObject.login('srikrishna.bingi@gmail.com','******')
+                    #mailObject.sendmail("srikrishna.bingi@gmail.com","srikrishna.bingi@exusia.com",composedMessage.as_string())
+                    print('Done sending Mail')
+# mailObject.close()
