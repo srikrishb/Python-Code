@@ -1,3 +1,4 @@
+from Asset import Asset
 from Relation import Relation
 
 class RelationFilter:

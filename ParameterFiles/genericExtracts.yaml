@@ -1,15 +1,10 @@
 request1:
     conditions:
-        relationFilter:
-            RelationTypeIn:
-                - "Contains"
-                - "Consists of"
-                - "May consists of"
+        complexRelationFilter:
+            complexRelationName:
+                - "Derivation"
             AssetType:
-                - "Report"
-                - "Schedule"
-                - "Section"
-                - "Data Point"
+                - "Data Element"
     outputResult:
         Asset Details: 
             - Asset Name
@@ -20,28 +15,6 @@ request1:
         Relations: All
         Complex Relations: None  
     outputFileName: 'request1'
-    email: "srikrishna.bingi@exusia.com"
-request2:
-    conditions:
-        relationFilter:
-            RelationTypeIn:
-                - "Contains"
-                - "Consists of"
-                - "May consists of"
-            AssetType:
-                - "Report"
-                - "Schedule"
-                - "Section"
-    outputResult:
-        Asset Details: 
-            - Asset Name
-            - Community
-            - Domain
-            - Asset Type
-        Attributes: All
-        Relations: All
-        Complex Relations: None  
-    outputFileName: 'request2'
     email: "srikrishna.bingi@exusia.com"
 # request1:
     # conditions:
@@ -108,4 +81,49 @@ request2:
         # Relations: All
         # Complex Relations: None  
     # outputFileName: 'request4'
+    # email: "srikrishna.bingi@exusia.com"
+# request5:
+    # conditions:
+        # relationFilter:
+            # RelationTypeIn:
+                # - "Contains"
+                # - "Consists of"
+                # - "May consists of"
+            # AssetType:
+                # - "Report"
+                # - "Schedule"
+                # - "Section"
+                # - "Data Point"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: None  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
+# request6:
+    # conditions:
+        # relationFilter:
+            # RelationTypeIn:
+                # - "Contains"
+                # - "Consists of"
+                # - "May consists of"
+            # AssetType:
+                # - "Report"
+                # - "Schedule"
+                # - "Section"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: None  
+    # outputFileName: 'request2'
     # email: "srikrishna.bingi@exusia.com"

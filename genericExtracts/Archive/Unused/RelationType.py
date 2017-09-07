@@ -1,6 +1,6 @@
 import APIMethod as APIFile
 
-class Asset:
+class RelationType:
 
     def __init__(self, resourceId):
         self.resourceId = resourceId
@@ -14,7 +14,7 @@ class Asset:
         trylogin = APIFile.API.getCall(endpoint, payload)
         return trylogin
 
-    def fetchDataSet(self, endpoint, payload):
+    def fetchRelationTypes(self, endpoint, payload):
         response = Asset.getDataCall(endpoint, payload)
         if response['statusCode'] == '1':
             return response['data']['term']

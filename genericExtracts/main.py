@@ -25,6 +25,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import colors
 from openpyxl.styles import Font, Color
 from RelationFilter import RelationFilter
+from ComplexRelationFilter import ComplexRelationFilter
 from Asset import Asset
 
 def cleanhtml(raw_html):
@@ -593,9 +594,6 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
     targetFileHeader = []
     targetFileRow = []
     targetFinalRowList = []
-    columnCount = 0
-    subMap = {}
-    tempList = []
     mergeRow = {}
     i = 0
     if os.path.isfile(targetFileName):
@@ -635,7 +633,7 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
 
         for columnIndex in range(1,columnCount):
             cell = worksheet.cell(row=1, column=columnIndex)
-            cell.font = cell.font.copy(bold=True)
+            cell.font = Font(bold=True)
 
     rowNum = 2
     col = 1
@@ -749,9 +747,24 @@ if __name__ == '__main__':
         for itemkey in eachMap.keys():
             if itemkey == 'conditions':
                 outputFilter = eachMap[itemkey].keys()
-                if 'relationFilter' not in outputFilter:
+                if 'relationFilter' not in outputFilter and 'complexRelationFilter' not in outputFilter:
                     if isinstance(eachMap[itemkey], dict):
                         targetData = createMapII(eachMap[itemkey])
+                elif 'complexRelationFilter' in outputFilter:
+                    tempMap = {}
+                    for valuesMap in eachMap[itemkey].values():
+                        for innerKey in valuesMap:
+                            tempMap[innerKey] = valuesMap[innerKey]
+                            if innerKey == 'complexRelationName':
+                                assetObj = Asset()
+                                complexRelationObj = ComplexRelationFilter(tempMap)
+                                tempTargetData = assetObj.fetchDataSet(endpoint='term/find/full', payload='')
+                                preTargetData = complexRelationObj.filterComplexRelationDataSet(tempTargetData)
+                                targetData = preTargetData
+                                tempMap = {}
+                            elif innerKey == 'AssetType':
+                                filterAssetTypes = ComplexRelationFilter(tempMap)
+                                targetData = filterAssetTypes.filterTargetDataSet(preTargetData)
                 elif 'relationFilter' in outputFilter:
                     tempMap = {}
                     for valuesMap in eachMap[itemkey].values():
