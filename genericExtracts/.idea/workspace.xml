@@ -14,8 +14,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
-              <caret line="641" column="0" lean-forward="true" selection-start-line="641" selection-start-column="0" selection-end-line="641" selection-end-column="0" />
+            <state relative-caret-position="-2772">
+              <caret line="655" column="0" lean-forward="false" selection-start-line="655" selection-start-column="0" selection-end-line="655" selection-end-column="0" />
               <folding>
                 <element signature="e#20#29#0" expanded="true" />
                 <element signature="e#814#951#0" expanded="false" />
@@ -32,20 +32,20 @@
                 <element signature="e#8709#10234#0" expanded="false" />
                 <element signature="e#10283#10913#0" expanded="false" />
                 <element signature="e#10961#11198#0" expanded="false" />
-                <element signature="e#11232#13169#0" expanded="false" />
-                <element signature="e#13202#13423#0" expanded="false" />
-                <element signature="e#13482#15821#0" expanded="false" />
-                <element signature="e#15880#16223#0" expanded="false" />
-                <element signature="e#16261#17225#0" expanded="false" />
-                <element signature="e#17265#17524#0" expanded="false" />
-                <element signature="e#17569#18588#0" expanded="false" />
-                <element signature="e#18643#19706#0" expanded="false" />
-                <element signature="e#19782#21606#0" expanded="false" />
-                <element signature="e#21688#23635#0" expanded="false" />
-                <element signature="e#34090#45063#0" expanded="false" />
-                <element signature="e#35717#40045#0" expanded="false" />
-                <element signature="e#40207#45063#0" expanded="false" />
-                <element signature="e#48251#48525#0" expanded="false" />
+                <element signature="e#11232#13093#0" expanded="false" />
+                <element signature="e#13126#13347#0" expanded="false" />
+                <element signature="e#13406#15745#0" expanded="false" />
+                <element signature="e#15804#16147#0" expanded="false" />
+                <element signature="e#16185#17149#0" expanded="false" />
+                <element signature="e#17189#17448#0" expanded="false" />
+                <element signature="e#17493#18903#0" expanded="false" />
+                <element signature="e#18958#20265#0" expanded="false" />
+                <element signature="e#20341#22165#0" expanded="false" />
+                <element signature="e#22247#24194#0" expanded="false" />
+                <element signature="e#24561#26467#0" expanded="false" />
+                <element signature="e#26968#28322#0" expanded="false" />
+                <element signature="e#35638#36654#0" expanded="false" />
+                <element signature="e#41746#46602#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -54,7 +54,7 @@
       <file leaf-file-name="ComplexRelationFilter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ComplexRelationFilter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
+            <state relative-caret-position="399">
               <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
               <folding />
             </state>
@@ -64,8 +64,8 @@
       <file leaf-file-name="ComplexRelation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ComplexRelation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="491">
-              <caret line="24" column="43" lean-forward="true" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
+            <state relative-caret-position="239">
+              <caret line="24" column="43" lean-forward="false" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -89,10 +89,10 @@
       <find>new.txt</find>
       <find>targetDataComplexRelationMap</find>
       <find>update</find>
-      <find>print</find>
       <find>RelationFilter</find>
       <find>Relation</find>
       <find>AssetType</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace>itemkey</replace>
@@ -162,8 +162,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -175,6 +173,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -359,16 +359,14 @@
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16058002" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3295711" sideWeight="0.52416754" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39729118" sideWeight="0.5263158" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295711" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295711" sideWeight="0.47583243" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295711" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1584318" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32844242" sideWeight="0.48549947" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39729118" sideWeight="0.47368422" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295711" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39616254" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -376,6 +374,8 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32844242" sideWeight="0.48549947" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -410,18 +410,13 @@
           <line>473</line>
           <option name="timeStamp" value="88" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>2</line>
-          <option name="timeStamp" value="94" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint suspend="NONE" type="python-exception">
           <properties exception="BaseException" />
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="96" />
+      <option name="time" value="97" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -485,13 +480,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/RelationPath.py" />
-    <entry file="file://$PROJECT_DIR$/RelationType.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="16" column="26" lean-forward="false" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/RelationType.py" />
     <entry file="file://$PROJECT_DIR$/../genericExtracts - OOPS/main_09042017.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
@@ -533,19 +522,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AssetType.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" column="35" lean-forward="false" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/AssetType.py" />
     <entry file="file://$PROJECT_DIR$/Asset.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="17" column="19" lean-forward="false" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -553,7 +534,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-391">
           <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -561,21 +541,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="48" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ComplexRelation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
-          <caret line="24" column="43" lean-forward="true" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
+        <state relative-caret-position="239">
+          <caret line="24" column="43" lean-forward="false" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ComplexRelationFilter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
+        <state relative-caret-position="399">
           <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
@@ -583,8 +562,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="641" column="0" lean-forward="true" selection-start-line="641" selection-start-column="0" selection-end-line="641" selection-end-column="0" />
+        <state relative-caret-position="-2772">
+          <caret line="655" column="0" lean-forward="false" selection-start-line="655" selection-start-column="0" selection-end-line="655" selection-end-column="0" />
           <folding>
             <element signature="e#20#29#0" expanded="true" />
             <element signature="e#814#951#0" expanded="false" />
@@ -601,20 +580,20 @@
             <element signature="e#8709#10234#0" expanded="false" />
             <element signature="e#10283#10913#0" expanded="false" />
             <element signature="e#10961#11198#0" expanded="false" />
-            <element signature="e#11232#13169#0" expanded="false" />
-            <element signature="e#13202#13423#0" expanded="false" />
-            <element signature="e#13482#15821#0" expanded="false" />
-            <element signature="e#15880#16223#0" expanded="false" />
-            <element signature="e#16261#17225#0" expanded="false" />
-            <element signature="e#17265#17524#0" expanded="false" />
-            <element signature="e#17569#18588#0" expanded="false" />
-            <element signature="e#18643#19706#0" expanded="false" />
-            <element signature="e#19782#21606#0" expanded="false" />
-            <element signature="e#21688#23635#0" expanded="false" />
-            <element signature="e#34090#45063#0" expanded="false" />
-            <element signature="e#35717#40045#0" expanded="false" />
-            <element signature="e#40207#45063#0" expanded="false" />
-            <element signature="e#48251#48525#0" expanded="false" />
+            <element signature="e#11232#13093#0" expanded="false" />
+            <element signature="e#13126#13347#0" expanded="false" />
+            <element signature="e#13406#15745#0" expanded="false" />
+            <element signature="e#15804#16147#0" expanded="false" />
+            <element signature="e#16185#17149#0" expanded="false" />
+            <element signature="e#17189#17448#0" expanded="false" />
+            <element signature="e#17493#18903#0" expanded="false" />
+            <element signature="e#18958#20265#0" expanded="false" />
+            <element signature="e#20341#22165#0" expanded="false" />
+            <element signature="e#22247#24194#0" expanded="false" />
+            <element signature="e#24561#26467#0" expanded="false" />
+            <element signature="e#26968#28322#0" expanded="false" />
+            <element signature="e#35638#36654#0" expanded="false" />
+            <element signature="e#41746#46602#0" expanded="false" />
           </folding>
         </state>
       </provider>

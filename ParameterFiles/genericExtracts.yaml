@@ -16,7 +16,7 @@ request1:
         Complex Relations: None  
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
-# request1:
+# request2:
     # conditions:
         # attributeFilter:
             # - attributeTypeEquals: "Prioritized Attribute"
