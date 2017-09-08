@@ -464,6 +464,7 @@ def fetchComplexRelations(resourceId):
             return 'No Relations Found'
         else:
             complexRelationList = complexRelationDefinitionData['termReference']
+
             for complexRelation in complexRelationList:
                 complexRelationRelationsEndpoint = 'complex_relation/' + complexRelation['resourceId'] + '/relations'
                 complexRelationRelationsPayload = ''
@@ -697,37 +698,43 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
             elif key== 'Complex Relations':
                 currentRowNum = rowNum
                 currentColNum = col
-                for subKey in map:
+
+                for key in map:
+                    print('key', key)
+                    print('map[key]', map[key])
                     highestLen = 0
-                    subMap = map[subKey]
-                    if subKey[subKey.find('>')+1:] == 'Relations':
+                    innerMap = map[key]
+                    if key == 'Relation':
                         col = currentColNum
-                    for innerKey in subMap:
-                        if isinstance(subMap[innerKey], list):
-                            highestLen += len(subMap[innerKey])
-                        else:
-                            highestLen += 1
-                        if innerKey[innerKey.find('>')+1:] == 'Complex Relation - Name':
-                            worksheet.cell(row=rowNum, column=col).value = subMap[innerKey]
+                    print('innerMap', innerMap)
+                    for innerKey in innerMap:
+                        print('innerKey', innerKey)
+                        innerInnerMap = innerMap[innerKey]
+                        for innerInnerKey in innerInnerMap:
+                            print('innerInnerKey', innerInnerKey)
+                            # Name of Complex Relation Type
+                            worksheet.cell(row=rowNum, column=col).value = innerInnerKey
                             col += 1
-                        else:
-                            targetFileRow.append(innerKey)
-                            targetFileRow.append(subMap[innerKey])
-                            worksheet.cell(row=rowNum, column=col).value = innerKey
-                            col += 1
-                            if isinstance(subMap[innerKey], list):
-                                tempList = []
-                                tempList = subMap[innerKey]
-                                rowLen = len(tempList)
-                                j = 0
-                                for rowIndex in range(rowNum, rowNum + rowLen):
-                                    worksheet.cell(row=rowIndex, column=col).value = tempList[j]
-                                    j += 1
-                                rowNum = rowNum + rowLen
-                            else:
-                                worksheet.cell(row=rowNum, column=col).value = subMap[innerKey]
-                                rowNum = rowNum + 1
-                            col -= 1
+                            innerInnerInnerMap = innerInnerMap[innerInnerKey]
+                            for innerInnerInnerKey in innerInnerInnerMap:
+                                print('innerInnerInnerKey', innerInnerInnerKey)
+                                print('innerInnerInnerMap', innerInnerInnerMap)
+                                # Name of the Relation Type under Complex Relation
+                                worksheet.cell(row=rowNum, column=col).value = innerInnerInnerKey
+                                col += 1
+                                # Relation Value
+                                if isinstance(innerInnerInnerMap[innerInnerInnerKey], list):
+                                    tempList = innerInnerInnerMap[innerInnerInnerKey]
+                                    rowLen = len(tempList)
+                                    j = 0
+                                    for rowIndex in range(rowNum, rowNum + rowLen):
+                                        worksheet.cell(row=rowIndex, column=col).value = tempList[j]
+                                        j += 1
+                                    rowNum = rowNum + rowLen
+                                else:
+                                    worksheet.cell(row=rowNum, column=col).value = innerInnerInnerMap[innerInnerInnerKey]
+                                    rowNum = rowNum + 1
+                                col -= 1
                     if prevHighestLen > highestLen:
                         highestLen = prevHighestLen
                     prevHighestLen = highestLen
@@ -958,21 +965,25 @@ if __name__ == '__main__':
                                 # Find the Complex Relations and Attributes
                                 complexRelationsMapList = fetchComplexRelations(targetData[i]['resourceId'])
                                 if complexRelationsMapList not in ('No Relations Found', 'No Data Found'):
-                                    print(complexRelationsMapList)
                                     relationValue = []
+                                    tempMap = {}
+                                    tempSubMap = {}
                                     for complexRelationsMap in complexRelationsMapList:
                                         for j in range(0, len(complexRelationsMap['relationReference'])):
                                             relationReferenceList = complexRelationsMap['relationReference'][j]
-                                            tempKey = 'Complex Relation - Name'
-                                            targetDataComplexRelationsRelationsMap[tempKey] = relationReferenceList['typeReference']['headTerm']['signifier']
+                                            # Check if there is any existing entry for the same signifier
+                                            if relationReferenceList['typeReference']['headTerm']['signifier'] in targetDataComplexRelationsRelationsMap.keys():
+                                                tempMap = targetDataComplexRelationsRelationsMap[relationReferenceList['typeReference']['headTerm']['signifier']]
+                                            else:
+                                                tempMap = {}
                                             relationKey = relationReferenceList['typeReference']['role']
-                                            if relationKey in targetDataComplexRelationsRelationsMap.keys():
-                                                relationValue = targetDataComplexRelationsRelationsMap[relationKey]
+                                            if relationKey in tempMap.keys():
+                                                relationValue = tempMap[relationKey]
                                             relationValue.append(relationReferenceList['targetReference']['signifier'])
-                                            targetDataComplexRelationsRelationsMap[relationKey] = relationValue
+                                            tempMap[relationKey] = relationValue
+                                            targetDataComplexRelationsRelationsMap[relationReferenceList['typeReference']['headTerm']['signifier']]= tempMap
                                             relationValue = []
-                                            tempKey = 'Relations'
-                                            targetDataComplexRelationsMap[tempKey] = targetDataComplexRelationsRelationsMap
+                                            targetDataComplexRelationsMap['Relation'] = targetDataComplexRelationsRelationsMap
 
                                 complexRelationsAttributesMapList = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
                                 if complexRelationsAttributesMapList != 'No Attributes Found':

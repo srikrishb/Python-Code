@@ -1,10 +1,11 @@
 request1:
     conditions:
-        complexRelationFilter:
-            complexRelationName:
-                - "Derivation"
-            AssetType:
-                - "Data Element"
+        assetNameLike: "Accretion of discount"
+        # complexRelationFilter:
+            # complexRelationName:
+                # - "Derivation"
+            # AssetType:
+                # - "Data Element"
     outputResult:
         Asset Details: 
             - Asset Name
