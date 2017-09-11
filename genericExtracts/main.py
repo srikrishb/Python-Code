@@ -700,31 +700,23 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                 currentColNum = col
 
                 for key in map:
-                    print('key', key)
-                    print('map[key]', map[key])
                     highestLen = 0
                     innerMap = map[key]
                     if key == 'Relation':
-                        col = currentColNum
-                    print('innerMap', innerMap)
-                    for innerKey in innerMap:
-                        print('innerKey', innerKey)
-                        innerInnerMap = innerMap[innerKey]
-                        for innerInnerKey in innerInnerMap:
-                            print('innerInnerKey', innerInnerKey)
+                        for innerKey in innerMap:
+                            col = currentColNum
                             # Name of Complex Relation Type
-                            worksheet.cell(row=rowNum, column=col).value = innerInnerKey
+                            worksheet.cell(row=rowNum, column=col).value = innerKey
                             col += 1
-                            innerInnerInnerMap = innerInnerMap[innerInnerKey]
-                            for innerInnerInnerKey in innerInnerInnerMap:
-                                print('innerInnerInnerKey', innerInnerInnerKey)
-                                print('innerInnerInnerMap', innerInnerInnerMap)
+                            innerInnerMap = innerMap[innerKey]
+                            for innerInnerKey in innerInnerMap:
                                 # Name of the Relation Type under Complex Relation
-                                worksheet.cell(row=rowNum, column=col).value = innerInnerInnerKey
+                                worksheet.cell(row=rowNum, column=col).value = innerInnerKey
                                 col += 1
+                                innerInnerInnerMap = innerInnerMap[innerInnerKey]
                                 # Relation Value
-                                if isinstance(innerInnerInnerMap[innerInnerInnerKey], list):
-                                    tempList = innerInnerInnerMap[innerInnerInnerKey]
+                                if isinstance(innerInnerInnerMap, list):
+                                    tempList = innerInnerInnerMap
                                     rowLen = len(tempList)
                                     j = 0
                                     for rowIndex in range(rowNum, rowNum + rowLen):
@@ -732,9 +724,30 @@ def createTargetDataFileIII(targetMapList, fileNamePrefix, fileNameSuffix):
                                         j += 1
                                     rowNum = rowNum + rowLen
                                 else:
-                                    worksheet.cell(row=rowNum, column=col).value = innerInnerInnerMap[innerInnerInnerKey]
+                                    worksheet.cell(row=rowNum, column=col).value = innerInnerInnerMap
                                     rowNum = rowNum + 1
                                 col -= 1
+
+                    if key == 'Attributes':
+                        rowNum = currentRowNum
+                        for innerKey in innerMap:
+                            # Name of Attribute Type
+                            worksheet.cell(row=rowNum, column=col).value = innerKey
+                            col += 1
+                            innerInnerMap = innerMap[innerKey]
+                            if isinstance(innerInnerMap, list):
+                                tempList = innerInnerMap
+                                rowLen = len(tempList)
+                                j = 0
+                                for rowIndex in range(rowNum, rowNum + rowLen):
+                                    worksheet.cell(row=rowIndex, column=col).value = tempList[j]
+                                    j += 1
+                                rowNum = rowNum + rowLen
+                            else:
+                                worksheet.cell(row=rowNum, column=col).value = innerInnerMap
+                                rowNum = rowNum + 1
+                            col -= 1
+
                     if prevHighestLen > highestLen:
                         highestLen = prevHighestLen
                     prevHighestLen = highestLen
@@ -821,6 +834,8 @@ if __name__ == '__main__':
                         targetDataComplexRelationsRelationsMap = {}
                         targetDataComplexRelationsAttributesMap = {}
                         targetDataMap = {}
+                        attributeValue = []
+                        tempList = []
                         assetName = targetData[i]['signifier']
                         for outputParameter in outputResultParameters.keys():
                             outputParameterList = outputResultParameters[outputParameter]
@@ -967,7 +982,6 @@ if __name__ == '__main__':
                                 if complexRelationsMapList not in ('No Relations Found', 'No Data Found'):
                                     relationValue = []
                                     tempMap = {}
-                                    tempSubMap = {}
                                     for complexRelationsMap in complexRelationsMapList:
                                         for j in range(0, len(complexRelationsMap['relationReference'])):
                                             relationReferenceList = complexRelationsMap['relationReference'][j]
@@ -987,18 +1001,20 @@ if __name__ == '__main__':
 
                                 complexRelationsAttributesMapList = fetchComplexRelationsAttributes(targetData[i]['resourceId'])
                                 if complexRelationsAttributesMapList != 'No Attributes Found':
-                                    attributeValue = []
+
                                     for complexRelationsAttributesMap in complexRelationsAttributesMapList:
                                         for j in range(0, len(complexRelationsAttributesMap['attributeReferences']['attributeReference'])):
                                             attributesReferenceList = complexRelationsAttributesMap['attributeReferences']['attributeReference'][j]
                                             attributeKey = attributesReferenceList['labelReference']['signifier']
-                                            if attributeKey in targetDataComplexRelationsAttributesMap.keys():
-                                                attributeValue = targetDataComplexRelationsAttributesMap[attributeKey]
                                             attributeValue.append(cleanhtml(attributesReferenceList['value']))
+                                            if attributeKey in targetDataComplexRelationsAttributesMap.keys():
+                                                tempList = targetDataComplexRelationsAttributesMap[attributeKey]
+                                                attributeValue = attributeValue + tempList
                                             targetDataComplexRelationsAttributesMap[attributeKey] = attributeValue
                                             attributeValue = []
 
                                     targetDataComplexRelationsMap['Attributes'] = targetDataComplexRelationsAttributesMap
+
 
                         tempMap = {}
                         finalMap['Asset Details'] = targetDataMap
