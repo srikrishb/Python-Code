@@ -1,10 +1,9 @@
-request1:
+request2:
     conditions:
-        complexRelationFilter:
-            complexRelationName:
-                - "Derivation"
+        attributeFilter:
+            attributeTypeEquals: "Prioritized Attribute"
             AssetType:
-                - "Data Element"
+                - "Yes"
     outputResult:
         Asset Details: 
             - Asset Name
@@ -13,9 +12,27 @@ request1:
             - Asset Type
         Attributes: All
         Relations: All
-        Complex Relations: None  
+        Complex Relations: All  
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
+# request1:
+    # conditions:
+        # complexRelationFilter:
+            # complexRelationName:
+                # - "Derivation"
+            # AssetType:
+                # - "Data Element"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: None  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
 # request2:
     # conditions:
         # attributeFilter:

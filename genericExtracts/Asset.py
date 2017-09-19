@@ -18,12 +18,12 @@ class Asset:
     def fetchDataSet(innerMapKey, innerMapValue):
 
         result = dict()
-        if str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey).find('RELATIONTYPEIN') != -1 or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1:
+        if str.upper(innerMapKey).find('COMPLEXRELATIONNAME') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey).find('RELATIONTYPEIN') != -1 or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1 or str.upper(innerMapKey).find('ASSETNAMEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1:
             searchSignfier = ''
         elif str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS':
             searchSignfier = innerMapValue
 
-        if str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey).find('RELATIONTYPEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
+        if str.upper(innerMapKey).find('COMPLEXRELATIONNAME') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey).find('RELATIONTYPEIN') != -1 or str.upper(innerMapKey).find('ATTRIBUTETYPE') != -1 or str.upper(innerMapKey) == 'ASSETNAMEIN' or str.upper(innerMapKey) == 'ASSETNAMELIKE' or str.upper(innerMapKey) == 'ASSETNAMEEQUALS' or str.upper(innerMapKey).find("LASTMODIFIED") != -1 or str.upper(innerMapKey).find("CREATED") != -1:
             assetNameLikeEndpoint = 'term/find/full'
             assetNameLikePayload = {'excludeMeta': 'false', 'searchSignifier': searchSignfier}
             assetNameLikeResponse = Asset.getDataCall(assetNameLikeEndpoint, assetNameLikePayload)

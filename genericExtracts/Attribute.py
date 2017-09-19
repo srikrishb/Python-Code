@@ -15,7 +15,7 @@ class Attribute:
         return trylogin
 
     @staticmethod
-    def fetchAttributes(self, assetResourceId):
+    def fetchAttributes(assetResourceId):
         attributesEndpoint = 'concept_type/' + assetResourceId + '/attributes'
         attributesPayload = ''
         attributesResponse = Attribute.getDataCall(attributesEndpoint, attributesPayload)

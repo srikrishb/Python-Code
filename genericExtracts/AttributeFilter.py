@@ -35,7 +35,7 @@ class AttributeFilter:
             possibleAttributesList = Attribute.fetchPossibleAttributes(data['resourceId'])
             if len(possibleAttributesList['attributeType']) > 0:
                 # Fetch attributes for the resourceId
-                attributesResponse = Attribute.fetchAttributes(data['resourceId'])
+                attributesResponse = Attribute.fetchAttributes(assetResourceId=data['resourceId'])
                 attributesResponseList = attributesResponse['attributeReference']
 
                 # Loop through the attributesResponseList to check whether specified filterValue has been set

@@ -819,6 +819,7 @@ if __name__ == '__main__':
                                 assetObj = Asset()
                                 complexRelationFilterObj = ComplexRelationFilter(tempMap)
                                 tempTargetData = assetObj.fetchDataSet(innerKey,'')
+
                                 preTargetData = complexRelationFilterObj.filterComplexRelationDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
