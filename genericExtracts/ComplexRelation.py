@@ -14,6 +14,7 @@ class ComplexRelation:
         trylogin = APIFile.API.getCall(endpoint, payload)
         return trylogin
 
+
     def fetchComplexRelations(self, assetResourceId):
         complexRelationDefinitionEndpoint = 'complex_relation/'
         complexRelationDefinitionPayload = {'term': assetResourceId}

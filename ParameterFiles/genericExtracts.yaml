@@ -1,9 +1,6 @@
 request2:
     conditions:
-        attributeFilter:
-            attributeTypeEquals: "Prioritized Attribute"
-            AssetType:
-                - "Yes"
+        assetNameLike: "Amortized" 
     outputResult:
         Asset Details: 
             - Asset Name
