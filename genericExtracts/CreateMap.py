@@ -1,9 +1,11 @@
+from Asset import Asset
 
 class CreateMap:
 
     def __init__(self, inputMap):
         self.inputMap = inputMap
 
+    @staticmethod
     def generateFile(inputMap):
         i = 0
         tempMap = {}
@@ -16,13 +18,13 @@ class CreateMap:
                     if masterKey == 'Or' or masterKey == 'And':
                         tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
                         if innerMapKey == 'attributeFilter':
-                            tempTargetData = fetchAttributeFilterDataSet(tempMap)
+                            tempTargetData = CreateMap.fetchAttributeFilterDataSet(tempMap)
                         else:
-                            tempTargetData = fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                            tempTargetData = Asset.fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
 
                         if i == 0:
                             i += 1
-                            preTargetData = filterTargetData(tempMap, tempTargetData)
+                            preTargetData = Asset.filterTargetData(tempMap, tempTargetData)
                         else:
 
                             if innerMapKey == 'attributeFilter':
@@ -42,11 +44,11 @@ class CreateMap:
 
             elif masterKey == 'attributeFilter':
                 tempMap[masterKey] = inputMap[masterKey]
-                targetData = fetchAttributeFilterDataSet(tempMap)
+                targetData = Asset.fetchAttributeFilterDataSet(tempMap)
                 tempMap = {}
 
             elif isinstance(toBeProcessedMap, str) or isinstance(toBeProcessedMap, list):
-                tempTargetData = fetchDataSet(masterKey, inputMap[masterKey])
+                tempTargetData = Asset.fetchDataSet(masterKey, inputMap[masterKey])
                 targetData = filterTargetData(inputMap, tempTargetData)
 
         return targetData

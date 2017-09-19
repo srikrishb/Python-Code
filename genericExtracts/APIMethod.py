@@ -46,6 +46,7 @@ class API:
         url = "%s/%s/%s" % (con.baseurl, con.restversion, args)
         r = requests.post(url, auth=(con.useName, con.password), data=payload)
 
+
         if ( (r.status_code != 201 and args == 'workflow') or (r.status_code != 200 and args != 'workflow') ) :
             #my_logger.debug("No Data Sync For " + str(payload))
             #return {'statusCode': '999', 'data': 'Add To Collibra Error'}
@@ -67,7 +68,7 @@ class API:
         r = ses.post(url, data=payload)
 
         if r.status_code == 200 or r.text == '':
-            return {'statusCode': '1'}
+            return {'statusCode': '1', 'data': r.text}
         else:
             return {'statusCode': '0'}
 

@@ -1,0 +1,70 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"Relation": {
+			"type" : "SOURCE",
+	        "BinaryFactType": {
+		    "role": { "name": "Role Type"},
+			"corole": { "name": "CoRole Type"}
+		 },
+		  "Source": {
+			"Signifier": { "name": "Head" }
+		  },
+		  "Target": {
+			"Signifier": { "name": "Tail" }
+		  }
+		},
+		"Relation": {
+			"type" : "TARGET",
+	        "BinaryFactType": {
+		    "role": { "name": "Role Type"},
+			"corole": { "name": "CoRole Type"}
+		 },
+		  "Source": {
+			"Signifier": { "name": "Head" }
+		  },
+		  "Target": {
+			"Signifier": { "name": "Tail" }
+		  }
+		},
+        "Filter": {
+		"Field": {
+                "name": "Asset Name",
+                "operator": "EQUALS",
+                "value": "Accretion of discount"
+              }
+        }
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Role Type"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Head"
+        }
+	  },
+      {
+        "Column": {
+          "fieldName": "CoRole Type"
+		  }
+      },
+      {
+        "Column": {
+          "fieldName": "Tail"
+        }
+      }
+    ]
+  }
+}

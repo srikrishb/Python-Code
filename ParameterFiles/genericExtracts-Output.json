@@ -1,0 +1,109 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"Attribute": {
+			"name": "attribute1",
+			"value": { "name": "Attribute Name"},
+			"AttributeType": {
+				"name": "attributetype1",
+				"signifier": { "name" : "Attribute Type"}
+				}
+		},
+		"Vocabulary": {
+          "name": "vocabulary1",
+          "Name": {
+            "name": "Vocabulary"
+          },
+          "Community": {
+            "name": "community1",
+            "Name": {
+              "name": "Community"
+            }
+          }
+        },
+		"Relations": [
+		"Relation": {
+			"type" : "TARGET",
+	        "BinaryFactType": {
+		    "role": { "name": "Target Relation Type"},
+			"corole": { "name": "Source Relation Type"}
+		 },
+		  "Source": {
+			"Signifier": { "name": "Source Relation" }
+		  },
+		  "Target": {
+			"Signifier": { "name": "Target Relation" }
+		  }
+		},
+		"Relation": {
+			"type" : "SOURCE",
+	        "BinaryFactType": {
+		    "role": { "name": "Target Relation Type"},
+			"corole": { "name": "Source Relation Type"}
+		 },
+		  "Source": {
+			"Signifier": { "name": "Source Relation" }
+		  },
+		  "Target": {
+			"Signifier": { "name": "Target Relation" }
+		  }
+		}
+		],
+        "Filter": {
+		"Field": {
+                "name": "Asset Name",
+                "operator": "EQUALS",
+                "value": "Accretion of discount"
+              }
+        }
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	   {
+        "Column": {
+          "fieldName": "Community"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "Vocabulary"
+        }
+      },
+     {
+        "Group": {
+          "Columns": [
+            { "Column": { "fieldName": "Attribute Type" } }
+          ]
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Source Relation Type"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Source Relation"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Target Relation Type"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Target Relation"
+        }
+      }
+    ]
+  }
+}

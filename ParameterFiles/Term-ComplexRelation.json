@@ -1,0 +1,58 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"ComplexRelation": {
+		"Relation": {
+		 "type": "SOURCE",
+		 "Source" : {
+			"Signifier": { "name": "CR Source Asset Name"},
+		 },
+		 "Target" : {
+			"Signifier": { "name": "CR Target Asset Name"},
+		 },
+		 "BinaryFactType": {
+		    "Id": { "name": "BinaryFactTypeId" },
+			"role": { "name": "roleCR"},
+			"corole": { "name": "coroleCR"}
+		 }
+		 }
+		}
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "roleCR"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "coroleCR"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "BinaryFactTypeId"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "CR Source Asset Name"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "CR Target Asset Name"
+        }
+      }
+    ]
+  }
+}

@@ -39,9 +39,7 @@ class API:
 
     def postDataCall(args, payload):
         url = "%s/%s/%s" % (con.baseurl, con.restversion, args)
-        conn = http.client.HTTPConnection(url)
-        conn.request("POST", "/cgi-bin/query", params, headers)
-        #r = requests.post(url, auth=(con.useName, con.password), data=payload)
+        r = requests.post(url, auth=(con.useName, con.password), data=payload)
 
         if ( (r.status_code != 201 and args == 'workflow') or (r.status_code != 200 and args != 'workflow') ) :
             #my_logger.debug("No Data Sync For " + str(payload))

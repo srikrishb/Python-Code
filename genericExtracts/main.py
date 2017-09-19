@@ -24,6 +24,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import colors
 from openpyxl.styles import Font, Color
+from AttributeFilter import AttributeFilter
 from RelationFilter import RelationFilter
 from ComplexRelationFilter import ComplexRelationFilter
 from Asset import Asset
@@ -790,9 +791,25 @@ if __name__ == '__main__':
         for itemkey in eachMap.keys():
             if itemkey == 'conditions':
                 outputFilter = eachMap[itemkey].keys()
-                if 'relationFilter' not in outputFilter and 'complexRelationFilter' not in outputFilter:
+                if 'relationFilter' not in outputFilter and 'complexRelationFilter' not in outputFilter and 'attributeFilter' not in outputFilter:
                     if isinstance(eachMap[itemkey], dict):
                         targetData = createMapII(eachMap[itemkey])
+                elif 'attributeFilter' in outputFilter:
+                    tempMap = {}
+                    for valuesMap in eachMap[itemkey].values():
+                        for innerKey in valuesMap:
+                            tempMap[innerKey] = valuesMap[innerKey]
+                            if innerKey == 'attributeTypeEquals':
+                                assetObj = Asset()
+                                assetFilterObj = AttributeFilter(tempMap)
+                                attributeKey = valuesMap[innerKey]
+                                tempTargetData = assetObj.fetchDataSet(innerKey, '')
+                                preTargetData = assetFilterObj.filterAttributeDataSet(tempTargetData)
+                                targetData = preTargetData
+                                tempMap = {}
+                            elif innerKey == 'attributeValueEquals':
+                                filterAssetTypes = AttributeFilter(tempMap)
+                                targetData = filterAssetTypes.filterTargetDataSet(attributeKey, preTargetData)
                 elif 'complexRelationFilter' in outputFilter:
                     tempMap = {}
                     for valuesMap in eachMap[itemkey].values():
@@ -800,9 +817,9 @@ if __name__ == '__main__':
                             tempMap[innerKey] = valuesMap[innerKey]
                             if innerKey == 'complexRelationName':
                                 assetObj = Asset()
-                                complexRelationObj = ComplexRelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(endpoint='term/find/full', payload='')
-                                preTargetData = complexRelationObj.filterComplexRelationDataSet(tempTargetData)
+                                complexRelationFilterObj = ComplexRelationFilter(tempMap)
+                                tempTargetData = assetObj.fetchDataSet(innerKey,'')
+                                preTargetData = complexRelationFilterObj.filterComplexRelationDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
                             elif innerKey == 'AssetType':
@@ -815,9 +832,9 @@ if __name__ == '__main__':
                             tempMap[innerKey] = valuesMap[innerKey]
                             if innerKey == 'RelationTypeIn':
                                 assetObj = Asset()
-                                relationPath = RelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(endpoint='term/find/full', payload='')
-                                preTargetData = relationPath.filterRelationDataSet(tempTargetData)
+                                relationFilterObj = RelationFilter(tempMap)
+                                tempTargetData = assetObj.fetchDataSet(innerKey, '')
+                                preTargetData = relationFilterObj.filterRelationDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
                             elif innerKey == 'AssetType':
