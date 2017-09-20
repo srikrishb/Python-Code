@@ -1,18 +1,17 @@
-from Relation import Relation
+from Asset import Asset
 
 class RelationFilter:
 
     def __init__(self, parameterList):
         self.parameterList = parameterList
-        print(self.parameterList)
 
     def filterRelationDataSet(self, dataToBeFiltered):
         filteredData = []
 
         for data in dataToBeFiltered:
             #Fetch relations for the resourceId
-            relationObj = Relation()
-            assetRelationList = relationObj.fetchRelations(data['resourceId'])
+            assetObj = Asset(data['resourceId'])
+            assetRelationList = assetObj.fetchRelations()
 
             #Loop through each inner map in assetRelationList
             for relationMap in assetRelationList:

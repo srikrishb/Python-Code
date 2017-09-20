@@ -112,10 +112,10 @@ class CreateMap:
                 for innerMapKey in toBeProcessedMap:
                     if masterKey == 'Or' or masterKey == 'And':
                         tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
-                        if innerMapKey == 'attributeFilter':
-                            tempTargetData = CreateMap.fetchAttributeFilterDataSet(tempMap)
-                        else:
-                            tempTargetData = Asset.fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                        # if innerMapKey == 'attributeFilter':
+                        #     tempTargetData = CreateMap.fetchAttributeFilterDataSet(tempMap)
+                        # else:
+                        tempTargetData = Asset.fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
 
                         if i == 0:
                             i += 1
@@ -143,7 +143,7 @@ class CreateMap:
 
         return targetData
 
-    def createMapII(self):
+    def createMap(self):
         tempMap = {}
         for key in self.inputMap:
             if self.checkNestedMaps(self.inputMap[key]) == 0:

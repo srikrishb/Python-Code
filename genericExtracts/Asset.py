@@ -5,9 +5,6 @@ class Asset:
     def __init__(self, resourceId):
         self.resourceId = resourceId
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def getDataCall(endpoint, payload):
         # Kickoff the workflow using the endpoint and payload
@@ -33,22 +30,89 @@ class Asset:
 
         return result
 
-    @staticmethod
-    def fetchAttributeFilterDataSet(inputMap):
-        i = 0
-        tempMap = {}
-        for inputKey in inputMap:
-            innerList = inputMap[inputKey]
-            for innerMap in innerList:
-                for innerKey in innerMap:
-                    tempMap[innerKey] = innerMap[innerKey]
-                    if i == 0:
-                        i += 1
-                        tempTargetData = Asset.fetchDataSet(innerKey, '')
-                        attributeKey = innerMap[innerKey]
-                        preTargetData = filterTargetData(tempMap, tempTargetData)
-                    else:
-                        targetData = filterAssetData(attributeKey, tempMap, preTargetData)
-                    tempMap = {}
+    # Fetches possible relations types and attributes types of an asset
+    def fetchPossibleRelationsTypesAndAttributesTypes(self):
+        possibleRandAEndpoint = 'concept_type/' + self.resourceId + '/possible_attribute_relation_types'
+        possibleRandAPayload = ''
+        possibleRandAResponse = self.getDataCall(possibleRandAEndpoint, possibleRandAPayload)
+        if possibleRandAResponse['statusCode'] == '1':
+            return possibleRandAResponse['data']
+        else:
+            return 'No Data Found'
 
-        return targetData
+    # Fetches possible attributes types of an asset
+    def fetchPossibleAttributesTypes(self):
+        possibleRandAEndpoint = 'concept_type/' + self.resourceId + '/possible_attribute_types'
+        possibleRandAPayload = ''
+        possibleRandAResponse = self.getDataCall(possibleRandAEndpoint, possibleRandAPayload)
+        if possibleRandAResponse['statusCode'] == '1':
+            return possibleRandAResponse['data']
+        else:
+            return 'No Data Found'
+
+    # Fetches relations of an asset
+    def fetchRelations(self):
+        relationsResponseList = []
+
+        sourceError = 'true'
+        targetError = 'true'
+
+        sourceRelationsEndpoint = 'concept_type/' + self.resourceId + '/source_relations'
+        sourceRelationsPayload = ''
+        sourceRelationsResponse = self.getDataCall(sourceRelationsEndpoint, sourceRelationsPayload)
+        if sourceRelationsResponse['statusCode'] == '1':
+            relationsResponseList.append(sourceRelationsResponse['data'])
+        else:
+            sourceError = 'No Data Found'
+
+        targetRelationsEndpoint = 'concept_type/' + self.resourceId + '/target_relations'
+        targetRelationsPayload = ''
+        targetRelationsResponse = self.getDataCall(targetRelationsEndpoint, targetRelationsPayload)
+        if targetRelationsResponse['statusCode'] == '1':
+            relationsResponseList.append(targetRelationsResponse['data'])
+        else:
+            targetError = 'No Data Found'
+
+        if sourceError == 'true' and targetError == 'true':
+            return relationsResponseList
+        else:
+            return 'No Data Found'
+
+    # Fetches attributes of an asset
+    def fetchAttributes(self):
+        attributesEndpoint = 'concept_type/' + self.resourceId + '/attributes'
+        attributesPayload = ''
+        attributesResponse = self.getDataCall(attributesEndpoint, attributesPayload)
+
+        if attributesResponse['statusCode'] == '1':
+            return attributesResponse['data']
+
+    # Fetches complex relations of an asset
+    def fetchComplexRelations(self):
+        complexRelationsResponseList = []
+        complexRelationsError = ''
+        complexRelationDefinitionEndpoint = 'complex_relation/'
+        complexRelationDefinitionPayload = {'term': self.resourceId}
+        complexRelationDefinitionResponse = Asset.getDataCall(complexRelationDefinitionEndpoint,complexRelationDefinitionPayload)
+
+        if complexRelationDefinitionResponse['statusCode'] == '1':
+            complexRelationDefinitionData = complexRelationDefinitionResponse['data']
+            if len(complexRelationDefinitionData['termReference']) == 0:
+                return 'No Relations Found'
+            else:
+                complexRelationList = complexRelationDefinitionData['termReference']
+
+                for complexRelation in complexRelationList:
+                    complexRelationRelationsEndpoint = 'complex_relation/' + complexRelation[
+                        'resourceId'] + '/relations'
+                    complexRelationRelationsPayload = ''
+                    complexRelationRelationsResponse = Asset.getDataCall(complexRelationRelationsEndpoint,complexRelationRelationsPayload)
+                    if complexRelationRelationsResponse['statusCode'] == '1':
+                        complexRelationsResponseList.append(complexRelationRelationsResponse['data'])
+                    else:
+                        complexRelationsError = 'No Data Found'
+
+            if complexRelationsError == '':
+                return complexRelationsResponseList
+            else:
+                return complexRelationsError

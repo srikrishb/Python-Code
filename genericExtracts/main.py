@@ -28,6 +28,7 @@ from AttributeFilter import AttributeFilter
 from RelationFilter import RelationFilter
 from ComplexRelationFilter import ComplexRelationFilter
 from Asset import Asset
+from CreateMap import CreateMap
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -88,7 +89,7 @@ def filterAssetData(filterAttributeType, innerMap, dataTobeFiltered):
 
     return filteredData
 
-def fetchPossibleAttributes(resourceId):
+def fetchpossibleAttributeTypes(resourceId):
     possibleRandAEndpoint = 'concept_type/' + resourceId + '/possible_attribute_types'
     possibleRandAPayload = ''
     possibleRandAResponse = getDataCall(possibleRandAEndpoint, possibleRandAPayload)
@@ -149,8 +150,8 @@ def filterTargetData(innerMap, dataToBeFiltered):
             i = 0
             for data in dataToBeFiltered:
                 #Find out whether there are any attributes tied to the asset:
-                possibleAttributesList = fetchPossibleAttributes(data['resourceId'])
-                if len(possibleAttributesList['attributeType']) > 0:
+                possibleAttributeTypesList = fetchpossibleAttributeTypes(data['resourceId'])
+                if len(possibleAttributeTypesList['attributeType']) > 0:
                     #Fetch attributes for the resourceId
                     attributesResponse = fetchAttributes(data['resourceId'])
                     attributesResponseList = attributesResponse['attributeReference']
@@ -793,17 +794,17 @@ if __name__ == '__main__':
                 outputFilter = eachMap[itemkey].keys()
                 if 'relationFilter' not in outputFilter and 'complexRelationFilter' not in outputFilter and 'attributeFilter' not in outputFilter:
                     if isinstance(eachMap[itemkey], dict):
-                        targetData = createMapII(eachMap[itemkey])
+                        createMapObj = CreateMap(eachMap[itemkey])
+                        targetData = createMapObj.createMap()
                 elif 'attributeFilter' in outputFilter:
                     tempMap = {}
                     for valuesMap in eachMap[itemkey].values():
                         for innerKey in valuesMap:
                             tempMap[innerKey] = valuesMap[innerKey]
                             if innerKey == 'attributeTypeEquals':
-                                assetObj = Asset()
                                 assetFilterObj = AttributeFilter(tempMap)
                                 attributeKey = valuesMap[innerKey]
-                                tempTargetData = assetObj.fetchDataSet(innerKey, '')
+                                tempTargetData = Asset.fetchDataSet(innerKey, '')
                                 preTargetData = assetFilterObj.filterAttributeDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
@@ -816,10 +817,8 @@ if __name__ == '__main__':
                         for innerKey in valuesMap:
                             tempMap[innerKey] = valuesMap[innerKey]
                             if innerKey == 'complexRelationName':
-                                assetObj = Asset()
                                 complexRelationFilterObj = ComplexRelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(innerKey,'')
-
+                                tempTargetData = Asset.fetchDataSet(innerKey,'')
                                 preTargetData = complexRelationFilterObj.filterComplexRelationDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
@@ -832,9 +831,8 @@ if __name__ == '__main__':
                         for innerKey in valuesMap:
                             tempMap[innerKey] = valuesMap[innerKey]
                             if innerKey == 'RelationTypeIn':
-                                assetObj = Asset()
                                 relationFilterObj = RelationFilter(tempMap)
-                                tempTargetData = assetObj.fetchDataSet(innerKey, '')
+                                tempTargetData = Asset.fetchDataSet(innerKey, '')
                                 preTargetData = relationFilterObj.filterRelationDataSet(tempTargetData)
                                 targetData = preTargetData
                                 tempMap = {}
@@ -855,6 +853,7 @@ if __name__ == '__main__':
                         attributeValue = []
                         tempList = []
                         assetName = targetData[i]['signifier']
+                        assetObj = Asset(targetData[i]['resourceId'])
                         for outputParameter in outputResultParameters.keys():
                             outputParameterList = outputResultParameters[outputParameter]
                             # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
@@ -865,27 +864,28 @@ if __name__ == '__main__':
                             # If needed, find the Relations, Attributes and Complex Relations of the asset
                             if outputParameter in ('Attributes', 'Relations'):
                                 # Find the possible Relations and Attributes of the asset
-                                possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
-                                possibleAttributesList = []
-                                possibleRelationsList = []
+                                #possibleRelationsAndAttributesResponse = fetchPossibleRelationsAndAttributes(targetData[i]['resourceId'])
+                                possibleRelationsAndAttributesResponse = assetObj.fetchPossibleRelationsTypesAndAttributesTypes()
+                                possibleAttributeTypesList = []
+                                possibleRelationTypesList = []
 
                                 if possibleRelationsAndAttributesResponse != 'No Data Found':
                                     possibleRelationsAndAttributesList = possibleRelationsAndAttributesResponse['representationReference']
                                     for k in range(0, len(possibleRelationsAndAttributesList)):
                                         if 'descriptionReference' in possibleRelationsAndAttributesList[k].keys():
-                                            possibleAttributesList.append(possibleRelationsAndAttributesList[k]['signifier'])
+                                            possibleAttributeTypesList.append(possibleRelationsAndAttributesList[k]['signifier'])
                                         tempMap = {}
                                         if 'role' in possibleRelationsAndAttributesList[k].keys():
                                             tempMap['role'] = possibleRelationsAndAttributesList[k]['role']
                                             tempMap['coRole'] = possibleRelationsAndAttributesList[k]['coRole']
-                                            if tempMap not in possibleRelationsList:
-                                                possibleRelationsList.append(tempMap)
+                                            if tempMap not in possibleRelationTypesList:
+                                                possibleRelationTypesList.append(tempMap)
 
                                 # Find the Relations
                                 if outputParameter == 'Relations':
                                     if outputParameterList == 'All':
                                         targetDataRelationsMap = {}
-                                        relationsResponse = fetchRelations(targetData[i]['resourceId'])
+                                        relationsResponse = assetObj.fetchRelations()
                                         if relationsResponse != 'No Data Found':
                                             # Add all the relation types that have a value
                                             for relationResponseMap in relationsResponse:
@@ -931,25 +931,19 @@ if __name__ == '__main__':
                                                         targetDataRelationsMap[tempCoRoleKey] = existingCoRoleKeyValue
 
                                             # Add all the relation types that don't have a value
-                                            for possibleRelation in possibleRelationsList:
-                                                for roleMap in possibleRelation:
-                                                    if possibleRelation[roleMap] not in targetDataRelationsMap.keys():
-                                                        targetDataRelationsMap[possibleRelation[roleMap]] = ''
+                                            for possibleRelationType in possibleRelationTypesList:
+                                                for roleMap in possibleRelationType:
+                                                    if possibleRelationType[roleMap] not in targetDataRelationsMap.keys():
+                                                        targetDataRelationsMap[possibleRelationType[roleMap]] = ''
 
                                 # Find the Attributes
-                                if outputParameter == 'Attributes' and len(possibleAttributesList) > 0:
+                                if outputParameter == 'Attributes' and len(possibleAttributeTypesList) > 0:
+
+                                    targetDataAttributesMap = {}
+                                    attributesResponse = assetObj.fetchAttributes()
+                                    attributesResponseList = attributesResponse['attributeReference']
+
                                     if outputParameterList == 'All':
-                                        targetDataAttributesMap = {}
-                                        attributesResponse = fetchAttributes(targetData[i]['resourceId'])
-                                        attributesResponseList = attributesResponse['attributeReference']
-                                        # Below block isn't required anymore.
-                                        # listOfAttributesFromResponse = []
-                                        # for listIndex in range(0, len(attributesResponseList)):
-                                        #     attributeResponseMap = attributesResponseList[listIndex]
-                                        #     listOfAttributesFromResponse.append(attributeResponseMap['labelReference']['signifier'])  # Find all the attributes of the asset that are not null
-                                        # listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
-
-
                                         # Add all the attribute types that have a value
                                         for listIndex in range(0, len(attributesResponseList)):
                                             attributeResponseMap = attributesResponseList[listIndex]
@@ -961,42 +955,31 @@ if __name__ == '__main__':
                                                 existingKeyValue = targetDataAttributesMap[key]
                                             existingKeyValue.append(cleanedKeyValue)
                                             targetDataAttributesMap[key] = existingKeyValue
-
                                         # Add all the attribute types that don't have a value
-                                        for possibleAttribute in possibleAttributesList:
+                                        for possibleAttribute in possibleAttributeTypesList:
                                             if possibleAttribute not in targetDataAttributesMap.keys():
                                                 targetDataAttributesMap[possibleAttribute] = ''
                                     else:
-                                        targetDataAttributesMap = {}
-                                        attributesResponse = fetchAttributes(targetData[i]['resourceId'])
-                                        listOfAttributesFromResponse = []
-                                        attributesResponseList = attributesResponse['attributeReference']
-                                        for listIndex in range(0, len(attributesResponseList)):
-                                            attributeResponseMap = attributesResponseList[listIndex]
-                                            listOfAttributesFromResponse.append(attributeResponseMap['labelReference'][
-                                                                                    'signifier'])  # Find all the attributes of the asset that are not null
-                                        listOfAttributesFromResponse = list(set(listOfAttributesFromResponse))
-
                                         # Add all the attribute types that have a value
                                         for listIndex in range(0, len(attributesResponseList)):
                                             attributeResponseMap = attributesResponseList[listIndex]
                                             existingKeyValue = []
                                             # key = attributeResponseMap['resourceId'] + ' -> ' + attributeResponseMap['labelReference']['signifier']
                                             key = attributeResponseMap['labelReference']['signifier']
-                                            cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
-                                            if key in targetDataAttributesMap.keys():
-                                                existingKeyValue = targetDataAttributesMap[key]
-                                            existingKeyValue.append(cleanedKeyValue)
-                                            targetDataAttributesMap[key] = existingKeyValue
-
+                                            if key in outputParameterList:
+                                                cleanedKeyValue = cleanhtml(attributeResponseMap['value'])
+                                                if key in targetDataAttributesMap.keys():
+                                                    existingKeyValue = targetDataAttributesMap[key]
+                                                existingKeyValue.append(cleanedKeyValue)
+                                                targetDataAttributesMap[key] = existingKeyValue
                                         # Add all the attribute types that don't have a value
-                                        for possibleAttribute in possibleAttributesList:
-                                            if possibleAttribute not in targetDataAttributesMap.keys():
-                                                targetDataAttributesMap[possibleAttribute] = ''
+                                        for attributeType in outputParameterList:
+                                            if attributeType not in targetDataAttributesMap.keys():
+                                                targetDataAttributesMap[attributeType] = ''
 
                             if outputParameter == 'Complex Relations':
                                 # Find the Complex Relations and Attributes
-                                complexRelationsMapList = fetchComplexRelations(targetData[i]['resourceId'])
+                                complexRelationsMapList = assetObj.fetchComplexRelations()
                                 if complexRelationsMapList not in ('No Relations Found', 'No Data Found'):
                                     relationValue = []
                                     tempMap = {}
@@ -1032,8 +1015,6 @@ if __name__ == '__main__':
                                             attributeValue = []
 
                                     targetDataComplexRelationsMap['Attributes'] = targetDataComplexRelationsAttributesMap
-
-
                         tempMap = {}
                         finalMap['Asset Details'] = targetDataMap
                         finalMap['Attributes'] = targetDataAttributesMap
