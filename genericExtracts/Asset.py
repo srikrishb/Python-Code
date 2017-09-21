@@ -1,16 +1,20 @@
 import APIMethod as APIFile
+import math
+import time
 
 class Asset:
 
     def __init__(self, resourceId):
         self.resourceId = resourceId
 
+    # Issues a 'GET' operation to get data from Collibra
     @staticmethod
     def getDataCall(endpoint, payload):
         # Kickoff the workflow using the endpoint and payload
         trylogin = APIFile.API.getCall(endpoint, payload)
         return trylogin
 
+    # Fetches data specified for operation mentioned in 'innerMapKey' and operand mentioned in 'innerMapValue'
     @staticmethod
     def fetchDataSet(innerMapKey, innerMapValue):
 
@@ -29,6 +33,82 @@ class Asset:
                 result = assetNameLikeResponse['data']['term']
 
         return result
+
+    # Converts EPOCH to EST
+    @staticmethod
+    def convertEpochTime(inputTime):
+        mathTargetTime = math.ceil(int(inputTime) / 1000)
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mathTargetTime))
+
+    # Fetches details of asset for excel file export
+    @staticmethod
+    def fetchAssetAssetDetails(detailType, targetData):
+
+        if detailType == 'Asset Name':
+            return targetData['signifier']
+
+        if detailType == 'Community':
+            if 'vocabularyReference' in targetData:
+                if 'communityReference' in targetData['vocabularyReference']:
+                    if 'name' in targetData['vocabularyReference']['communityReference']:
+                        return targetData['vocabularyReference']['communityReference']['name']
+                    else:
+                        return 'Not Applicable'
+                else:
+                    return 'Not Applicable'
+            else:
+                return 'Not Applicable'
+
+        if detailType == 'Domain':
+            if 'vocabularyReference' in targetData:
+                if 'name' in targetData['vocabularyReference']:
+                    return targetData['vocabularyReference']['name']
+                else:
+                    return 'Not Applicable'
+            else:
+                return 'Not Applicable'
+
+        if detailType == 'Asset Type':
+            if 'conceptType' in targetData:
+                if 'signifier' in targetData['conceptType']:
+                    return targetData['conceptType']['signifier']
+                else:
+                    return 'Not Applicable'
+            else:
+                return 'Not Applicable'
+
+        if detailType == 'Status':
+            if 'statusReference' in targetData:
+                if 'signifier' in targetData['statusReference']:
+                    # targetDataMap['Status'] = targetData[i]['statusReference']['signifier']
+                    return targetData[i]['statusReference']['signifier']
+                else:
+                    return 'Not Applicable'
+            else:
+                return 'Not Applicable'
+
+        if detailType == 'Articulation Score':
+            return targetData.get('articulation', 'Not Applicable')
+
+        if detailType == 'Created On':
+            return Asset.convertEpochTime(targetData.get('createdOn'))
+        else:
+            return 'Not Applicable'
+
+        if detailType == 'Created By':
+            return targetData['createdBy']['firstName'] + targetData['createdBy']['lastName']
+        else:
+            return 'Not Applicable'
+
+        if detailType == 'Last Modified':
+            return Asset.convertEpochTime(targetData.get('lastModified'))
+        else:
+            return 'Not Applicable'
+
+        if detailType == 'Last Modified By':
+            return targetData['lastModifiedBy']['firstName'] + targetData['lastModifiedBy']['lastName']
+        else:
+            return 'Not Applicable'
 
     # Fetches possible relations types and attributes types of an asset
     def fetchPossibleRelationsTypesAndAttributesTypes(self):
@@ -116,3 +196,30 @@ class Asset:
                 return complexRelationsResponseList
             else:
                 return complexRelationsError
+
+    # Fetches attributes of complex relations of an asset
+    def fetchComplexRelationsAttributes(self):
+        complexRelationsResponseList = []
+        complexRelationsError = ''
+        complexRelationDefinitionEndpoint = 'complex_relation/'
+        complexRelationDefinitionPayload = {'term': self.resourceId}
+        complexRelationDefinitionResponse = Asset.getDataCall(complexRelationDefinitionEndpoint,complexRelationDefinitionPayload)
+
+        if complexRelationDefinitionResponse['statusCode'] == '1':
+            complexRelationDefinitionData = complexRelationDefinitionResponse['data']
+            if len(complexRelationDefinitionData['termReference']) == 0:
+                return 'No Attributes Found'
+            else:
+                complexRelationAttributesEndpoint = 'complex_relation/' + complexRelationDefinitionData['termReference'][0]['resourceId']
+                complexRelationAttributesPayload = ''
+                complexRelationAttributesResponse = Asset.getDataCall(complexRelationAttributesEndpoint,complexRelationAttributesPayload)
+                if complexRelationAttributesResponse['statusCode'] == '1':
+                    complexRelationsResponseList.append(complexRelationAttributesResponse['data'])
+                else:
+                    complexRelationsError = 'No Data Found'
+
+        if complexRelationsError == '':
+            return complexRelationsResponseList
+        else:
+            return complexRelationsError
+
