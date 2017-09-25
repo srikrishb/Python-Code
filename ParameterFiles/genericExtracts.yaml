@@ -1,6 +1,6 @@
 request1:
     conditions:
-        assetNameEquals: "01. Amortized Cost (USD Equivalent)" 
+        assetNameEquals: "Amortized Cost (USD Equivalent)"
     outputResult:
         Asset Details: 
             - Asset Name
@@ -12,63 +12,63 @@ request1:
         Complex Relations: All  
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
-request2:
-    conditions:
-        complexRelationFilter:
-            complexRelationName:
-                - "Derivation"
-            AssetType:
-                - "Data Element"
-    outputResult:
-        Asset Details: 
-            - Asset Name
-            - Community
-            - Domain
-            - Asset Type
-        Attributes: All
-        Relations: All
-        Complex Relations: None  
-    outputFileName: 'request1'
-    email: "srikrishna.bingi@exusia.com"
-request3:
-    conditions:
-        attributeFilter:
-            attributeTypeEquals: "Prioritized Attribute"
-            attributeValueEquals: "Yes"
-    outputResult:
-        Asset Details: 
-            - Asset Name
-            - Community
-            - Domain
-            - Asset Type
-        Attributes: All
-        Relations: All
-        Complex Relations: All  
-    outputFileName: 'request1'
-    email: "srikrishna.bingi@exusia.com"
-request4:
-    conditions:
-        relationFilter:
-            RelationTypeIn:
-                - "Contains"
-                - "Consists of"
-                - "May consists of"
-            AssetType:
-                - "Report"
-                - "Schedule"
-                - "Section"
-                - "Data Point"
-    outputResult:
-        Asset Details: 
-            - Asset Name
-            - Community
-            - Domain
-            - Asset Type
-        Attributes: All
-        Relations: All
-        Complex Relations: None  
-    outputFileName: 'request1'
-    email: "srikrishna.bingi@exusia.com"
+# request2:
+    # conditions:
+        # complexRelationFilter:
+            # complexRelationName:
+                # - "Derivation"
+            # AssetType:
+                # - "Data Element"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: None  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
+# request3:
+    # conditions:
+        # attributeFilter:
+            # attributeTypeEquals: "Prioritized Attribute"
+            # attributeValueEquals: "Yes"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: All  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
+# request4:
+    # conditions:
+        # relationFilter:
+            # RelationTypeIn:
+                # - "Contains"
+                # - "Consists of"
+                # - "May consists of"
+            # AssetType:
+                # - "Report"
+                # - "Schedule"
+                # - "Section"
+                # - "Data Point"
+    # outputResult:
+        # Asset Details: 
+            # - Asset Name
+            # - Community
+            # - Domain
+            # - Asset Type
+        # Attributes: All
+        # Relations: All
+        # Complex Relations: None  
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
 # request2:
     # conditions:
         # Or:

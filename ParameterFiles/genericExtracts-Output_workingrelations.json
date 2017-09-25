@@ -4,20 +4,6 @@
       "Term": {
         "Signifier": { "name": "Asset Name"},
 		"Id": { "name": "AssetId" },
-		"StringAttribute": [
-          {
-            "LongExpression": {
-              "name": "Data Type"
-            },
-            "labelId": "00000000-0000-0000-0000-000000000219"
-          },
-		  {
-            "LongExpression": {
-              "name": "Description"
-            },
-            "labelId": "00000000-0000-0000-0000-000000003114"
-          }
-        ],
 		"Attribute": {
 			"name": "attribute1",
 			"value": { "name": "Attribute Name"},
@@ -68,20 +54,10 @@
         "Column": {
           "fieldName": "Vocabulary"
         }
-      },	  
-     	  {
+      },
+	  {
         "Column": {
           "fieldName": "Sources"
-        }
-      },
-	  {
-        "Column": {
-          "fieldName": "Data Type"
-        }
-      },
-	  {
-        "Column": {
-          "fieldName": "Description"
         }
       }
     ]

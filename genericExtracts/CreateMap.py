@@ -101,36 +101,53 @@ class CreateMap:
 
         return filteredData
 
-    # Static Method to generate results for given input
+    # Method to generate results for given input
     @staticmethod
     def generateMap(inputMap):
         i = 0
         tempMap = {}
+        insideMap = {}
         for masterKey in inputMap:
             toBeProcessedMap = inputMap[masterKey]
-            if isinstance(toBeProcessedMap, dict):
+            if masterKey == 'Or' or masterKey == 'And':
                 for innerMapKey in toBeProcessedMap:
-                    if masterKey == 'Or' or masterKey == 'And':
-                        tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
-                        # if innerMapKey == 'attributeFilter':
-                        #     tempTargetData = CreateMap.fetchAttributeFilterDataSet(tempMap)
-                        # else:
-                        tempTargetData = Asset.fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                        # In case of nested loops, kick off the process again to fetch the data inside the loop
+                        insideMap[innerMapKey] = toBeProcessedMap[innerMapKey]
+                        if innerMapKey == 'Or' or innerMapKey == 'And':
+                            print(insideMap)
+                            print('Triggering new generate Map ')
+                            preTargetData = CreateMap.generateMap(insideMap)
+                            targetData = preTargetData
+                            print('Finish inner loop ', insideMap)
+
+                            i +=1
+                        else:
+                            tempMap[innerMapKey] = toBeProcessedMap[innerMapKey]
+                            # if innerMapKey == 'attributeFilter':
+                            #     tempTargetData = CreateMap.fetchAttributeFilterDataSet(tempMap)
+                            # else:
+                            print('i value', i)
+                            print(innerMapKey, toBeProcessedMap[innerMapKey])
+                            tempTargetData = Asset.fetchDataSet(innerMapKey, toBeProcessedMap[innerMapKey])
+                            print('tempTargetData has been set')
 
                         if i == 0:
                             i += 1
                             preTargetData = CreateMap.filterTargetData(tempMap, tempTargetData)
+                            print('preTargetData has been set')
                         else:
-
-                            if innerMapKey == 'attributeFilter':
-                                newTargetData = tempTargetData
-                            else:
-                                newTargetData = CreateMap.filterTargetData(tempMap, tempTargetData)
+                            #
+                            # if innerMapKey == 'attributeFilter':
+                            #     newTargetData = tempTargetData
+                            # else:
+                            newTargetData = CreateMap.filterTargetData(tempMap, tempTargetData)
 
                             if masterKey == 'And':
+                                print('Performing Intersection')
                                 targetData = CreateMap.listIntersect(newTargetData, preTargetData)
 
                             if masterKey == 'Or':
+                                print('Performing Union')
                                 targetData = CreateMap.listUnion(newTargetData, preTargetData)
 
                             preTargetData = targetData

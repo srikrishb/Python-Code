@@ -37,8 +37,7 @@ if __name__ == '__main__':
                 outputFilter = eachMap[itemkey].keys()
                 if 'relationFilter' not in outputFilter and 'complexRelationFilter' not in outputFilter and 'attributeFilter' not in outputFilter:
                     if isinstance(eachMap[itemkey], dict):
-                        createMapObj = CreateMap(eachMap[itemkey])
-                        targetData = createMapObj.createMap()
+                        targetData = CreateMap.generateMap(eachMap[itemkey])
                 elif 'attributeFilter' in outputFilter:
                     tempMap = {}
                     for valuesMap in eachMap[itemkey].values():
@@ -268,9 +267,10 @@ if __name__ == '__main__':
                 else:
                     print('relationPath')
             elif itemkey == 'outputFileName':
+                outputFileName = eachMap[itemkey]
                 if outputFilter != 'relationPath':
                     # Create the output file
-                    fileName = CreateDataFile.createDataFile(finalResultList, eachKey, '.xlsx')
+                    fileName = CreateDataFile.createDataFile(finalResultList, outputFileName, '.xlsx')
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)
             elif itemkey == 'email':  #Emails the output file to the audience
