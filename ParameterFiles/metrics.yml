@@ -1,17 +1,9 @@
 request1:
     conditions:
-        attributeFilter:
-            attributeTypeEquals: "Prioritized Attribute"
-            attributeValueEquals: "Yes"
+        paramFileName: "OutModule1.json"
     outputResult:
-        Asset Details: 
-            - Asset Name
-            - Community
-            - Domain
-            - Asset Type
-        Attributes: All
-        Relations: All
-        Complex Relations: All  
+        - "AssetByStatus"
+        - "AssetByAssetType"
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:

@@ -3,7 +3,6 @@ import sys
 import json
 from CreateDataFile import CreateDataFile
 from Job import Job
-import shutil
 
 if __name__ == '__main__':
 
@@ -52,5 +51,4 @@ if __name__ == '__main__':
 
                 # Go to Collibra Temp Directory and rename the file
                 os.chdir("C:/collibra_data/dgc/temp-files")
-#                os.rename(jobMessage['id'], 'File.xlsx')
-                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/File.xlsx")
+                os.rename(jobMessage['id'], 'File.xlsx')

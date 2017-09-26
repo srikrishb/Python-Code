@@ -6,7 +6,7 @@
 		"Id": { "name": "AssetId" },
 		"ComplexRelation": {
 		"Relation": {
-		 "type": "SOURCE",
+		 "type": "TARGET",
 		 "Source" : {
 			"Signifier": { "name": "CR Source Asset Name"},
 		 },

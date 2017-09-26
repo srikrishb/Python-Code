@@ -1,0 +1,53 @@
+Time Factor is considered
+
+adoption:
+
+	Number of assets by assets type
+
+	Assets audit summary (pie chart)
+		Number of assets Created
+		Number of assets Approved 100%
+		Number of assets pending Approval
+		Number of assets Rejected
+		Number of assets pending by Roles, Communities, Domains
+
+		
+	Special Categories (pie chart) - Number of prioritized/critical assets vs non-prioritized/critical assets
+	
+completeness:
+
+	Number of assets that have all attributes/relations defined vs not defined
+	
+	Special Categories - Number of prioritized/critical assets that are complete vs prioritized/critical assets that are not complete
+	
+process:
+
+	how many workflows for business assets?
+	
+	X-Y Graph showing processes that are actively used by users
+	X-Y Graph Least used processes (for sunsetting)
+
+activity:
+
+	Number of users logged for specific time period
+	most visited assets
+	most active stewards/ roles
+	
+
+quality:
+
+	Need some business cases to implement any data quality rules 
+	
+	quality by business term
+	quality by dimension by community
+	quality by 
+	
+issues:
+
+	Need some business cases to implement issue metrics
+	
+	number of issues open/closed/criticality etc
+	number of issues by domain/community
+	number of issues by status
+
+FRAMEWORK TO ADD NEW METRICS/ RECONFIGURE METRICS TO CHANGE NEW FEATURES

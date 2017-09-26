@@ -20,19 +20,16 @@
         ],
 		"Attribute": {
 			"name": "attribute1",
-			"value": { "name": "Attribute Value", "stripHtml": true  },
+			"value": { "name": "Attribute Value"},
 			"AttributeType": {
 				"name": "attributetype1",
 				"signifier": { "name" : "Attribute Type"}
 				}
 		},
-		"ConceptType": {
-			"Signifier": { "name": "Asset Type"}
-		},
 		"Vocabulary": {
           "name": "vocabulary1",
           "Name": {
-            "name": "Domain"
+            "name": "Vocabulary"
           },
           "Community": {
             "name": "community1",
@@ -48,15 +45,20 @@
 		  }
 		},
         "Filter": {
-		 "Field": {
-                "name": "Community",
-                "operator": "NOT_IN",
-                "values": [ "Admin Community", "Business Analysts Community", "Data Governance Council" ]
+		"AND": [
+		{"Field": {
+                "name": "Attribute Type",
+                "operator": "EQUALS",
+                "value": "Prioritized Attribute"
               }
         },
-		"Order": [
-          { "Field": { "name": "Asset Type", "order": "ASC" } }
-        ]
+		{"Field": {
+                "name": "Attribute Value",
+                "operator": "EQUALS",
+                "value": "Yes"
+              }}
+		]
+		}
       }
     },
     "Columns": [
@@ -72,12 +74,7 @@
       },	  
       {
         "Column": {
-          "fieldName": "Domain"
-        }
-      },
-	  {
-        "Column": {
-          "fieldName": "Asset Type"
+          "fieldName": "Vocabulary"
         }
       },	  
      	  {
