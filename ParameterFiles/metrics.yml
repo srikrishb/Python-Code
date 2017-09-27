@@ -1,7 +1,8 @@
 request1:
     outputResult:
-        "AssetByAssetType": "OutModule1.json"
-        #"AssetByStatus": "OutModule1.json"
+        "AssetType": "OutModule1.json"
+        "Community": "OutModule1.json"
+        "Domain": "OutModule1.json"
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:

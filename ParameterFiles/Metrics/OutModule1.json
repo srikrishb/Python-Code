@@ -48,20 +48,11 @@
 		  }
 		},
         "Filter": {
-		"AND" : [
-		{ "Field": {
+		"Field": {
                 "name": "Community",
                 "operator": "NOT_IN",
                 "values": [ "Admin Community", "Business Analysts Community", "Data Governance Council" ]
               }
-        },
-		{ "Field": {
-                "name": "Asset Name",
-                "operator": "IN",
-                "values": [ "Amortized Cost (USD Equivalent)", "Units", "Accretion of discount", "Adjusted purchase price"]
-              }
-        }
-		]
 		},
 		"Order": [
           { "Field": { "name": "Asset Type", "order": "ASC" } }

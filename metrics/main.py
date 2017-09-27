@@ -25,7 +25,6 @@ if __name__ == '__main__':
             if eachMapKey == 'outputResult':
                 tempMap = eachMap[eachMapKey]
                 for tempMapKey in tempMap.keys():
-                    print('tempMapKey', tempMapKey)
                     inputJSONParameterFile = tempMap[tempMapKey]
                     # Open the parameter file of the business process
                     os.chdir("K:\Git Code\Python\ParameterFiles\Metrics")
@@ -42,8 +41,6 @@ if __name__ == '__main__':
                         print('Issue with Create Data File parameters. Please check')
                     else:
                         jobId = createDataFileResponse
-
-                        print('JobId', jobId)
 
                         # Instantiate a Job Object
                         jobObj = Job(jobId)
@@ -67,11 +64,10 @@ if __name__ == '__main__':
 
                                 # Go to Collibra Temp Directory and rename the file
                                 os.chdir("C:/collibra_data/dgc/temp-files")
-                                #                os.rename(jobMessage['id'], 'File.xlsx')
-                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/File.xlsx")
+                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
 
-                                processMetricsObj = ProcessMetrics("K:/Git Code/Python/Output/File.xlsx")
-                                processMetricsObj.generateMetricsFile()
+                                processMetricsObj = ProcessMetrics( "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
+                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/Metrics.xlsx')
 
 
 
