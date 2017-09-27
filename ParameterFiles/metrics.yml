@@ -1,9 +1,7 @@
 request1:
-    conditions:
-        paramFileName: "OutModule1.json"
     outputResult:
-        - "AssetByStatus"
-        - "AssetByAssetType"
+        "AssetByAssetType": "OutModule1.json"
+        #"AssetByStatus": "OutModule1.json"
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:
