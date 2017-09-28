@@ -1,0 +1,61 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"BooleanAttribute": [
+          {
+            "booleanValue": {
+              "name": "Prioritized Asset"
+            },
+            "labelId": "f2b238da-c0ee-4525-b416-206dbf570761"
+          }
+        ],
+		"ConceptType": {
+			"Signifier": { "name": "Asset Type"}
+		},
+		"Vocabulary": {
+          "name": "vocabulary1",
+          "Name": {
+            "name": "Domain"
+          },
+          "Community": {
+            "name": "community1",
+            "Name": {
+              "name": "Community"
+            }
+          }
+        },
+		"Relation": {
+			"type" : "TARGET",
+            "Source": {
+			"Signifier": { "name": "Sources" }
+		  }
+		},
+        "Filter": {
+		"Field": {
+                "name": "Community",
+                "operator": "NOT_IN",
+                "values": [ "Admin Community", "Business Analysts Community", "Data Governance Council" ]
+              }
+		},
+		"Order": [
+          { "Field": { "name": "Prioritized Asset", "order": "ASC" } }
+        ]
+      }
+    },
+    "Columns": [
+	{
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+    },
+	  {
+        "Column": {
+          "fieldName": "Prioritized Asset"
+        }
+      }
+    ]
+  }
+}

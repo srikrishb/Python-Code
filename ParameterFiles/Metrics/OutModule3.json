@@ -18,6 +18,9 @@
             "labelId": "00000000-0000-0000-0000-000000003114"
           }
         ],
+		"Status":{
+			 "Signifier": { "name": "Status"}
+		},
 		"Attribute": {
 			"name": "attribute1",
 			"value": { "name": "Attribute Value", "stripHtml": true  },
@@ -78,6 +81,11 @@
 	  {
         "Column": {
           "fieldName": "Asset Type"
+        }
+      },	  
+     	  {
+        "Column": {
+          "fieldName": "Status"
         }
       },	  
      	  {
