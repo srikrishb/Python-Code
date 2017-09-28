@@ -3,6 +3,7 @@ request1:
         "AssetType": "OutModule1.json"
         "Community": "OutModule1.json"
         "Domain": "OutModule1.json"
+        "Status": "OutModule1.json"
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:
