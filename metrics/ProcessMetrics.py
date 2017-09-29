@@ -5,6 +5,7 @@ import os
 
 class ProcessMetrics:
 
+    # inputFileName is the data file that contains input data to kickoff analytics
     def __init__(self, inputFileName):
         self.inputFileName = inputFileName
 

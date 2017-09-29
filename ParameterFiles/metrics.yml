@@ -1,10 +1,14 @@
 request1:
-    outputResult:
+    #"Adoption":
         #"AssetType": "OutModule1.json"
         #"Community": "OutModule2.json"
         #"Domain": "OutModule2.json"
         #"Status": "OutModule3.json"
-        "PrioritizedAsset": "OutModule4.json"
+        #"PrioritizedAsset": "OutModule4.json"
+    "Completion":
+        attributeFilter:
+            attributeTypeEquals: "Prioritized Attribute"
+            attributeValueEquals: "Yes"
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request2:

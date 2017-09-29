@@ -6,7 +6,7 @@ from Job import Job
 import shutil
 import yaml
 from ProcessMetrics import ProcessMetrics
-
+from ProcessMaps import ProcessMaps
 if __name__ == '__main__':
 
     # Find the Parameter File Name
@@ -22,8 +22,8 @@ if __name__ == '__main__':
         eachMap = paramFileData[paramFileKey]
         # Fetch the inner conditions of the request
         for eachMapKey in eachMap.keys():
-            if eachMapKey == 'outputResult':
-                tempMap = eachMap[eachMapKey]
+            tempMap = eachMap[eachMapKey]
+            if eachMapKey == 'Adoption':
                 for tempMapKey in tempMap.keys():
                     inputJSONParameterFile = tempMap[tempMapKey]
                     # Open the parameter file of the business process
@@ -67,7 +67,17 @@ if __name__ == '__main__':
                                 shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
 
                                 processMetricsObj = ProcessMetrics( "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
-                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/Metrics.xlsx')
+                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/'+paramFileKey+'-'+eachMapKey+'.xlsx')
+
+            if eachMapKey == 'Completion':
+                # Fetch Assets basing on filter criteria
+                processMapsObj = ProcessMaps(tempMap)
+                assetData = processMapsObj.processMaps()
+
+                processMetricsObj = ProcessMetrics(processMapsObj.checkCompletion(assetData))
+                processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/' + paramFileKey + '-' + eachMapKey + '.xlsx')
+
+
 
 
 
