@@ -21,8 +21,7 @@ class CreateDataFile:
         else:
             return 'Issue with parameters. Please check'
 
-            # Creates the data file for specified parameters
-
+    # Creates the data file for specified parameters
     @staticmethod
     def createDataFile(targetMapList, fileNamePrefix, fileNameSuffix):
 
@@ -85,6 +84,7 @@ class CreateDataFile:
                         targetFileRow.append(map[innerKey])
                         worksheet.cell(row=rowNum, column=col).value = map[innerKey]
                         col += 1
+                    highestLen = 1
                 elif key == 'Attributes' or key == 'Relations':
                     highestLen = 0
                     currentRowNum = rowNum
@@ -177,7 +177,7 @@ class CreateDataFile:
 
             targetFinalRowList.append(targetFileRow)
             mergeRow[rowNum] = highestLen
-            rowNum = rowNum + highestLen + 1
+            rowNum = rowNum + highestLen
             targetFileRow = []
             col = 1
 

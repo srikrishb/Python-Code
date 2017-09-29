@@ -22,8 +22,9 @@ if __name__ == '__main__':
         eachMap = paramFileData[paramFileKey]
         # Fetch the inner conditions of the request
         for eachMapKey in eachMap.keys():
-            tempMap = eachMap[eachMapKey]
-            if eachMapKey == 'Adoption':
+
+            if eachMapKey == 'Adoption-Category':
+                tempMap = eachMap[eachMapKey]
                 for tempMapKey in tempMap.keys():
                     inputJSONParameterFile = tempMap[tempMapKey]
                     # Open the parameter file of the business process
@@ -64,18 +65,19 @@ if __name__ == '__main__':
 
                                 # Go to Collibra Temp Directory and rename the file
                                 os.chdir("C:/collibra_data/dgc/temp-files")
-                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
+                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/"+eachMapKey+"-"+tempMapKey+"-Detailed.xlsx")
 
-                                processMetricsObj = ProcessMetrics( "K:/Git Code/Python/Output/"+paramFileKey+".xlsx")
-                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/'+paramFileKey+'-'+eachMapKey+'.xlsx')
+                                processMetricsObj = ProcessMetrics("K:/Git Code/Python/Output/"+eachMapKey+"-"+tempMapKey+"-Detailed.xlsx")
+                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/' + paramFileKey + '.xlsx')
 
-            if eachMapKey == 'Completion':
+            if eachMapKey == 'Completion-Category':
                 # Fetch Assets basing on filter criteria
+                tempMap = eachMap[eachMapKey]
                 processMapsObj = ProcessMaps(tempMap)
                 assetData = processMapsObj.processMaps()
 
                 processMetricsObj = ProcessMetrics(processMapsObj.checkCompletion(assetData))
-                processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/' + paramFileKey + '-' + eachMapKey + '.xlsx')
+                processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/' + paramFileKey + '.xlsx')
 
 
 

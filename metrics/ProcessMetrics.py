@@ -34,7 +34,6 @@ class ProcessMetrics:
                         marker = cellInRow.col_idx
                         # xy = coordinate_from_string(cell)  # returns ('A',4)
                         # marker = column_index_from_string(xy[0])  # returns 1
-                        print('marker', marker)
             else:
                 for cellInRow in row:
                     if cellInRow.col_idx == 1:
@@ -60,7 +59,6 @@ class ProcessMetrics:
                                 prev_offset = offset
                                 prev_assettype = curr_assettype
                                 prevAssetName = currAssetName
-                print(key, offset - 1, 1)
                 keyList.append(key)
 
                 # see what keys are in Redis
@@ -81,7 +79,7 @@ class ProcessMetrics:
             return inputString
 
     def generateMetricsFileII(self, dimension, targetFileName):
-        print('dimension', dimension)
+        #print('dimension', dimension , 'self.inputFileName', self.inputFileName)
         # Open the data file
         dataWorkbook = load_workbook(self.inputFileName)
         defaultSheet = dataWorkbook.active
@@ -113,8 +111,9 @@ class ProcessMetrics:
             if i == 0:
                 i += 1
                 for cellInRow in row:
-                    if marker == -1 and cellInRow.col_idx > excludecolumnindex-1:
+                    if marker == -1 and cellInRow.col_idx > 1:
                         targetFileHeader.append(cellInRow.value)
+
                     if cellInRow.value == dimension:
                         marker = cellInRow.col_idx
             else:
@@ -136,10 +135,8 @@ class ProcessMetrics:
                             key = key + ":" + ProcessMetrics.checkLen(cellInRow.value)
 
                         currDimension = ProcessMetrics.checkLen(cellInRow.value)
-                        print('currDimension', currDimension, 'prevDimension', prevDimension)
                         # Compare the prev and curr dimension values
                         if prevDimension == currDimension:
-                            print('prevAssetName', prevAssetName, 'currAssetName', currAssetName)
                             # If prev and curr dimension values don't match, compare the names of the assets to find unique assets
                             if prevAssetName != currAssetName:
                                 # Increment score for the key
@@ -147,11 +144,10 @@ class ProcessMetrics:
                                 prevAssetName = currAssetName
                         else:
                             prevDimension = currDimension
-                            print('prevDimension', prevDimension)
                             # If the prev and curr dimension values don't match, it implies that asset is new
                             if prevAssetName != currAssetName:
                                 # Set the score for the new key
-                                print('key', key)
+                                #print('key', key)
                                 redis_db.zadd('tempset', 1, key)
                                 prevAssetName = currAssetName
 
