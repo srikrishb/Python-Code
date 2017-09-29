@@ -187,5 +187,5 @@ class ProcessMaps:
 
 
         #Print the results to a file
-        fileName = CreateDataFile.createDataFile(finalResultList, 'Completion-Category-Detailed', '.xlsx')
+        fileName = CreateDataFile.createDataFile(finalResultList, 'Detailed-Completion-Category', '.xlsx')
         return fileName

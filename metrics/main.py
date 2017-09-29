@@ -65,10 +65,10 @@ if __name__ == '__main__':
 
                                 # Go to Collibra Temp Directory and rename the file
                                 os.chdir("C:/collibra_data/dgc/temp-files")
-                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/"+eachMapKey+"-"+tempMapKey+"-Detailed.xlsx")
+                                shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/Detailed-"+eachMapKey+"-"+tempMapKey+".xlsx")
 
-                                processMetricsObj = ProcessMetrics("K:/Git Code/Python/Output/"+eachMapKey+"-"+tempMapKey+"-Detailed.xlsx")
-                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/' + paramFileKey + '.xlsx')
+                                processMetricsObj = ProcessMetrics("K:/Git Code/Python/Output/Detailed-"+eachMapKey+"-"+tempMapKey+".xlsx")
+                                processMetricsObj.generateMetricsFileII(tempMapKey, 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx')
 
             if eachMapKey == 'Completion-Category':
                 # Fetch Assets basing on filter criteria
@@ -77,7 +77,7 @@ if __name__ == '__main__':
                 assetData = processMapsObj.processMaps()
 
                 processMetricsObj = ProcessMetrics(processMapsObj.checkCompletion(assetData))
-                processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/' + paramFileKey + '.xlsx')
+                processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx')
 
 
 
