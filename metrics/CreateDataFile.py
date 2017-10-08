@@ -43,10 +43,17 @@ class CreateDataFile:
                 for key in innerMap:
                     map = innerMap[key]
                     if key == 'Asset Details':
-                        for innerKey in map:
-                            if innerKey not in targetFileHeader:
-                                targetFileHeader.append(innerKey)
-                                columnCount += 1
+                        if isinstance(map, dict):
+                            for innerKey in map:
+                                if innerKey not in targetFileHeader:
+                                    targetFileHeader.append(innerKey)
+                                    columnCount += 1
+                        elif isinstance(map, list):
+                            for innerList in map:
+                                for innerKey in innerList:
+                                    if innerKey not in targetFileHeader:
+                                        targetFileHeader.append(innerKey)
+                                        columnCount += 1
                     elif key == 'Attributes':
                         if 'Attribute Type' not in targetFileHeader:
                             targetFileHeader.append('Attribute Type')
@@ -80,11 +87,20 @@ class CreateDataFile:
             for key in innerMap.keys():
                 map = innerMap[key]
                 if key == 'Asset Details':
-                    for innerKey in map:
-                        targetFileRow.append(map[innerKey])
-                        worksheet.cell(row=rowNum, column=col).value = map[innerKey]
-                        col += 1
-                    highestLen = 1
+                    if isinstance(map, dict):
+                        for innerKey in map:
+                            targetFileRow.append(map[innerKey])
+                            worksheet.cell(row=rowNum, column=col).value = map[innerKey]
+                            col += 1
+                        highestLen = 1
+                    elif isinstance(map, list):
+                        print(map)
+                        for innerList in map:
+                            for innerKey in innerList:
+                                targetFileRow.append(innerList[innerKey])
+                                worksheet.cell(row=rowNum, column=col).value = innerList[innerKey]
+                                col += 1
+                            highestLen = 1
                 elif key == 'Attributes' or key == 'Relations':
                     highestLen = 0
                     currentRowNum = rowNum

@@ -79,7 +79,13 @@ if __name__ == '__main__':
                 processMetricsObj = ProcessMetrics(processMapsObj.checkCompletion(assetData))
                 processMetricsObj.generateMetricsFileII(eachMapKey,'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx')
 
+            if eachMapKey == 'Process-Category':
+                # Fetch Assets basing on filter criteria
+                tempMap = eachMap[eachMapKey]
+                processMapsObj = ProcessMaps(tempMap)
+                assetData = processMapsObj.processMaps()
 
-
+                processMetricsObj = ProcessMetrics(processMapsObj.checkProcess(assetData, paramFileKey))
+                # processMetricsObj.generateMetricsFileII(eachMapKey, 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx')
 
 

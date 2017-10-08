@@ -5,6 +5,12 @@ from ComplexRelationFilter import ComplexRelationFilter
 from Asset import Asset
 from CreateMap import CreateMap
 from CreateDataFile import CreateDataFile
+import os
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl import utils
+import pandas
 
 class ProcessMaps:
 
@@ -19,7 +25,6 @@ class ProcessMaps:
       cleantext = re.sub(cleanr, '', raw_html)
       cleantext = cleantext.replace(u'\xa0', u' ')
       return cleantext
-
 
     def processMaps(self):
 
@@ -189,3 +194,116 @@ class ProcessMaps:
         #Print the results to a file
         fileName = CreateDataFile.createDataFile(finalResultList, 'Detailed-Completion-Category', '.xlsx')
         return fileName
+
+    @staticmethod
+    def checkProcess(inputAssetData, paramFileKey):
+        for i in range(0, len(inputAssetData)):
+            print('asset id', inputAssetData[i]['resourceId'])
+            targetDataMap = {}
+            tempMap = {}
+            assetObj = Asset(inputAssetData[i]['resourceId'])
+            maxCol = 0
+
+            for detailType in ProcessMaps.outputParameterList:
+                targetDataMap[detailType] = assetObj.fetchAssetAssetDetails(detailType, inputAssetData[i])
+                tempMap[detailType] = targetDataMap[detailType]
+
+            # Find all processes for the asset
+            processResponse = assetObj.fetchProcesses()
+            if processResponse != 'No Data Found':
+                if len(processResponse) > 1:
+                    valueList = []
+                    for process in processResponse:
+                        targetDataMap['Process-Category'] = process
+                        valueList.append(targetDataMap)
+
+                        targetFileName = 'K:/Git Code/Python/Output/' + 'Detailed-Process-Category.xlsx'
+                        targetFileHeader = []
+                        targetFileRow = []
+                        targetFinalRowList = []
+                        i = 0
+                        if os.path.isfile(targetFileName):
+                            workbook = load_workbook(targetFileName)
+                            worksheet = workbook.get_sheet_by_name('Asset List')
+                        else:
+                            workbook = Workbook(targetFileRow)
+                            worksheet = workbook.active
+                            worksheet.title = 'Asset List'
+                            columnCount = 1
+                            # Write the File Header
+                            for innerMap in valueList:
+                                for key in innerMap:
+                                    if key not in targetFileHeader:
+                                        targetFileHeader.append(key)
+                                        columnCount += 1
+
+                            worksheet.append(targetFileHeader)
+
+                            for columnIndex in range(1, columnCount):
+                                cell = worksheet.cell(row=1, column=columnIndex)
+                                cell.font = Font(bold=True)
+
+                            rowNum = 2
+                            col = 1
+
+                        # Write actual data
+                        for innerMap in valueList:
+                            for key in innerMap.keys():
+                                targetFileRow.append(innerMap[key])
+                                worksheet.cell(row=rowNum, column=col).value =innerMap[key]
+                                workbook.save(targetFileName)
+
+                                if col > maxCol:
+                                    maxCol = col
+                                col += 1
+
+                            targetFinalRowList.append(targetFileRow)
+                            rowNum = rowNum + 1
+                            targetFileRow = []
+                            col = 1
+
+                        valueList = []
+
+        workbook = load_workbook(targetFileName)
+        worksheet = workbook.get_sheet_by_name('Asset List')
+
+        print(rowNum)
+        assetList = []
+        outputMap = {}
+        for row in range(2, rowNum):
+            for col in (maxCol, 1, -1):
+                if col == maxCol:
+                    key = worksheet.cell(row=row, column=col).value
+                    if key in outputMap.keys():
+                        assetList = outputMap[key]
+                    else:
+                        assetList = []
+                if col == 1:
+                    assetList.append(worksheet.cell(row=row, column=col).value)
+                outputMap[key] = assetList
+
+        print(outputMap)
+        metricsFile = 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx'
+
+        metricsWorkbook = Workbook()
+        metricsWorksheet = metricsWorkbook.active
+        metricsWorksheet.title = 'Counts by Process-Category'
+
+        metricsWorksheet.cell(row=1, column=1).value = 'Process-Category'
+        metricsWorksheet.cell(row=1, column=2).value = 'Counts'
+        metricsWorksheet.cell(row=1, column=1).font = Font(bold=True)
+        metricsWorksheet.cell(row=1, column=2).font = Font(bold=True)
+
+        row = 2
+        col = 1
+        for key in outputMap.keys():
+            metricsWorksheet.cell(row = row, column = col).value = key
+            col += 1
+            metricsWorksheet.cell(row=row, column=col).value = len(outputMap[key])
+            col -= 1
+            row += 1
+
+        metricsWorkbook.save(metricsFile)
+        return targetFileName
+
+

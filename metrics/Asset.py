@@ -223,3 +223,25 @@ class Asset:
         else:
             return complexRelationsError
 
+    # Fetches processes tagged to an asset
+    def fetchProcesses(self):
+        processesResponseList = []
+        processDefinitionEndpoint = 'concept_type/' + self.resourceId + '/workflows'
+        processDefinitionPayload = ''
+        processDefinitionResponse = Asset.getDataCall(processDefinitionEndpoint,
+                                                      processDefinitionPayload)
+
+        if processDefinitionResponse['statusCode'] == '1':
+            processDefinitionData = processDefinitionResponse['data']
+            if len(processDefinitionData['workflowDefinition']) == 0:
+                return 'No workflows Found'
+            else:
+                processList = processDefinitionData['workflowDefinition']
+
+                for processMap in processList:
+                    processesResponseList.append(processMap['processId'])
+
+                return processesResponseList
+
+        return 'No Data Found'
+
