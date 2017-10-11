@@ -86,6 +86,17 @@ if __name__ == '__main__':
                 assetData = processMapsObj.processMaps()
 
                 processMetricsObj = ProcessMetrics(processMapsObj.checkProcess(assetData, paramFileKey))
-                # processMetricsObj.generateMetricsFileII(eachMapKey, 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx')
+
+            if eachMapKey == 'Activity-Category':
+                # Fetch Assets basing on time difference
+                timeDiff = eachMap[eachMapKey]
+
+                print(timeDiff)
+                processMapsObj = ProcessMaps(timeDiff)
+                fetchLastViewedAssetsResponse = processMapsObj.fetchLastViewedAssets()
+
+                print(fetchLastViewedAssetsResponse)
+
+
 
 

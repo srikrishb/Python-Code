@@ -1,13 +1,5 @@
 request1:
-    Process-Category:
-        conditions:
-            assetNameLike: "Amortized" 
-        outputResult:
-            Asset Details: 
-                - Asset Name
-                #- Community
-                #- Domain
-                #- Asset Type
+    Activity-Category: '2017-10-04 12:34:00'
     outputFileName: 'request1'
     email: "srikrishna.bingi@exusia.com"
 # request1:

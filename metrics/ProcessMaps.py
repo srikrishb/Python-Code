@@ -9,8 +9,8 @@ import os
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.styles import Font
-from openpyxl import utils
-import pandas
+import time
+import math
 
 class ProcessMaps:
 
@@ -305,5 +305,77 @@ class ProcessMaps:
 
         metricsWorkbook.save(metricsFile)
         return targetFileName
+
+    def fetchLastViewedAssets(self):
+        lastViewedAssetsEndpoint = 'navigation/most_viewed'
+        inputDate = int(time.mktime(time.strptime(self.inputMap, '%Y-%m-%d %H:%M:%S')))
+        lastViewedAssetsPayload = {'timerange': math.ceil(time.time() - inputDate)*1000}
+        lastViewedAssetsResponse = Asset.getDataCall(lastViewedAssetsEndpoint,lastViewedAssetsPayload)
+
+        print(math.ceil(time.time() - inputDate))
+        if lastViewedAssetsResponse['statusCode'] != '1':
+            return 'No Data Found'
+        else:
+            lastViewedAssetsResults = lastViewedAssetsResponse['data']
+            if len(lastViewedAssetsResults) == 0:
+                return 'No Data Fetched'
+            else:
+                # Save data in workbook
+                workbook = Workbook()
+                worksheet = workbook.active
+                worksheet.title = 'Asset List'
+                rowNum = 1
+                colNum = 1
+
+                # Write the header
+                targetFileHeader = ['Community', 'Domain', 'Asset Name', 'Asset Type', 'Number of Views', 'Last Viewed Date']
+                for targetHeader in targetFileHeader:
+                    worksheet.cell(row=rowNum, column=colNum).value = targetHeader
+                    cell = worksheet.cell(row=rowNum, column=colNum)
+                    cell.font = Font(bold=True)
+                    colNum += 1
+
+                targetFileName = 'K:/Git Code/Python/Output/Detailed-Activity-Category.xlsx'
+
+                # Read data from result and write the data
+                rowNum +=1
+                colNum = 1
+
+                for assetMap in lastViewedAssetsResults:
+                    assetResponse = Asset.getDataCall('term/'+assetMap['termId'], '')
+
+                    if assetResponse['statusCode'] != '1':
+                        print('No data received')
+                    else:
+                        assetDetails = assetResponse['data']
+                        # Community Namme
+                        worksheet.cell(row=rowNum, column=colNum).value = Asset.fetchAssetAssetDetails('Community', assetDetails)
+                        colNum += 1
+
+                        # Domain Name
+                        worksheet.cell(row=rowNum, column=colNum).value = Asset.fetchAssetAssetDetails('Domain', assetDetails)
+                        colNum += 1
+
+                        # Asset Name
+                        worksheet.cell(row=rowNum, column=colNum).value = assetMap['signifier']
+                        colNum += 1
+
+                        # Asset Type
+                        worksheet.cell(row=rowNum, column=colNum).value = Asset.fetchAssetAssetDetails('Asset Type', assetDetails)
+                        colNum += 1
+
+                        # Number of views
+                        worksheet.cell(row=rowNum, column=colNum).value = assetMap['nbViews']
+                        colNum += 1
+
+                        # Last Viewed Date
+                        worksheet.cell(row=rowNum, column=colNum).value = Asset.convertEpochTime(assetMap['lastViewedDate'])
+                        rowNum += 1
+                        colNum = 1
+
+                workbook.save(targetFileName)
+
+                return 'File saved successfully'
+
 
 
