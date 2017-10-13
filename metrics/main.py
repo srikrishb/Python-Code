@@ -65,6 +65,7 @@ if __name__ == '__main__':
 
                                 # Go to Collibra Temp Directory and rename the file
                                 os.chdir("C:/collibra_data/dgc/temp-files")
+
                                 shutil.copyfile(jobMessage['id'], "K:/Git Code/Python/Output/Detailed-"+eachMapKey+"-"+tempMapKey+".xlsx")
 
                                 processMetricsObj = ProcessMetrics("K:/Git Code/Python/Output/Detailed-"+eachMapKey+"-"+tempMapKey+".xlsx")
@@ -91,11 +92,9 @@ if __name__ == '__main__':
                 # Fetch Assets basing on time difference
                 timeDiff = eachMap[eachMapKey]
 
-                print(timeDiff)
                 processMapsObj = ProcessMaps(timeDiff)
                 fetchLastViewedAssetsResponse = processMapsObj.fetchLastViewedAssets()
 
-                print(fetchLastViewedAssetsResponse)
 
 
 

@@ -267,7 +267,6 @@ class ProcessMaps:
         workbook = load_workbook(targetFileName)
         worksheet = workbook.get_sheet_by_name('Asset List')
 
-        print(rowNum)
         assetList = []
         outputMap = {}
         for row in range(2, rowNum):
@@ -282,7 +281,6 @@ class ProcessMaps:
                     assetList.append(worksheet.cell(row=row, column=col).value)
                 outputMap[key] = assetList
 
-        print(outputMap)
         metricsFile = 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx'
 
         metricsWorkbook = Workbook()
