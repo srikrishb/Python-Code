@@ -46,8 +46,21 @@ issues:
 
 	Need some business cases to implement issue metrics
 	
-	number of issues open/closed/criticality etc
-	number of issues by domain/community
+	number of issues open/closed/criticality etc - Status, Priority Done
+	number of issues by domain/community - Done
+	number of issues by status - done below
+	
+	Number of issues by priority
+	Number of issues by Responsible Community
+	Domain = Issue
+
 	number of issues by status
+	
+	Number of Issues by Issue Classification
+	
+	
+	
+	
+	
 
 FRAMEWORK TO ADD NEW METRICS/ RECONFIGURE METRICS TO CHANGE NEW FEATURES

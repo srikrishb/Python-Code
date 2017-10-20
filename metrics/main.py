@@ -23,12 +23,18 @@ if __name__ == '__main__':
         # Fetch the inner conditions of the request
         for eachMapKey in eachMap.keys():
 
-            if eachMapKey == 'Adoption-Category':
+            if eachMapKey == 'Adoption-Category' or eachMapKey == 'Issue-Category':
                 tempMap = eachMap[eachMapKey]
                 for tempMapKey in tempMap.keys():
                     inputJSONParameterFile = tempMap[tempMapKey]
                     # Open the parameter file of the business process
-                    os.chdir("K:\Git Code\Python\ParameterFiles\Metrics")
+
+                    if eachMapKey == 'Adoption-Category':
+                        paramFilePath = "K:\Git Code\Python\ParameterFiles\Metrics"
+                    else:
+                        paramFilePath = "K:\Git Code\Python\ParameterFiles\Issues JSONs"
+
+                    os.chdir(paramFilePath)
                     with open(inputJSONParameterFile, 'r', encoding='utf8') as jsonFile:
                         inputParamFileData = json.load(jsonFile)
 
@@ -94,8 +100,3 @@ if __name__ == '__main__':
 
                 processMapsObj = ProcessMaps(timeDiff)
                 fetchLastViewedAssetsResponse = processMapsObj.fetchLastViewedAssets()
-
-
-
-
-

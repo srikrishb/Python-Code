@@ -1,35 +1,30 @@
-request1:
-    Adoption-Category:
-        AssetType: "OutModule1.json"
-        Community: "OutModule2.json"
-        Domain: "OutModule2.json"
-        Status: "OutModule3.json"
-        PrioritizedAsset: "OutModule4.json"
-    Completion-Category:
-        conditions:
-            assetNameLike: "Amortized" 
-        outputResult:
-            Asset Details: 
-                - Asset Name
-                #- Community
-                #- Domain
-                #- Asset Type
-    outputFileName: 'request1'
-    email: "srikrishna.bingi@exusia.com"
-request2:
-    Activity-Category: '2016-10-11 12:34:00'
-    outputFileName: 'request2'
-    email: "srikrishna.bingi@exusia.com"
-request3:
-    Process-Category:
-        conditions:
-            assetNameLike: "Amortized" 
-        outputResult:
-            Asset Details: 
-                - Asset Name
-                #- Community
-                #- Domain
-                #- Asset Type
+# RajeshPotti10132017: 
+    # Adoption-Category:
+        # AssetType: "OutModule1.json"
+        # Community: "OutModule2.json"
+        # Domain: "OutModule2.json"
+        # Status: "OutModule3.json"
+        # PrioritizedAsset: "OutModule4.json"
+    # Completion-Category:
+        # conditions:
+            # assetNameLike: "Amortized" 
+        # outputResult:
+            # Asset Details: 
+                # - Asset Name
+                # #- Community
+                # #- Domain
+                # #- Asset Type
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
+# PeterChoe: 
+    # Activity-Category: '2016-10-11 12:34:00'
+    # outputFileName: 'request2'
+    # email: "srikrishna.bingi@exusia.com"
+request3: 
+    Issue-Category:
+        Priority: "ByCommunityDomainAssetTypeSourcesPriority.json"
+        Community: "ByCommunityDomainAssetTypeSourcesCommunity.json"
+        Status: "ByCommunityDomainAssetTypeSourcesStatus.json"
     outputFileName: 'request3'
     email: "srikrishna.bingi@exusia.com"
 # request2:

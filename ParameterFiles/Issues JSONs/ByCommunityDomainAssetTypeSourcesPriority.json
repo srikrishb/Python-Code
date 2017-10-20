@@ -1,0 +1,82 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"SingleValueListAttribute": [
+          {
+            "value": { "name": "Priority", "stripHtml": true  },
+            "labelId": "00000000-0000-0000-0000-000000000215"
+          }
+        ],
+		"Attribute": {
+			"name": "attribute1",
+			"value": { "name": "Attribute Value", "stripHtml": true  },
+			"AttributeType": {
+				"name": "attributetype1",
+				"signifier": { "name" : "Attribute Type"}
+				}
+		},
+		"ConceptType": {
+			"Signifier": { "name": "Asset Type"}
+		},
+		"Vocabulary": {
+          "name": "vocabulary1",
+          "Name": {
+            "name": "Domain"
+          },
+          "Community": {
+            "name": "community1",
+            "Name": {
+              "name": "Community"
+            }
+          }
+        },
+		"Relation": {
+			"type" : "TARGET",
+            "Source": {
+			"Signifier": { "name": "Sources" }
+		  }
+		},
+        "Filter": {
+		"Field": {
+                "name": "Domain",
+                "operator": "EQUALS",
+                "value": "Issues"
+              }
+		},
+		"Order": [
+          { "Field": { "name": "Priority", "order": "ASC" } }
+        ]
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	   {
+        "Column": {
+          "fieldName": "Community"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "Domain"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Asset Type"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Priority"
+        }
+      }
+    ]
+  }
+}

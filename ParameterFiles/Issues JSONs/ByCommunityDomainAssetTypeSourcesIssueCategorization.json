@@ -1,0 +1,104 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"Status": { 
+			"name": "status1",
+			"Signifier": { "name": "Asset Status" } 
+		},
+		"SingleValueListAttribute": [
+          {
+            "value": { "name": "Priority", "stripHtml": true  },
+            "labelId": "00000000-0000-0000-0000-000000000215"
+          }
+        ],
+		"Attribute": {
+			"name": "attribute1",
+			"value": { "name": "Attribute Value", "stripHtml": true  },
+			"AttributeType": {
+				"name": "attributetype1",
+				"signifier": { "name" : "Attribute Type"}
+				}
+		},
+		"ConceptType": {
+			"Signifier": { "name": "Asset Type"}
+		},
+		"Vocabulary": {
+          "name": "vocabulary1",
+          "Name": {
+            "name": "Domain"
+          },
+          "Community": {
+            "name": "community1",
+            "Name": {
+              "name": "Community"
+            }
+          }
+        },
+		"Relation": {
+			"type" : "SOURCE",
+			"BinaryFactType": { 
+				"corole": { "name": "Source1" }
+			},
+			"Target": {
+				"Signifier": { "name": "Issue Category" }
+		  }
+		},
+        "Filter": {
+			"AND": [
+			{	"Field": { "name": "Domain", "operator": "EQUALS", "value": "Issues" } },
+			{	"Field": { "name": "Source1","operator": "EQUALS", "value": "category for" } },
+			{	"Field": { "name": "Issue Category","operator": "CONTAINS", "value": "Issue" } }
+			]
+		},
+		"Order": [
+          { "Field": { "name": "Issue Category", "order": "ASC" } }
+        ]
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	   {
+        "Column": {
+          "fieldName": "Community"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "Domain"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Asset Type"
+        }
+      },	  
+     	  {
+        "Column": {
+          "fieldName": "Asset Status"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Priority"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Source1"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Issue Category"
+        }
+      }
+    ]
+  }
+}
