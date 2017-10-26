@@ -1,11 +1,11 @@
 collibraTempFolder: "C:/collibra_data/dgc/temp-files"
 outputFolder: "K:/Git Code/Python/Output/"
-request4: 
-    Adoption-Category: 
-        AssetType: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule1.json"
-        Metrics: "Percentage"
-    outputFileName: 'request4'
-    email: "srikrishna.bingi@exusia.com"  
+# request4: 
+    # Adoption-Category: 
+        # AssetType: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule1.json"
+        # Metrics: "Percentage"
+    # outputFileName: 'request4'
+    # email: "srikrishna.bingi@exusia.com"  
 # request5: 
     # Completion-Category:
         # FilterCriteria:
@@ -20,20 +20,20 @@ request4:
         # Metrics: "Count"
     # outputFileName: 'request4'
     # email: "srikrishna.bingi@exusia.com"   
-# request6: 
-    # Process-Category:
-        # FilterCriteria:
-            # conditions:
-                # assetNameLike: "Amortized" 
-            # outputResult:
-                # Asset Details: 
-                    # - Asset Name
-                    # #- Community
-                    # #- Domain
-                    # #- Asset Type
-        # Metrics: "Count"
-    # outputFileName: 'request4'
-    # email: "srikrishna.bingi@exusia.com"    
+request6: 
+    Process-Category:
+        FilterCriteria:
+            conditions:
+                assetNameLike: "Amortized" 
+            outputResult:
+                Asset Details: 
+                    - Asset Name
+                    #- Community
+                    #- Domain
+                    #- Asset Type
+        Metrics: "Percentage"
+    outputFileName: 'request4'
+    email: "srikrishna.bingi@exusia.com"    
 # request7: 
     # Issue-Category:
         # Priority: "K:/Git Code/Python/ParameterFiles/Issues JSONs/ByCommunityDomainAssetTypeSourcesPriority.json"

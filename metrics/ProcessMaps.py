@@ -102,10 +102,10 @@ class ProcessMaps:
                         finalResultList.append(finalMap)
                         finalMap = {}
 
-                    # Create the output file
-                    fileName = CreateDataFile.createDataFile(finalResultList, detailedFile)
-                    if fileName not in fileNameList:
-                       fileNameList.append(fileName)
+                    # # Create the output file
+                    # fileName = CreateDataFile.createDataFile(finalResultList, detailedFile)
+                    # if fileName not in fileNameList:
+                    #    fileNameList.append(fileName)
 
         return targetData
 
@@ -145,10 +145,11 @@ class ProcessMaps:
                 # Add all the relation types that have a value
                 for relationResponseMap in relationsResponse:
                     for innerRelationsMap in relationResponseMap['relation']:
-                        if 'vocabularyReference' in innerRelationsMap['typeReference']['headTerm']:
-                            relationType = innerRelationsMap['typeReference']['headTerm']['vocabularyReference']['name']
+                        relationType = ''
+                        if 'resourceType' in innerRelationsMap['typeReference']['headTerm']:
+                            relationType = innerRelationsMap['typeReference']['headTerm']['resourceType']
 
-                        if relationType != 'Complex Relation Types':
+                        if relationType != "CRT":
                             targetDataRelationsList.append(innerRelationsMap['typeReference']['role'])
                             targetDataRelationsList.append(innerRelationsMap['typeReference']['coRole'])
 
@@ -185,7 +186,6 @@ class ProcessMaps:
             finalMap['Asset Details'] = targetDataMap
             finalResultList.append(finalMap)
             finalMap = {}
-
 
         #Print the results to a file
         fileName = CreateDataFile.createDataFile(finalResultList, detailedFile)
@@ -303,7 +303,6 @@ class ProcessMaps:
         lastViewedAssetsPayload = {'timerange': math.ceil(time.time() - inputDate)*1000}
         lastViewedAssetsResponse = Asset.getDataCall(lastViewedAssetsEndpoint,lastViewedAssetsPayload)
 
-        print(math.ceil(time.time() - inputDate))
         if lastViewedAssetsResponse['statusCode'] != '1':
             return 'No Data Found'
         else:

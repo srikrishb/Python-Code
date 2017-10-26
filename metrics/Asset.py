@@ -112,7 +112,7 @@ class Asset:
 
     # Fetches possible relations types and attributes types of an asset
     def fetchPossibleRelationsTypesAndAttributesTypes(self):
-        possibleRandAEndpoint = 'concept_type/' + self.resourceId + '/possible_attribute_relation_types'
+        possibleRandAEndpoint = 'term/' + self.resourceId + '/possible_attribute_relation_types'
         possibleRandAPayload = ''
         possibleRandAResponse = self.getDataCall(possibleRandAEndpoint, possibleRandAPayload)
         if possibleRandAResponse['statusCode'] == '1':
@@ -122,7 +122,7 @@ class Asset:
 
     # Fetches possible attributes types of an asset
     def fetchPossibleAttributesTypes(self):
-        possibleRandAEndpoint = 'concept_type/' + self.resourceId + '/possible_attribute_types'
+        possibleRandAEndpoint = 'term/' + self.resourceId + '/possible_attribute_types'
         possibleRandAPayload = ''
         possibleRandAResponse = self.getDataCall(possibleRandAEndpoint, possibleRandAPayload)
         if possibleRandAResponse['statusCode'] == '1':
@@ -137,7 +137,7 @@ class Asset:
         sourceError = 'true'
         targetError = 'true'
 
-        sourceRelationsEndpoint = 'concept_type/' + self.resourceId + '/source_relations'
+        sourceRelationsEndpoint = 'term/' + self.resourceId + '/source_relations'
         sourceRelationsPayload = ''
         sourceRelationsResponse = self.getDataCall(sourceRelationsEndpoint, sourceRelationsPayload)
         if sourceRelationsResponse['statusCode'] == '1':
@@ -145,7 +145,7 @@ class Asset:
         else:
             sourceError = 'No Data Found'
 
-        targetRelationsEndpoint = 'concept_type/' + self.resourceId + '/target_relations'
+        targetRelationsEndpoint = 'term/' + self.resourceId + '/target_relations'
         targetRelationsPayload = ''
         targetRelationsResponse = self.getDataCall(targetRelationsEndpoint, targetRelationsPayload)
         if targetRelationsResponse['statusCode'] == '1':
@@ -160,7 +160,7 @@ class Asset:
 
     # Fetches attributes of an asset
     def fetchAttributes(self):
-        attributesEndpoint = 'concept_type/' + self.resourceId + '/attributes'
+        attributesEndpoint = 'term/' + self.resourceId + '/attributes'
         attributesPayload = ''
         attributesResponse = self.getDataCall(attributesEndpoint, attributesPayload)
 
@@ -183,8 +183,7 @@ class Asset:
                 complexRelationList = complexRelationDefinitionData['termReference']
 
                 for complexRelation in complexRelationList:
-                    complexRelationRelationsEndpoint = 'complex_relation/' + complexRelation[
-                        'resourceId'] + '/relations'
+                    complexRelationRelationsEndpoint = 'complex_relation/' + complexRelation['resourceId'] + '/relations'
                     complexRelationRelationsPayload = ''
                     complexRelationRelationsResponse = Asset.getDataCall(complexRelationRelationsEndpoint,complexRelationRelationsPayload)
                     if complexRelationRelationsResponse['statusCode'] == '1':
@@ -226,7 +225,7 @@ class Asset:
     # Fetches processes tagged to an asset
     def fetchProcesses(self):
         processesResponseList = []
-        processDefinitionEndpoint = 'concept_type/' + self.resourceId + '/workflows'
+        processDefinitionEndpoint = 'term/' + self.resourceId + '/workflows'
         processDefinitionPayload = ''
         processDefinitionResponse = Asset.getDataCall(processDefinitionEndpoint,
                                                       processDefinitionPayload)
