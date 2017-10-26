@@ -1,0 +1,125 @@
+{
+  "TableViewConfig": {
+    "Resources": {
+      "Term": {
+        "Signifier": { "name": "Asset Name"},
+		"Id": { "name": "AssetId" },
+		"NumericAttribute": [
+          {
+            "numericValue": {
+              "name": "Rows Passed"
+            },
+            "labelId": "00000000-0000-0000-0000-000000000236"
+          },
+		  {
+            "numericValue": {
+              "name": "Rows Failed"
+            },
+            "labelId": "00000000-0000-0000-0000-000000000237"
+          },
+		  {
+            "numericValue": {
+              "name": "Quality"
+            },
+            "labelId": "00000000-0000-0000-0001-000500000002"
+          }
+        ],
+		"BooleanAttribute": [
+		{
+			"booleanValue": {
+				"name": "Result"
+			},
+			"labelId": "00000000-0000-0000-0000-000000000238"
+		}
+		],
+		"Attribute": {
+			"name": "attribute1",
+			"value": { "name": "Attribute Value", "stripHtml": true  },
+			"AttributeType": {
+				"name": "attributetype1",
+				"signifier": { "name" : "Attribute Type"}
+				}
+		},
+		"ConceptType": {
+			"Signifier": { "name": "Asset Type"}
+		},
+		"Vocabulary": {
+          "name": "vocabulary1",
+          "Name": {
+            "name": "Domain"
+          },
+          "Community": {
+            "name": "community1",
+            "Name": {
+              "name": "Community"
+            }
+          }
+        },
+		"Relation": {
+			"type" : "SOURCE",
+            "Target": {
+			"Signifier": { "name": "Sources" }
+		  }
+		},
+        "Filter": {
+		"Field": {
+                "name": "Asset Name",
+                "operator": "IN",
+                "values": ["DQ1","Metric1", "Metric2", "Metric3"]
+              }
+		},
+		"Order": [
+          { "Field": { "name": "Asset Name", "order": "ASC" }},
+		  { "Field": { "name": "Sources", "order": "ASC" }}
+        ]
+      }
+    },
+    "Columns": [
+	  {
+        "Column": {
+          "fieldName": "Asset Name"
+        }
+      },
+	   {
+        "Column": {
+          "fieldName": "Community"
+        }
+      },	  
+      {
+        "Column": {
+          "fieldName": "Domain"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Asset Type"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Sources"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Rows Passed"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Rows Failed"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Quality"
+        }
+      },
+	  {
+        "Column": {
+          "fieldName": "Result"
+        }
+      }
+    ]
+  }
+}

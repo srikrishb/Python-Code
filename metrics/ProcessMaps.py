@@ -26,7 +26,7 @@ class ProcessMaps:
       cleantext = cleantext.replace(u'\xa0', u' ')
       return cleantext
 
-    def processMaps(self):
+    def processMaps(self, detailedFile):
 
         targetData = ''
         outputFilter = ''
@@ -101,20 +101,16 @@ class ProcessMaps:
                         finalMap['Asset Details'] = targetDataMap
                         finalResultList.append(finalMap)
                         finalMap = {}
-                else:
-                    print('relationPath')
-            elif itemkey == 'outputFileName':
-                outputFileName = eachMap[itemkey]
-                if outputFilter != 'relationPath':
+
                     # Create the output file
-                    fileName = CreateDataFile.createDataFile(finalResultList, outputFileName, '.xlsx')
+                    fileName = CreateDataFile.createDataFile(finalResultList, detailedFile)
                     if fileName not in fileNameList:
                        fileNameList.append(fileName)
 
         return targetData
 
     @staticmethod
-    def checkCompletion(inputAssetData):
+    def checkCompletion(inputAssetData, detailedFile):
         finalMap = {}
         finalResultList = []
         # Fetch Completion Status for all the assets
@@ -192,13 +188,12 @@ class ProcessMaps:
 
 
         #Print the results to a file
-        fileName = CreateDataFile.createDataFile(finalResultList, 'Detailed-Completion-Category', '.xlsx')
+        fileName = CreateDataFile.createDataFile(finalResultList, detailedFile)
         return fileName
 
     @staticmethod
-    def checkProcess(inputAssetData, paramFileKey):
+    def checkProcess(inputAssetData, detailedFile, metricsFile):
         for i in range(0, len(inputAssetData)):
-            print('asset id', inputAssetData[i]['resourceId'])
             targetDataMap = {}
             tempMap = {}
             assetObj = Asset(inputAssetData[i]['resourceId'])
@@ -217,7 +212,7 @@ class ProcessMaps:
                         targetDataMap['Process-Category'] = process
                         valueList.append(targetDataMap)
 
-                        targetFileName = 'K:/Git Code/Python/Output/' + 'Detailed-Process-Category.xlsx'
+                        targetFileName = detailedFile
                         targetFileHeader = []
                         targetFileRow = []
                         targetFinalRowList = []
@@ -281,8 +276,6 @@ class ProcessMaps:
                     assetList.append(worksheet.cell(row=row, column=col).value)
                 outputMap[key] = assetList
 
-        metricsFile = 'K:/Git Code/Python/Output/Metrics-' + paramFileKey + '.xlsx'
-
         metricsWorkbook = Workbook()
         metricsWorksheet = metricsWorkbook.active
         metricsWorksheet.title = 'Counts by Process-Category'
@@ -304,7 +297,7 @@ class ProcessMaps:
         metricsWorkbook.save(metricsFile)
         return targetFileName
 
-    def fetchLastViewedAssets(self):
+    def fetchLastViewedAssets(self, detailedFile):
         lastViewedAssetsEndpoint = 'navigation/most_viewed'
         inputDate = int(time.mktime(time.strptime(self.inputMap, '%Y-%m-%d %H:%M:%S')))
         lastViewedAssetsPayload = {'timerange': math.ceil(time.time() - inputDate)*1000}
@@ -333,7 +326,7 @@ class ProcessMaps:
                     cell.font = Font(bold=True)
                     colNum += 1
 
-                targetFileName = 'K:/Git Code/Python/Output/Detailed-Activity-Category.xlsx'
+                targetFileName = detailedFile
 
                 # Read data from result and write the data
                 rowNum +=1

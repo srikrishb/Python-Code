@@ -1,0 +1,110 @@
+{
+    "total": 1,
+    "offset": 0,
+    "limit": 0,
+    "results": [
+        {
+            "id": "ade7371d-d608-4720-8ae0-6bd8dab0cd7e",
+            "createdBy": "00000000-0000-0000-0000-000000900002",
+            "createdOn": 1507950760404,
+            "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+            "lastModifiedOn": 1508777238604,
+            "system": false,
+            "resourceType": "DataQualityRule",
+            "name": "Data Point Metric",
+            "description": "",
+            "categorizationRelationType": {
+                "id": "ef98b9de-21e0-445f-8b0d-3c20c23131bf",
+                "resourceType": "RelationType"
+            },
+            "relationTrace": {
+                "id": "cfaae5cf-d72c-4844-8af5-ebfc172051be",
+                "createdBy": "00000000-0000-0000-0000-000000900002",
+                "createdOn": 1507950760404,
+                "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+                "lastModifiedOn": 1508777238605,
+                "system": false,
+                "resourceType": "RelationTrace",
+                "relationTraceEntries": [
+                    {
+                        "outBoundRoleDirection": true,
+                        "roleDirection": true,
+                        "relationTypeId": "e17230ea-2344-4a18-9a8f-545889beef9d"
+                    },
+                    {
+                        "outBoundRoleDirection": true,
+                        "roleDirection": true,
+                        "relationTypeId": "6dbd2c3a-7f6e-41e3-9c40-9816701b0af1"
+                    },
+                    {
+                        "outBoundRoleDirection": true,
+                        "roleDirection": true,
+                        "relationTypeId": "00000000-0000-0000-0000-000000007016"
+                    }
+                ]
+            },
+            "dataQualityMetrics": [
+                {
+                    "id": "9c456ce2-7808-428b-9a59-f7486cdad2c5",
+                    "createdBy": "00000000-0000-0000-0000-000000900002",
+                    "createdOn": 1508777238543,
+                    "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+                    "lastModifiedOn": 1508777238585,
+                    "system": false,
+                    "resourceType": "DataQualityMetric",
+                    "countOperation": "BooleanAnd",
+                    "attributeType": {
+                        "id": "00000000-0000-0000-0000-000000000238",
+                        "resourceType": "BooleanAttributeType",
+                        "name": "Result"
+                    }
+                },
+                {
+                    "id": "1b50359e-be5c-4413-af6c-baae9e15a75b",
+                    "createdBy": "00000000-0000-0000-0000-000000900002",
+                    "createdOn": 1508777238543,
+                    "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+                    "lastModifiedOn": 1508777238585,
+                    "system": false,
+                    "resourceType": "DataQualityMetric",
+                    "countOperation": "Sum",
+                    "attributeType": {
+                        "id": "00000000-0000-0000-0000-000000000237",
+                        "resourceType": "NumericAttributeType",
+                        "name": "Rows Failed"
+                    }
+                },
+                {
+                    "id": "e6a07622-9380-475e-a4b9-96922e304a86",
+                    "createdBy": "00000000-0000-0000-0000-000000900002",
+                    "createdOn": 1508777238543,
+                    "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+                    "lastModifiedOn": 1508777238586,
+                    "system": false,
+                    "resourceType": "DataQualityMetric",
+                    "countOperation": "Sum",
+                    "attributeType": {
+                        "id": "00000000-0000-0000-0000-000000000236",
+                        "resourceType": "NumericAttributeType",
+                        "name": "Rows Passed"
+                    }
+                },
+                {
+                    "id": "cdbaba26-9186-4e8c-b296-dddea47f750a",
+                    "createdBy": "00000000-0000-0000-0000-000000900002",
+                    "createdOn": 1508777238543,
+                    "lastModifiedBy": "00000000-0000-0000-0000-000000900002",
+                    "lastModifiedOn": 1508777238587,
+                    "system": false,
+                    "resourceType": "DataQualityMetric",
+                    "countOperation": "Average",
+                    "attributeType": {
+                        "id": "00000000-0000-0000-0000-000000000240",
+                        "resourceType": "NumericAttributeType",
+                        "name": "Passing Fraction"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -23,9 +23,9 @@ class CreateDataFile:
 
     # Creates the data file for specified parameters
     @staticmethod
-    def createDataFile(targetMapList, fileNamePrefix, fileNameSuffix):
+    def createDataFile(targetMapList, dataFile):
 
-        targetFileName = 'K:/Git Code/Python/Output/' + fileNamePrefix + fileNameSuffix
+        targetFileName = dataFile
         targetFileHeader = []
         targetFileRow = []
         targetFinalRowList = []

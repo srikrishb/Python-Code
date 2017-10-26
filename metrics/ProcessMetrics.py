@@ -78,11 +78,12 @@ class ProcessMetrics:
         else:
             return inputString
 
-    def generateMetricsFileII(self, dimension, targetFileName):
-        #print('dimension', dimension , 'self.inputFileName', self.inputFileName)
+    def generateMetricsFileII(self, dimension, metricMode, targetFileName):
+        print('dimension', dimension , 'self.inputFileName', self.inputFileName, 'metricMode', metricMode)
         # Open the data file
         dataWorkbook = load_workbook(self.inputFileName)
         defaultSheet = dataWorkbook.active
+        row_count = defaultSheet.max_row
 
         # Kick start redis
         redis_db = redis.StrictRedis(host="127.0.0.1", port=6379, db=0)
@@ -156,11 +157,12 @@ class ProcessMetrics:
 
         if os.path.isfile(targetFileName):
             metricsWorkbook = load_workbook(targetFileName)
-            metricsSheet = metricsWorkbook.create_sheet('Count by ' + dimension)
+            metricsSheet = metricsWorkbook.create_sheet('Metric by ' + dimension)
         else:
             metricsWorkbook = Workbook()
             metricsSheet = metricsWorkbook.active
-            metricsSheet.title = 'Count by ' + dimension
+            metricsSheet.title = 'Metric by ' + dimension
+
 
         col = 1
         # Write Header
@@ -168,7 +170,13 @@ class ProcessMetrics:
             metricsSheet.cell(row=1, column=col).value = header
             col +=1
 
-        metricsSheet.cell(row=1, column=col).value = 'Count'
+        if metricMode == 'Percentage':
+            metricsSheet.cell(row=1, column=col).value = 'Count'
+            col +=1
+            metricsSheet.cell(row=1, column=col).value = 'Percentage'
+            col += 1
+        else:
+            metricsSheet.cell(row=1, column=col).value = metricMode
         # Write metrics information
         row=2
 
@@ -184,8 +192,14 @@ class ProcessMetrics:
                 # Increment column index to go to next cell in row
                 col += 1
 
-            # Fetch the measure value and print it in the file
-            metricsSheet.cell(row=row, column=col).value = measure
+            if metricMode == 'Count':
+                # Fetch the measure value and print it in the file
+                metricsSheet.cell(row=row, column=col).value = measure
+            elif metricMode == 'Percentage':
+                # Fetch the measure value and print it in the file
+                metricsSheet.cell(row=row, column=col).value = measure
+                col +=1
+                metricsSheet.cell(row=row, column=col).value = (measure/(row_count-1))*100
 
             #Increment row counter to go to next line
             row += 1

@@ -1,32 +1,56 @@
-# RajeshPotti10132017: 
-    # Adoption-Category:
-        # AssetType: "OutModule1.json"
-        # Community: "OutModule2.json"
-        # Domain: "OutModule2.json"
-        # Status: "OutModule3.json"
-        # PrioritizedAsset: "OutModule4.json"
+collibraTempFolder: "C:/collibra_data/dgc/temp-files"
+outputFolder: "K:/Git Code/Python/Output/"
+request4: 
+    Adoption-Category: 
+        AssetType: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule1.json"
+        Metrics: "Percentage"
+    outputFileName: 'request4'
+    email: "srikrishna.bingi@exusia.com"  
+# request5: 
     # Completion-Category:
-        # conditions:
-            # assetNameLike: "Amortized" 
-        # outputResult:
-            # Asset Details: 
-                # - Asset Name
-                # #- Community
-                # #- Domain
-                # #- Asset Type
-    # outputFileName: 'request1'
+        # FilterCriteria:
+            # conditions:
+                # assetNameLike: "Amortized" 
+            # outputResult:
+                # Asset Details: 
+                    # - Asset Name
+                    # #- Community
+                    # #- Domain
+                    # #- Asset Type
+        # Metrics: "Count"
+    # outputFileName: 'request4'
+    # email: "srikrishna.bingi@exusia.com"   
+# request6: 
+    # Process-Category:
+        # FilterCriteria:
+            # conditions:
+                # assetNameLike: "Amortized" 
+            # outputResult:
+                # Asset Details: 
+                    # - Asset Name
+                    # #- Community
+                    # #- Domain
+                    # #- Asset Type
+        # Metrics: "Count"
+    # outputFileName: 'request4'
+    # email: "srikrishna.bingi@exusia.com"    
+# request7: 
+    # Issue-Category:
+        # Priority: "K:/Git Code/Python/ParameterFiles/Issues JSONs/ByCommunityDomainAssetTypeSourcesPriority.json"
+        # Community: "K:/Git Code/Python/ParameterFiles/Issues JSONs/ByCommunityDomainAssetTypeSourcesCommunity.json"
+        # Status: "K:/Git Code/Python/ParameterFiles/Issues JSONs/ByCommunityDomainAssetTypeSourcesStatus.json"
+    # outputFileName: 'request3'
+    # email: "srikrishna.bingi@exusia.com"
+# request8: 
+    # Quality-Category: 
+        # paramFile: "K:/Git Code/Python/ParameterFiles/QualityJSON.json"
+        # metrics: "Counts"
+    # outputFileName: 'request4'
     # email: "srikrishna.bingi@exusia.com"
 # PeterChoe: 
     # Activity-Category: '2016-10-11 12:34:00'
     # outputFileName: 'request2'
     # email: "srikrishna.bingi@exusia.com"
-request3: 
-    Issue-Category:
-        Priority: "ByCommunityDomainAssetTypeSourcesPriority.json"
-        Community: "ByCommunityDomainAssetTypeSourcesCommunity.json"
-        Status: "ByCommunityDomainAssetTypeSourcesStatus.json"
-    outputFileName: 'request3'
-    email: "srikrishna.bingi@exusia.com"
 # request2:
     # conditions:
         # complexRelationFilter:
@@ -186,6 +210,30 @@ request3:
         # Domain: "OutModule2.json"
         # Status: "OutModule3.json"
         # PrioritizedAsset: "OutModule4.json"
+    # Completion-Category:
+        # conditions:
+            # assetNameLike: "Amortized" 
+        # outputResult:
+            # Asset Details: 
+                # - Asset Name
+                # #- Community
+                # #- Domain
+                # #- Asset Type
+    # outputFileName: 'request1'
+    # email: "srikrishna.bingi@exusia.com"
+# request4: 
+    # Quality-Category: 
+        # paramFile: "K:/Git Code/Python/ParameterFiles/QualityJSON.json"
+        # metrics: "Counts"
+    # outputFileName: 'request4'
+    # email: "srikrishna.bingi@exusia.com"
+# RajeshPotti10132017: 
+    # Adoption-Category:
+        # AssetType: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule1.json"
+        # Community: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule2.json"
+        # Domain: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule2.json"
+        # Status: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule3.json"
+        # PrioritizedAsset: "K:/Git Code/Python/ParameterFiles/Metrics/OutModule4.json"
     # Completion-Category:
         # conditions:
             # assetNameLike: "Amortized" 
