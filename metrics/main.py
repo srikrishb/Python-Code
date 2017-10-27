@@ -31,7 +31,6 @@ if __name__ == '__main__':
                     tempMap = eachMap[eachMapKey]
                     for tempMapKey in tempMap.keys():
                         inputJSONParameterFile = tempMap[tempMapKey]
-
                         if tempMapKey != 'Metrics':
                             dimension = tempMapKey
                             # Open the parameter file of the business process
@@ -74,7 +73,6 @@ if __name__ == '__main__':
 
                                         detailedFile = outputFolder + paramFileKey + "-Detailed-" + eachMapKey + "-" + tempMapKey+".xlsx"
                                         shutil.copyfile(jobMessage['id'], detailedFile)
-
                         if tempMapKey == 'Metrics':
                             metricMode = tempMap[tempMapKey]
                             processMetricsObj = ProcessMetrics(detailedFile)

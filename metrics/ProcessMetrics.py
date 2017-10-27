@@ -9,6 +9,7 @@ class ProcessMetrics:
     def __init__(self, inputFileName):
         self.inputFileName = inputFileName
 
+    # Uses Bitmaps in Redis to compute metrics
     def generateMetricsFileI(self):
         # Open the data file
         workbook = load_workbook(self.inputFileName)
@@ -78,6 +79,7 @@ class ProcessMetrics:
         else:
             return inputString
 
+    # Uses Sorted Sets in Redis to compute metrics
     def generateMetricsFileII(self, dimension, metricMode, targetFileName):
         # Open the data file
         dataWorkbook = load_workbook(self.inputFileName)
