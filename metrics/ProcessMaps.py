@@ -192,7 +192,8 @@ class ProcessMaps:
         return fileName
 
     @staticmethod
-    def checkProcess(inputAssetData, detailedFile, metricsFile):
+    def checkProcess(inputAssetData, metricMode, detailedFile, metricsFile):
+        row_count = 0
         for i in range(0, len(inputAssetData)):
             targetDataMap = {}
             tempMap = {}
@@ -274,23 +275,34 @@ class ProcessMaps:
                         assetList = []
                 if col == 1:
                     assetList.append(worksheet.cell(row=row, column=col).value)
+                    row_count += 1
                 outputMap[key] = assetList
+
 
         metricsWorkbook = Workbook()
         metricsWorksheet = metricsWorkbook.active
-        metricsWorksheet.title = 'Counts by Process-Category'
+        metricsWorksheet.title = 'Metric by Process-Category'
 
         metricsWorksheet.cell(row=1, column=1).value = 'Process-Category'
         metricsWorksheet.cell(row=1, column=2).value = 'Counts'
         metricsWorksheet.cell(row=1, column=1).font = Font(bold=True)
         metricsWorksheet.cell(row=1, column=2).font = Font(bold=True)
 
+        if metricMode == 'Percentage':
+            metricsWorksheet.cell(row=1, column=3).value = 'Percentage'
+            metricsWorksheet.cell(row=1, column=3).font = Font(bold=True)
+
         row = 2
         col = 1
+
         for key in outputMap.keys():
             metricsWorksheet.cell(row = row, column = col).value = key
             col += 1
             metricsWorksheet.cell(row=row, column=col).value = len(outputMap[key])
+            if metricMode == 'Percentage':
+                col +=1
+                metricsWorksheet.cell(row=row, column=col).value = (len(outputMap[key])/ (row_count)) * 100
+                col -=1
             col -= 1
             row += 1
 

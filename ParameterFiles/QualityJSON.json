@@ -58,19 +58,19 @@
 		"Relation": {
 			"type" : "SOURCE",
             "Target": {
-			"Signifier": { "name": "Sources" }
+			"Signifier": { "name": "Dimension" }
 		  }
 		},
         "Filter": {
 		"Field": {
                 "name": "Asset Name",
                 "operator": "IN",
-                "values": ["DQ1","Metric1", "Metric2", "Metric3"]
+                "values": ["Metric1", "Metric2", "Metric3"]
               }
 		},
 		"Order": [
           { "Field": { "name": "Asset Name", "order": "ASC" }},
-		  { "Field": { "name": "Sources", "order": "ASC" }}
+		  { "Field": { "name": "Dimension", "order": "ASC" }}
         ]
       }
     },
@@ -97,7 +97,7 @@
       },
 	  {
         "Column": {
-          "fieldName": "Sources"
+          "fieldName": "Dimension"
         }
       },
 	  {

@@ -94,7 +94,6 @@ class CreateDataFile:
                             col += 1
                         highestLen = 1
                     elif isinstance(map, list):
-                        print(map)
                         for innerList in map:
                             for innerKey in innerList:
                                 targetFileRow.append(innerList[innerKey])

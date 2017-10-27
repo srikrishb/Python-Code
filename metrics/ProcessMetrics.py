@@ -79,12 +79,10 @@ class ProcessMetrics:
             return inputString
 
     def generateMetricsFileII(self, dimension, metricMode, targetFileName):
-        print('dimension', dimension , 'self.inputFileName', self.inputFileName, 'metricMode', metricMode)
         # Open the data file
         dataWorkbook = load_workbook(self.inputFileName)
         defaultSheet = dataWorkbook.active
-        row_count = defaultSheet.max_row
-
+        row_count = 0
         # Kick start redis
         redis_db = redis.StrictRedis(host="127.0.0.1", port=6379, db=0)
         redis_db.flushall()
@@ -142,6 +140,7 @@ class ProcessMetrics:
                             if prevAssetName != currAssetName:
                                 # Increment score for the key
                                 redis_db.zincrby('tempset', key, 1)
+                                row_count += 1
                                 prevAssetName = currAssetName
                         else:
                             prevDimension = currDimension
@@ -150,6 +149,7 @@ class ProcessMetrics:
                                 # Set the score for the new key
                                 #print('key', key)
                                 redis_db.zadd('tempset', 1, key)
+                                row_count +=1
                                 prevAssetName = currAssetName
 
                 keyList[key] = ''
