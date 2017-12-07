@@ -1,4 +1,4 @@
 request1: 
     index: 'bulkindex'
     docType: 'bulktype'
-    inputFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/winemag-data.csv'
+    inputFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/winemag-data-5k.csv'

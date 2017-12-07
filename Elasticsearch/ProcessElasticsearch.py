@@ -1,5 +1,6 @@
 import APIMethod as APIFile
 import csv
+import re
 
 class ProcessElasticsearch:
 
@@ -45,9 +46,11 @@ class ProcessElasticsearch:
                 bodyMap['index'] = tempMap
                 finalBody = finalBody + '\n' + str(bodyMap) + '\n' + str(dataLine)
 
+
+
         finalBody = finalBody + '\n'
         print(finalBody.replace("'",'"'))
 
-        ProcessElasticsearch.postData(finalBody.replace("'",'"'))
+        #ProcessElasticsearch.postData(finalBody.replace("'",'"'))
 
 

@@ -4,7 +4,6 @@ import CollibraError as ER
 import os
 import json
 
-
 my_logger = logging.getLogger('Collibra')
 
 
