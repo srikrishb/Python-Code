@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import yaml
 from ProcessElasticsearch import ProcessElasticsearch
@@ -31,7 +32,13 @@ if __name__ == '__main__':
                 if eachMapKey == 'inputFile':
                     inputFile = eachMap[eachMapKey]
 
-            processElasticsearch = ProcessElasticsearch(indexName, typeName, inputFile)
-            processElasticsearch.insertElastisearch()
+                if eachMapKey == 'tempFile':
+                    tempFile = eachMap[eachMapKey]
+
+                if eachMapKey == 'commitInterval':
+                    commitInterval = eachMap[eachMapKey]
+
+            processElasticsearch = ProcessElasticsearch(indexName, typeName, inputFile, tempFile, commitInterval)
+            processElasticsearch.newInsertElastisearch()
 
 

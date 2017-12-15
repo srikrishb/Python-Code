@@ -1,4 +1,6 @@
 request1: 
-    index: 'bulkindex'
-    docType: 'bulktype'
-    inputFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/winemag-data-5k.csv'
+    index: 'bulkindex2'
+    docType: 'bulktype2'
+    inputFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/winemag-data-130k-v2.csv'
+    tempFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/temp.txt'
+    commitInterval: 1
