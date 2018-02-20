@@ -115,12 +115,11 @@ class ProcessElasticsearch:
         print('starting process', startTime)
 
 
-        dataLine = """{"""
-        commaCount = 0
         totalRowCount=0
         actions = []
         source = []
-        bodyMap = """"""
+        bodyMap = {}
+        tempMap = {}
 
         with open(self.inputFile) as dataFile:
             # tempFile = open(self.tempFile, 'a')
@@ -141,31 +140,38 @@ class ProcessElasticsearch:
 
             #Read through the input file and insert data
             for line in row:
+                totalRowCount = totalRowCount + 1
                 for key in line:
                     if key != '':
-                        commaCount += 1
-                        if commaCount < len(line.keys())-1:
-                            dataLine = dataLine + """\"""" + key + "\"" + ":" + "\"" + re.sub('\n', '',line[key].replace('"',"'")) + "\"" + ","
-                        else:
-                            dataLine = dataLine + """\"""" + key + "\"" + ":" + "\"" + re.sub('\n', '',line[key].replace('"',"'")) + "\"" + "}"
-                source.append(dataLine)
-                dataLine="""{"""
-                commaCount=0
+                        try:
+                            value = float(line[key])
+                        except ValueError:
+                            value = re.sub('\n', '', line[key].replace('"',"'"))
+                            value = value.decode('utf8')
 
-        # for j in range(0, totalRowCount):
-        #     bodyMap = """{ "index" : { "_index" : \"""" + self.index + """", "_type" : \"""" + self.docType + """" , "_id" : \"""" + str(j) + """" , "_source" : \"""" + source[j].decode('utf8') + """"}}"""
-        #     actions.append(bodyMap)
+                        tempMap[key] = value
+
+                #Temp
+                bodyMap["_index"] =  self.index
+                bodyMap["_type"] = self.docType
+                bodyMap["_id"] = totalRowCount
+                bodyMap["_source"] = tempMap
+
+
+                source.append(tempMap)
+                tempMap = {}
+
 
         actions = [
-            {
-                "_index": self.index,
-                "_type": self.docType,
-                "_id": j,
-                "_source": source[j].decode('utf8')
-            }
-            for j in range(0,len(source))
-
+             {
+                 "_index": self.index,
+                 "_type": self.docType,
+                 "_id": j,
+                 "_source": source[j]
+             }
+             for j in range(0,len(source))
         ]
+
 
         es = Elasticsearch()
 
