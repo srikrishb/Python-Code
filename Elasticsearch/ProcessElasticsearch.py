@@ -9,16 +9,18 @@ import time
 
 class ProcessElasticsearch:
 
-    def __init__(self, index, docType, inputFile, tempFile, commitInterval):
+    def __init__(self, server, index, docType, inputFile, tempFile, commitInterval, alias):
+        self.server = server
         self.index = index
         self.docType = docType
         self.inputFile = inputFile
         self.tempFile = tempFile
         self.commitInterval = commitInterval
+        self.alias = alias
 
     @staticmethod
-    def postData(payload):
-        response = APIFile.API.postSessionDataCall('/_bulk?', payload)
+    def postData(endpoint, payload):
+        response = APIFile.API.postSessionDataCall(endpoint, payload)
 
         if response['statusCode'] == '1':
             return response['data']
@@ -86,7 +88,7 @@ class ProcessElasticsearch:
                 if rowCount ==  self.commitInterval or rowCount == totalRowCount:
                     print(rowCount, self.commitInterval, totalRowCount)
                     finalBody = finalBody + '\n'
-                    response = ProcessElasticsearch.postData(finalBody)
+                    response = ProcessElasticsearch.postData('/_bulk?', finalBody)
                     finalBody == """"""
 
 
@@ -157,7 +159,6 @@ class ProcessElasticsearch:
                 bodyMap["_id"] = totalRowCount
                 bodyMap["_source"] = tempMap
 
-
                 source.append(tempMap)
                 tempMap = {}
 
@@ -183,3 +184,16 @@ class ProcessElasticsearch:
 
         diffTime = endTime - startTime
         print('time elapsed in seconds', diffTime.seconds)
+
+
+    def createAlias(self):
+        es = Elasticsearch(self.server)
+
+        getAlias = es.get_alias(self.index, self.alias)
+
+        print(getAlias)
+        if getAlias != '':
+            es.remove_alias(getAlias.index, self.alias)
+
+        es.put_alias(self.index, self.alias)
+        print('created ', self.alisas, '  created successfully.')

@@ -2,6 +2,7 @@
 import sys
 import yaml
 from ProcessElasticsearch import ProcessElasticsearch
+import time
 
 if __name__ == '__main__':
 
@@ -23,8 +24,12 @@ if __name__ == '__main__':
         # Fetch the inner conditions of the request
         if isinstance(eachMap, dict):
             for eachMapKey in eachMap.keys():
+
+                if eachMapKey == 'server':
+                    server = eachMap[eachMapKey]
+
                 if eachMapKey == 'index':
-                    indexName = eachMap[eachMapKey]
+                    indexName = eachMap[eachMapKey] + time.strftime("%m%d%Y")
 
                 if eachMapKey == 'docType':
                     typeName = eachMap[eachMapKey]
@@ -38,7 +43,10 @@ if __name__ == '__main__':
                 if eachMapKey == 'commitInterval':
                     commitInterval = eachMap[eachMapKey]
 
-            processElasticsearch = ProcessElasticsearch(indexName, typeName, inputFile, tempFile, commitInterval)
+                if eachMapKey == 'alias':
+                    alias = eachMap[eachMapKey]
+
+            processElasticsearch = ProcessElasticsearch(server, indexName, typeName, inputFile, tempFile, commitInterval, alias)
             processElasticsearch.newInsertElastisearch()
 
-
+            processElasticsearch.createAlias()
