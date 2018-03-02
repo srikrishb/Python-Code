@@ -1,6 +1,6 @@
 request1: 
-    index: 'ruletest02152018'
-    docType: 'ruletest'
-    inputFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/rule-result.csv'
-    tempFile: '/media/legolas/Softwares/Git Code/Python/Elasticsearch/wine-reviews/temp.txt'
+    index: 'idxrulebreaktest03012018'
+    docType: 'rulebreaktest'
+    inputFile: '/home/ec2-user/nidashboard/sample_files/rule-result-02202018.csv'
+    tempFile: '/home/ec2-user/nidashboard/sample_files/rule-result-02202018.txt'
     commitInterval: 1

@@ -1,6 +1,5 @@
 # coding: utf-8
 import csv
-import APIMethod as APIFile
 import datetime
 import re
 from elasticsearch import Elasticsearch
@@ -11,22 +10,12 @@ class ProcessElasticsearch:
 
     def __init__(self, server, index, docType, inputFile, tempFile, commitInterval, alias):
         self.server = server
-        self.index = index
+	self.index = index
         self.docType = docType
         self.inputFile = inputFile
         self.tempFile = tempFile
         self.commitInterval = commitInterval
-        self.alias = alias
-
-    @staticmethod
-    def postData(endpoint, payload):
-        response = APIFile.API.postSessionDataCall(endpoint, payload)
-
-        if response['statusCode'] == '1':
-            return response['data']
-        else:
-            return 'Issue with parameters. Please check'
-
+	self.alias = alias
 
     def oldinsertElastisearch(self):
         # Temporary variable to store row count
@@ -88,7 +77,7 @@ class ProcessElasticsearch:
                 if rowCount ==  self.commitInterval or rowCount == totalRowCount:
                     print(rowCount, self.commitInterval, totalRowCount)
                     finalBody = finalBody + '\n'
-                    response = ProcessElasticsearch.postData('/_bulk?', finalBody)
+                    response = ProcessElasticsearch.postData(finalBody)
                     finalBody == """"""
 
 
@@ -112,6 +101,7 @@ class ProcessElasticsearch:
         print('time elapsed in seconds', diffTime.seconds)
 
     def newInsertElastisearch(self):
+	
 
         startTime = datetime.datetime.now()
         print('starting process', startTime)
@@ -159,6 +149,7 @@ class ProcessElasticsearch:
                 bodyMap["_id"] = totalRowCount
                 bodyMap["_source"] = tempMap
 
+
                 source.append(tempMap)
                 tempMap = {}
 
@@ -174,7 +165,8 @@ class ProcessElasticsearch:
         ]
 
 
-        es = Elasticsearch()
+        #es = Elasticsearch("https://vpc-mcdsccpdqes-ofifwvrb7xbxij5hub5wzbpjwi.us-east-1.es.amazonaws.com/")
+		es = Elasticsearch(self.server)
 
         helpers.bulk(es, actions)
 
@@ -185,15 +177,18 @@ class ProcessElasticsearch:
         diffTime = endTime - startTime
         print('time elapsed in seconds', diffTime.seconds)
 
-
+		
     def createAlias(self):
-        es = Elasticsearch(self.server)
+		
+		es = Elasticsearch(self.server)
 
-        getAlias = es.get_alias(self.index, self.alias)
+        getAlias = es.indices.get_alias(self.index)[self.index]['aliases']
 
-        print(getAlias)
-        if getAlias != '':
-            es.remove_alias(getAlias.index, self.alias)
+        print('getAlias', getAlias)
 
-        es.put_alias(self.index, self.alias)
-        print('created ', self.alisas, '  created successfully.')
+        if len(getAlias.keys()) > 0:
+            es.indices.delete_alias("*", self.alias)
+
+		es.indices.put_alias(self.index, self.alias)
+		
+		print('alias created', self.alias)
